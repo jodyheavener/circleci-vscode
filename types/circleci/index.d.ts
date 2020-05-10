@@ -18,6 +18,11 @@ declare const enum BuildStatus {
   Success = 'success',
 }
 
+interface CommitDetails {
+  commit: string;
+  subject: string;
+}
+
 interface BuildData {
   build_parameters: {
     CIRCLE_JOB: string;
@@ -28,12 +33,15 @@ interface BuildData {
   build_time_millis: number;
   stop_time: string;
   build_num: number;
-  all_commit_details: {
-    commit: string;
-    subject: string;
-  }[]
+  all_commit_details: CommitDetails[]
+  has_artifacts: boolean;
   workflows: {
-    job_name: string;
     workflow_name: string;
+    workflow_id: string;
   }
+}
+
+interface ArtifactData {
+  pretty_path: string;
+  url: string;
 }

@@ -1,7 +1,7 @@
 {
   "name": "circleci-vscode",
   "description": "CircleCI for VS Code",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "publisher": "jodyh",
   "repository": {
@@ -20,12 +20,14 @@
   },
   "dependencies": {
     "circleci": "^0.3.3",
+    "follow-redirects": "^1.11.0",
     "git-branch": "^2.0.1",
     "git-repo-name": "^1.0.1",
     "git-username": "^1.0.0",
     "open": "^7.0.3"
   },
   "devDependencies": {
+    "@types/follow-redirects": "^1.8.0",
     "@types/git-branch": "^2.0.1",
     "@types/git-repo-name": "^1.0.0",
     "@types/git-username": "^1.0.0",
@@ -42,7 +44,16 @@
     "workspaceContains:circle.yaml",
     "workspaceContains:circle.yml",
     "workspaceContains:.circleci/config.yaml",
-    "workspaceContains:.circleci/config.yml"
+    "workspaceContains:.circleci/config.yml",
+    "onCommand:circleci.refreshAll",
+    "onCommand:circleci.refresh",
+    "onCommand:circleci.openPage",
+    "onCommand:circleci.retryBuild",
+    "onCommand:circleci.copyBuildNumber",
+    "onCommand:circleci.copyCommitHash",
+    "onCommand:circleci.copyWorkflowId",
+    "onCommand:circleci.fetchArtifacts",
+    "onCommand:circleci.downloadArtifact"
   ],
   "contributes": {
     "viewsContainers": {
@@ -100,6 +111,11 @@
           "when": "viewItem == circleciBuildCommit",
           "command": "circleci.copyCommitHash",
           "group": "circleci"
+        },
+        {
+          "when": "viewItem == circleciBuildWorkflow",
+          "command": "circleci.copyWorkflowId",
+          "group": "circleci"
         }
       ]
     },
@@ -140,6 +156,21 @@
       {
         "command": "circleci.copyCommitHash",
         "title": "Copy commit hash",
+        "category": "circleci"
+      },
+      {
+        "command": "circleci.copyWorkflowId",
+        "title": "Copy workflow ID",
+        "category": "circleci"
+      },
+      {
+        "command": "circleci.buildFetchArtifacts",
+        "title": "Fetch artifacts",
+        "category": "circleci"
+      },
+      {
+        "command": "circleci.downloadArtifact",
+        "title": "Download artifact",
         "category": "circleci"
       }
     ],

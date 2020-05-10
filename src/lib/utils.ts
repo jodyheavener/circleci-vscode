@@ -1,3 +1,4 @@
+import { https } from 'follow-redirects';
 import { join } from 'path';
 import { window } from 'vscode';
 const open = require('open');
@@ -27,4 +28,19 @@ export function openInBrowser(url: string) {
     window.showErrorMessage(`Couldn't open URL: ${url}`);
     console.error(error.stack);
   }
+}
+
+export async function downloadFile(url: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    https
+      .get(url, function (response) {
+        response.setEncoding('utf8');
+        response.on('data', (data) => {
+          resolve(data);
+        });
+      })
+      .on('error', (error) => {
+        reject(error);
+      });
+  });
 }

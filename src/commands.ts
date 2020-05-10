@@ -1,7 +1,12 @@
 import { commands } from 'vscode';
 import CircleCI from './models/circleci';
-import Build, { BuildCommit } from './models/build';
 import Pipeline from './models/pipeline';
+import Build, {
+  BuildCommit,
+  BuildWorkflow,
+  BuildArtifacts,
+  BuildArtifact,
+} from './models/build';
 
 export const registerCommands = (circleci: CircleCI) => {
   commands.registerCommand('circleci.refreshAll', () => {
@@ -31,4 +36,22 @@ export const registerCommands = (circleci: CircleCI) => {
   commands.registerCommand('circleci.copyCommitHash', (item: BuildCommit) => {
     item.copyCommitHash();
   });
+
+  commands.registerCommand('circleci.copyWorkflowId', (item: BuildWorkflow) => {
+    item.copyWorkflowId();
+  });
+
+  commands.registerCommand(
+    'circleci.buildFetchArtifacts',
+    (item: BuildArtifacts) => {
+      item.fetchArtifacts();
+    }
+  );
+
+  commands.registerCommand(
+    'circleci.downloadArtifact',
+    (item: BuildArtifact) => {
+      item.downloadArtifact();
+    }
+  );
 };

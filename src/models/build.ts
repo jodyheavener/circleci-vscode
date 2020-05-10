@@ -1,6 +1,13 @@
-import { TreeItem, TreeItemCollapsibleState, window, env } from 'vscode';
+import { TreeItem, TreeItemCollapsibleState, window, env, workspace, Uri } from 'vscode';
 import CircleCI from './circleci';
-import { humanize, getAsset, msToTime, openInBrowser } from '../lib/utils';
+import {
+  humanize,
+  getAsset,
+  msToTime,
+  openInBrowser,
+  pluralize,
+  downloadFile,
+} from '../lib/utils';
 import Pipeline from './pipeline';
 
 const lifecycleMapping = {
@@ -27,7 +34,7 @@ function statusIcon(data: BuildData): string {
   }
 
   return statusMapping[data.status];
-};
+}
 
 function isActiveState(state: BuildLifecycle): boolean {
   return [
@@ -42,6 +49,8 @@ export default class Build extends TreeItem {
   private _initialized = false;
   private _refreshing = false;
   private _disposed = false;
+  private _fetchingArtifacts = false;
+  private _artifactSets: ArtifactData[] = [];
 
   constructor(
     public data: BuildData,
@@ -156,8 +165,32 @@ export default class Build extends TreeItem {
     }
   }
 
+  async fetchArtifacts() {
+    console.log('Circle CI API call: getBuildArtifacts');
+
+    this._fetchingArtifacts = true;
+    this.circleci.refresh();
+
+    this._artifactSets = await this.circleci.client.getBuildArtifacts({
+      username: this.pipeline.gitData.username,
+      project: this.pipeline.gitData.repo,
+      build_num: this.data.build_num,
+    });
+
+    this.circleci.refresh();
+  }
+
   get children(): TreeItem[] {
-    let children: TreeItem[] = [new BuildCommit(this.data)];
+    let children: TreeItem[] = [];
+
+    const commitDetailGroups = this.data.all_commit_details;
+    if (commitDetailGroups.length > 0) {
+      if (commitDetailGroups.length > 1) {
+        children.push(new BuildCommitGroup(commitDetailGroups));
+      } else {
+        children.push(new BuildCommit(commitDetailGroups[0]));
+      }
+    }
 
     if (this.data.workflows) {
       children.push(new BuildWorkflow(this.data));
@@ -165,19 +198,55 @@ export default class Build extends TreeItem {
 
     children.push(new BuildTime(this.data));
 
+    if (this.data.has_artifacts) {
+      children.push(
+        new BuildArtifacts(
+          this.fetchArtifacts.bind(this),
+          this._fetchingArtifacts,
+          this._artifactSets
+        )
+      );
+    }
+
     return children;
+  }
+}
+
+export class BuildCommitGroup extends TreeItem {
+  readonly contextValue = 'circleciBuildCommitGroup';
+
+  constructor(readonly allCommitDetails: CommitDetails[]) {
+    super(
+      `${allCommitDetails.length} ${pluralize(
+        allCommitDetails.length,
+        'commit',
+        'commits'
+      )}`,
+      TreeItemCollapsibleState.Collapsed
+    );
+  }
+
+  iconPath = {
+    light: getAsset('icon-commit-light.svg'),
+    dark: getAsset('icon-commit-dark.svg'),
+  };
+
+  get children(): TreeItem[] {
+    return this.allCommitDetails.map(
+      (commitDetails) => new BuildCommit(commitDetails)
+    );
   }
 }
 
 export class BuildCommit extends TreeItem {
   readonly contextValue = 'circleciBuildCommit';
 
-  constructor(readonly data: BuildData) {
-    super(data.all_commit_details[0].subject, TreeItemCollapsibleState.None);
+  constructor(readonly commitDetails: CommitDetails) {
+    super(commitDetails.subject, TreeItemCollapsibleState.None);
   }
 
   get tooltip() {
-    return this.data.all_commit_details[0].commit;
+    return this.commitDetails.commit;
   }
 
   iconPath = {
@@ -186,7 +255,7 @@ export class BuildCommit extends TreeItem {
   };
 
   copyCommitHash() {
-    env.clipboard.writeText(this.data.all_commit_details[0].commit);
+    env.clipboard.writeText(this.commitDetails.commit);
     window.showInformationMessage('Commit hash copied to clipboard.');
   }
 }
@@ -202,6 +271,15 @@ export class BuildWorkflow extends TreeItem {
     light: getAsset('icon-workflow-light.svg'),
     dark: getAsset('icon-workflow-dark.svg'),
   };
+
+  get description() {
+    return this.data.workflows.workflow_id;
+  }
+
+  copyWorkflowId() {
+    env.clipboard.writeText(this.data.workflows.workflow_id);
+    window.showInformationMessage('Workflow ID copied to clipboard.');
+  }
 }
 
 export class BuildTime extends TreeItem {
@@ -222,8 +300,98 @@ export class BuildTime extends TreeItem {
     }
   }
 
+  get tooltip() {
+    if (!isActiveState(this.data.lifecycle)) {
+      return this.data.stop_time;
+    } else {
+      return 'Still runnning...';
+    }
+  }
+
   iconPath = {
     light: getAsset('icon-time-light.svg'),
     dark: getAsset('icon-time-dark.svg'),
   };
+}
+
+export class BuildArtifacts extends TreeItem {
+  readonly contextValue = 'circleciBuildfetchArtifacts';
+
+  constructor(
+    readonly buildFetchArtifacts: Function,
+    readonly loading: boolean,
+    readonly artifactSets: ArtifactData[]
+  ) {
+    super(
+      artifactSets.length
+        ? `${artifactSets.length} ${pluralize(
+            artifactSets.length,
+            'artifact',
+            'artifacts'
+          )}`
+        : loading
+        ? 'Fetching artifacts...'
+        : 'Look up artifacts',
+      artifactSets.length
+        ? TreeItemCollapsibleState.Expanded
+        : TreeItemCollapsibleState.None
+    );
+
+    if (loading || !artifactSets?.length) {
+      this.command = {
+        command: 'circleci.buildFetchArtifacts',
+        title: 'Fetch artifacts',
+        arguments: [this],
+      };
+    }
+  }
+
+  iconPath = {
+    light: getAsset('icon-box-light.svg'),
+    dark: getAsset('icon-box-dark.svg'),
+  };
+
+  fetchArtifacts() {
+    this.buildFetchArtifacts();
+  }
+
+  get children(): TreeItem[] {
+    return this.artifactSets.map(
+      (artifactSet) => new BuildArtifact(artifactSet)
+    );
+  }
+}
+
+export class BuildArtifact extends TreeItem {
+  readonly contextValue = 'circleciBuildfetchArtifact';
+  private _downloadedData?: string;
+
+  constructor(readonly artifactSet: ArtifactData) {
+    super(artifactSet.pretty_path, TreeItemCollapsibleState.None);
+
+    this.command = {
+      command: 'circleci.downloadArtifact',
+      title: 'Download artifact',
+      arguments: [this],
+    };
+  }
+
+  async downloadArtifact() {
+    if (!this._downloadedData) {
+      try {
+        this._downloadedData = await downloadFile(this.artifactSet.url);
+      } catch (error) {
+        window.showErrorMessage(
+          `Could not download artifact: ${this.artifactSet.url}`
+        );
+      }
+    }
+
+    let output = `Artifact: ${this.artifactSet.pretty_path}\r\r`;
+    output += this._downloadedData;
+
+    const uri = Uri.parse(`circleci:${encodeURIComponent(output)}`);
+    const doc = await workspace.openTextDocument(uri);
+    await window.showTextDocument(doc, { preview: false });
+  }
 }
