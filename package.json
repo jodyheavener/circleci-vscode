@@ -1,0 +1,176 @@
+{
+  "name": "circleci-vscode",
+  "description": "CircleCI for VS Code",
+  "version": "0.1.0",
+  "license": "MIT",
+  "publisher": "jodyh",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jodyheavener/circleci-vscode.git"
+  },
+  "main": "./out/extension.js",
+  "engines": {
+    "vscode": "^1.44.0"
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "lint": "tslint -p ./",
+    "watch": "tsc -w -p ./"
+  },
+  "dependencies": {
+    "circleci": "^0.3.3",
+    "git-branch": "^2.0.1",
+    "git-repo-name": "^1.0.1",
+    "git-username": "^1.0.0",
+    "open": "^7.0.3"
+  },
+  "devDependencies": {
+    "@types/git-branch": "^2.0.1",
+    "@types/git-repo-name": "^1.0.0",
+    "@types/git-username": "^1.0.0",
+    "@types/node": "^13.13.5",
+    "@types/vscode": "^1.44.0",
+    "tslint": "^6.1.2",
+    "typescript": "^3.8.3"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:circleciPipeline",
+    "workspaceContains:circle.yaml",
+    "workspaceContains:circle.yml",
+    "workspaceContains:.circleci/config.yaml",
+    "workspaceContains:.circleci/config.yml"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "circleciContainer",
+          "title": "CircleCI",
+          "icon": "assets/icon-logo.svg"
+        }
+      ]
+    },
+    "views": {
+      "circleciContainer": [
+        {
+          "id": "circleciPipeline",
+          "name": "Pipelines"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "circleci.refreshAll",
+          "when": "view == circleciPipeline",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "when": "viewItem == circleciPipeline || viewItem == circleciBuild",
+          "command": "circleci.refresh",
+          "group": "circleci"
+        },
+        {
+          "when": "viewItem == circleciPipeline || viewItem == circleciBuild",
+          "command": "circleci.openPage",
+          "group": "circleci"
+        },
+        {
+          "when": "viewItem == circleciBuild",
+          "command": "circleci.retryBuild",
+          "group": "circleci"
+        },
+        {
+          "when": "viewItem == circleciBuild",
+          "command": "circleci.cancelBuild",
+          "group": "circleci"
+        },
+        {
+          "when": "viewItem == circleciBuild",
+          "command": "circleci.copyBuildNumber",
+          "group": "circleci"
+        },
+        {
+          "when": "viewItem == circleciBuildCommit",
+          "command": "circleci.copyCommitHash",
+          "group": "circleci"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "circleci.refreshAll",
+        "title": "Refresh Pipelines",
+        "icon": {
+          "light": "assets/icon-refresh-light.svg",
+          "dark": "assets/icon-refresh-dark.svg"
+        }
+      },
+      {
+        "command": "circleci.refresh",
+        "title": "Refresh",
+        "category": "circleci"
+      },
+      {
+        "command": "circleci.openPage",
+        "title": "Open in browser",
+        "category": "circleci"
+      },
+      {
+        "command": "circleci.cancelBuild",
+        "title": "Cancel build",
+        "category": "circleci"
+      },
+      {
+        "command": "circleci.retryBuild",
+        "title": "Retry build",
+        "category": "circleci"
+      },
+      {
+        "command": "circleci.copyBuildNumber",
+        "title": "Copy build number",
+        "category": "circleci"
+      },
+      {
+        "command": "circleci.copyCommitHash",
+        "title": "Copy commit hash",
+        "category": "circleci"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "CircleCI",
+      "properties": {
+        "circleci.apiToken": {
+          "type": "string",
+          "default": null,
+          "markdownDescription": "A CircleCI API Token. This can be generated on your [Personal API Tokens page](https://app.circleci.com/settings/user/tokens)."
+        },
+        "circleci.showMaster": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show 'master' pipeline along with current branch"
+        },
+        "circleci.buildCount": {
+          "type": "number",
+          "default": 10,
+          "minimum": 0,
+          "maximum": 30,
+          "description": "The number of builds to retrieve in a pipeline."
+        },
+        "circleci.buildRefreshInterval": {
+          "type": "number",
+          "default": 10,
+          "minimum": 0,
+          "description": "The number of seconds in between each polling request to check on a build."
+        }
+      }
+    }
+  }
+}
