@@ -1,6 +1,5 @@
 tslint.json
 tsconfig.json
-README.md
 package-lock.json
 .prettierrc
 .gitignore
@@ -8,3 +7,5 @@ package-lock.json
 types/
 src/
 .vscode/
+node_modules/
+webpack.config.js

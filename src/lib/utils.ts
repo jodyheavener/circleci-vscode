@@ -1,5 +1,5 @@
 import { https } from 'follow-redirects';
-import { join } from 'path';
+import { resolve } from 'path';
 import { window } from 'vscode';
 const open = require('open');
 
@@ -18,7 +18,7 @@ export function msToTime(milliseconds: number) {
 }
 
 export function getAsset(filename: string): string {
-  return join(__filename, '..', '..', '..', 'assets', filename);
+  return resolve(__dirname, '..', 'assets', filename);
 }
 
 export function openInBrowser(url: string) {

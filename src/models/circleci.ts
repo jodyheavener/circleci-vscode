@@ -12,21 +12,7 @@ import {
 import CircleCiApi from 'circleci';
 import Pipeline from './pipeline';
 import { getRepoName, getBranchName, getUserName } from '../lib/git';
-
-function createGitGroups(branches: string[] = []): GitData[] {
-  try {
-    const [username, repo] = [getUserName(), getRepoName()];
-
-    // Set to remove duplicates
-    return [...new Set(branches)].map((branch) => ({
-      repo,
-      username,
-      branch,
-    }));
-  } catch (error) {
-    return [];
-  }
-}
+import { openInBrowser } from '../lib/utils';
 
 export default class CircleCI
   implements TreeDataProvider<TreeItem>, Disposable {
@@ -38,7 +24,8 @@ export default class CircleCI
     ._onDidChangeTreeData.event;
   config?: {
     apiToken: string;
-    showMaster: boolean;
+    customBranches: string[];
+    pipelineRefreshInterval: number;
     buildCount: number;
     buildRefreshInterval: number;
   };
@@ -48,9 +35,14 @@ export default class CircleCI
   private _hardRefresh = true;
   private _pipelineSets: GitData[];
   private _pipelineInstances: Pipeline[] = [];
+  private _baseGitData?: {
+    username: string;
+    repo: string;
+  };
 
   constructor(private readonly context: ExtensionContext) {
     this.getConfigs();
+    this.getBaseGitData();
     this._pipelineSets = this.getPipelines();
 
     // TODO: replace this with a better way to observe for Git branch change
@@ -70,7 +62,9 @@ export default class CircleCI
     }
 
     if (!this.config!.apiToken) {
-      return window.showErrorMessage('A CircleCI API token (`circleci.apiToken`) must be set.');
+      return window.showErrorMessage(
+        'A CircleCI API token (`circleci.apiToken`) must be set.'
+      );
     }
 
     return new CircleCiApi({
@@ -83,27 +77,50 @@ export default class CircleCI
   private getConfigs() {
     const {
       apiToken,
-      showMaster,
+      customBranches,
+      pipelineRefreshInterval,
       buildCount,
       buildRefreshInterval,
     } = workspace.getConfiguration('circleci');
 
     this.config = {
       apiToken,
-      showMaster,
+      customBranches,
+      pipelineRefreshInterval,
       buildCount,
       buildRefreshInterval,
     };
   }
 
-  private getPipelines(): GitData[] {
-    const branches = [this._currentBranch];
-
-    if (this.config!.showMaster) {
-      branches.push('master');
+  private getBaseGitData() {
+    try {
+      this._baseGitData = {
+        username: getUserName(),
+        repo: getRepoName(),
+      };
+    } catch (error) {
+      window.showErrorMessage(
+        'There was an issue retrieving your Git information.'
+      );
     }
+  }
 
-    return createGitGroups(branches);
+  private getPipelines(): GitData[] {
+    try {
+      const { username, repo } = this._baseGitData!;
+
+      return [
+        ...new Set([this._currentBranch, ...this.config!.customBranches]),
+      ].map((branch) => ({
+        repo,
+        username,
+        branch,
+        current: branch === this._currentBranch,
+      }));
+    } catch (error) {
+      console.error(error.stack);
+      return [];
+    }
   }
 
   // Lifecycle
@@ -133,10 +150,25 @@ export default class CircleCI
     this._onDidChangeTreeData.fire();
   }
 
+  openPage() {
+    openInBrowser(
+      `https://app.circleci.com/pipelines/github/${encodeURIComponent(
+        this._baseGitData!.username
+      )}/${encodeURIComponent(this._baseGitData!.repo)}`
+    );
+  }
+
   hardRefresh() {
     this._pipelineSets = this.getPipelines();
     this._hardRefresh = true;
     this._onDidChangeTreeData.fire();
+  }
+
+  removePipeline(branchName: string) {
+    workspace.getConfiguration('circleci').update(
+      'customBranches',
+      this.config!.customBranches.filter((value) => value != branchName)
+    );
   }
 
   // Data retrieval
@@ -145,9 +177,7 @@ export default class CircleCI
     return element;
   }
 
-  getChildren(
-    element?: Pipeline | undefined
-  ): ProviderResult<TreeItem[]> {
+  getChildren(element?: Pipeline | undefined): ProviderResult<TreeItem[]> {
     if (!element) {
       if (this._hardRefresh && !this._disposed) {
         this._pipelineInstances = this._pipelineSets.map(

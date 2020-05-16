@@ -9,8 +9,16 @@ import Build, {
 } from './models/build';
 
 export const registerCommands = (circleci: CircleCI) => {
+  commands.registerCommand('circleci.openPipelinesPage', () => {
+    circleci.openPage();
+  });
+
   commands.registerCommand('circleci.refreshAll', () => {
     circleci.hardRefresh();
+  });
+
+  commands.registerCommand('circleci.remove', (item: Pipeline) => {
+    item.remove();
   });
 
   commands.registerCommand('circleci.refresh', (item: Pipeline | Build) => {

@@ -1,8 +1,4 @@
-import {
-  window,
-  workspace,
-  ExtensionContext,
-} from 'vscode';
+import { window, workspace, ExtensionContext } from 'vscode';
 import CircleCI from './models/circleci';
 import { registerCommands } from './commands';
 import { CircleCIContentProvider } from './providers';

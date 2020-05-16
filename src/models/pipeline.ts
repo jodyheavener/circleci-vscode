@@ -1,8 +1,8 @@
-import { TreeItem, TreeItemCollapsibleState } from 'vscode';
-import { join } from 'path';
-import { pluralize, getAsset, openInBrowser } from '../lib/utils';
+import { TreeItem, TreeItemCollapsibleState, window } from 'vscode';
 import CircleCI from './circleci';
 import Build from './build';
+import { getBranchName } from '../lib/git';
+import { pluralize, getAsset, openInBrowser } from '../lib/utils';
 
 export default class Pipeline extends TreeItem {
   readonly contextValue = 'circleciPipeline';
@@ -17,7 +17,7 @@ export default class Pipeline extends TreeItem {
     private readonly circleci: CircleCI
   ) {
     super(
-      `${gitData.repo}/${gitData.branch}`,
+      `${gitData.current ? '★ ' : ''}${gitData.repo}/${gitData.branch}`,
       TreeItemCollapsibleState.Expanded
     );
 
@@ -45,7 +45,14 @@ export default class Pipeline extends TreeItem {
     )}`;
   }
 
+  get tooltip() {
+    return this.gitData.current
+      ? `Current branch: ${this.gitData.repo}/${this.gitData.branch}`
+      : `${this.gitData.repo}/${this.gitData.branch}`;
+  }
+
   get iconPath() {
+    console.log(getAsset('icon-pipeline-light.svg'));
     return {
       light: getAsset('icon-pipeline-light.svg'),
       dark: getAsset('icon-pipeline-dark.svg'),
@@ -63,7 +70,7 @@ export default class Pipeline extends TreeItem {
     this._buildDatas = [];
     this._buildInstances = [];
     this.circleci.refresh();
-    this.getBuilds();
+    this.fetchBuilds();
   }
 
   dispose() {
@@ -80,10 +87,28 @@ export default class Pipeline extends TreeItem {
     );
   }
 
+  remove() {
+    const branch = this.gitData.branch;
+
+    if (branch === getBranchName()) {
+      return window.showErrorMessage(
+        `Sorry, you can't remove your current Git branch.`
+      );
+    }
+
+    this.circleci.removePipeline(this.gitData.branch);
+  }
+
+  hasActiveBuilds() {
+    return this._buildInstances.some((build) => build.active);
+  }
+
   // Data retrieval
 
-  async getBuilds(offset: number = 0) {
-    console.log('Circle CI API call: getBranchBuilds');
+  async fetchBuilds(offset: number = 0) {
+    console.log(
+      `CircleCI API call: getBranchBuilds for branch ${this.gitData.branch}`
+    );
 
     this._buildDatas = await this.circleci.client.getBranchBuilds({
       username: this.gitData.username,
@@ -95,6 +120,12 @@ export default class Pipeline extends TreeItem {
 
     this._refreshing = false;
     this.circleci.refresh();
+
+    const refreshInterval: number = this.circleci.config!
+      .pipelineRefreshInterval;
+    if (!this.hasActiveBuilds() && refreshInterval > 0) {
+      setTimeout(this.refresh.bind(this), refreshInterval * 1000);
+    }
   }
 
   get children(): TreeItem[] {

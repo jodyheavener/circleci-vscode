@@ -1,22 +1,35 @@
 {
   "name": "circleci-vscode",
-  "description": "CircleCI for VS Code",
-  "version": "0.1.1",
+  "displayName": "CircleCI",
+  "description": "Monitor, inspect, run, and cancel Pipeline Builds on CircleCI",
+  "version": "0.1.5",
   "license": "MIT",
   "publisher": "jodyh",
+  "keywords": [
+    "continuous integration",
+    "circle ci",
+    "CI/CD"
+  ],
+  "galleryBanner": {
+    "color": "#161616",
+    "theme": "dark"
+  },
+  "preview": true,
+  "icon": "out/assets/logo.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/jodyheavener/circleci-vscode.git"
   },
+  "homepage": "https://github.com/jodyheavener/circleci-vscode",
   "main": "./out/extension.js",
   "engines": {
     "vscode": "^1.44.0"
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
+    "vscode:prepublish": "webpack --mode production",
+    "compile": "webpack --mode development",
     "lint": "tslint -p ./",
-    "watch": "tsc -w -p ./"
+    "watch": "webpack --mode development --watch"
   },
   "dependencies": {
     "circleci": "^0.3.3",
@@ -33,8 +46,14 @@
     "@types/git-username": "^1.0.0",
     "@types/node": "^13.13.5",
     "@types/vscode": "^1.44.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^6.0.1",
+    "file-loader": "^6.0.0",
+    "ts-loader": "^7.0.4",
     "tslint": "^6.1.2",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   },
   "categories": [
     "Other"
@@ -61,7 +80,7 @@
         {
           "id": "circleciContainer",
           "title": "CircleCI",
-          "icon": "assets/icon-logo.svg"
+          "icon": "./out/assets/icon-logo.svg"
         }
       ]
     },
@@ -77,11 +96,19 @@
       "view/title": [
         {
           "command": "circleci.refreshAll",
-          "when": "view == circleciPipeline",
-          "group": "navigation"
+          "when": "view == circleciPipeline"
+        },
+        {
+          "command": "circleci.openPipelinesPage",
+          "when": "view == circleciPipeline"
         }
       ],
       "view/item/context": [
+        {
+          "when": "viewItem == circleciPipeline",
+          "command": "circleci.remove",
+          "group": "circleci"
+        },
         {
           "when": "viewItem == circleciPipeline || viewItem == circleciBuild",
           "command": "circleci.refresh",
@@ -122,11 +149,16 @@
     "commands": [
       {
         "command": "circleci.refreshAll",
-        "title": "Refresh Pipelines",
-        "icon": {
-          "light": "assets/icon-refresh-light.svg",
-          "dark": "assets/icon-refresh-dark.svg"
-        }
+        "title": "Refresh Pipelines"
+      },
+      {
+        "command": "circleci.openPipelinesPage",
+        "title": "Open Pipelines in browser"
+      },
+      {
+        "command": "circleci.remove",
+        "title": "Remove",
+        "category": "circleci"
       },
       {
         "command": "circleci.refresh",
@@ -183,10 +215,21 @@
           "default": null,
           "markdownDescription": "A CircleCI API Token. This can be generated on your [Personal API Tokens page](https://app.circleci.com/settings/user/tokens)."
         },
-        "circleci.showMaster": {
-          "type": "boolean",
-          "default": false,
-          "description": "Show 'master' pipeline along with current branch"
+        "circleci.customBranches": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "master"
+          ],
+          "description": "Add any custom branches you'd like to list builds for."
+        },
+        "circleci.pipelineRefreshInterval": {
+          "type": "number",
+          "default": 300,
+          "minimum": 0,
+          "markdownDescription": "The number of seconds to wait before refreshing all **inactive** pipelines. Set to `0` to disable."
         },
         "circleci.buildCount": {
           "type": "number",
@@ -199,7 +242,7 @@
           "type": "number",
           "default": 10,
           "minimum": 0,
-          "description": "The number of seconds in between each polling request to check on a build."
+          "markdownDescription": "The number of seconds to wait before refreshing an active build's status. Set to `0` to disable."
         }
       }
     }

@@ -1,21 +1,18 @@
-// I'd like to start using this to compile the plugin and mean it leaner,
-// but there's a weird compilation issue in the CircleCI dependency that
-// I haven't been able to sort out just yet.
+const { resolve } = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
-const path = require('path');
-
-/**@type {import('webpack').Configuration}*/
 const config = {
   target: 'node',
 
   entry: './src/extension.ts',
   output: {
-    path: path.resolve(__dirname, 'out'),
+    path: resolve(__dirname, 'out'),
     filename: 'extension.js',
     libraryTarget: 'commonjs2',
     devtoolModuleFilenameTemplate: '../[resource-path]',
   },
-  devtool: 'source-map',
+  devtool: false,
   externals: {
     vscode: 'commonjs vscode',
   },
@@ -35,6 +32,12 @@ const config = {
       },
     ],
   },
+  plugins: [
+    new CleanWebpackPlugin(),
+    new CopyPlugin({
+      patterns: [{ from: 'src/assets', to: 'assets' }],
+    }),
+  ],
 };
 
 module.exports = config;

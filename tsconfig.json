@@ -6,7 +6,7 @@
       "ES2019"
     ],
     "outDir": "out",
-    "sourceMap": true,
+    "sourceMap": false,
     "strict": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,

@@ -1,4 +1,4 @@
-import { TextDocumentContentProvider, Uri } from "vscode";
+import { TextDocumentContentProvider, Uri } from 'vscode';
 
 export class CircleCIContentProvider implements TextDocumentContentProvider {
   provideTextDocumentContent(uri: Uri) {

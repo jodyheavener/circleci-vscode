@@ -1,4 +1,11 @@
-import { TreeItem, TreeItemCollapsibleState, window, env, workspace, Uri } from 'vscode';
+import {
+  TreeItem,
+  TreeItemCollapsibleState,
+  window,
+  env,
+  workspace,
+  Uri,
+} from 'vscode';
 import CircleCI from './circleci';
 import {
   humanize,
@@ -45,10 +52,12 @@ function isActiveState(state: BuildLifecycle): boolean {
 }
 
 export default class Build extends TreeItem {
+  public active = false;
   readonly contextValue = 'circleciBuild';
   private _initialized = false;
   private _refreshing = false;
   private _disposed = false;
+  private _fetchedArtifacts = false;
   private _fetchingArtifacts = false;
   private _artifactSets: ArtifactData[] = [];
 
@@ -101,7 +110,7 @@ export default class Build extends TreeItem {
 
     this._refreshing = true;
     this.circleci.refresh();
-    this.fetch();
+    this.fetchBuild();
   }
 
   dispose() {
@@ -113,7 +122,9 @@ export default class Build extends TreeItem {
   }
 
   async retry() {
-    console.log('Circle CI API call: retryBuild');
+    console.log(
+      `CircleCI API call: retryBuild for branch ${this.pipeline.gitData.branch}`
+    );
 
     const response = await this.circleci.client.retryBuild({
       username: this.pipeline.gitData.username,
@@ -127,7 +138,9 @@ export default class Build extends TreeItem {
   }
 
   async cancel() {
-    console.log('Circle CI API call: cancelBuild');
+    console.log(
+      `CircleCI API call: cancelBuild for branch ${this.pipeline.gitData.branch}`
+    );
 
     await this.circleci.client.cancelBuild({
       username: this.pipeline.gitData.username,
@@ -145,8 +158,10 @@ export default class Build extends TreeItem {
 
   // Data retrieval
 
-  async fetch() {
-    console.log('Circle CI API call: getBuild');
+  async fetchBuild() {
+    console.log(
+      `CircleCI API call: getBuild for branch ${this.pipeline.gitData.branch}`
+    );
 
     this.data = await this.circleci.client.getBuild({
       username: this.pipeline.gitData.username,
@@ -155,29 +170,37 @@ export default class Build extends TreeItem {
     });
 
     this._refreshing = false;
+    this.active = isActiveState(this.data.lifecycle);
     this.circleci.refresh();
 
-    if (isActiveState(this.data.lifecycle)) {
-      setTimeout(
-        this.refresh.bind(this),
-        this.circleci.config!.buildRefreshInterval * 1000
-      );
+    const refreshInterval: number = this.circleci.config!.buildRefreshInterval;
+    if (this.active && refreshInterval > 0) {
+      setTimeout(this.refresh.bind(this), refreshInterval * 1000);
     }
   }
 
   async fetchArtifacts() {
-    console.log('Circle CI API call: getBuildArtifacts');
+    console.log(
+      `CircleCI API call: getBuildArtifacts for branch ${this.pipeline.gitData.branch}`
+    );
 
     this._fetchingArtifacts = true;
     this.circleci.refresh();
 
-    this._artifactSets = await this.circleci.client.getBuildArtifacts({
-      username: this.pipeline.gitData.username,
-      project: this.pipeline.gitData.repo,
-      build_num: this.data.build_num,
-    });
+    try {
+      this._artifactSets = await this.circleci.client.getBuildArtifacts({
+        username: this.pipeline.gitData.username,
+        project: this.pipeline.gitData.repo,
+        build_num: this.data.build_num,
+      });
 
-    this.circleci.refresh();
+      this._fetchingArtifacts = false;
+      this._fetchedArtifacts = true;
+      this.circleci.refresh();
+    } catch (error) {
+      console.error(error.stack);
+      window.showErrorMessage(`Could not fetch artifacts`);
+    }
   }
 
   get children(): TreeItem[] {
@@ -203,6 +226,7 @@ export default class Build extends TreeItem {
         new BuildArtifacts(
           this.fetchArtifacts.bind(this),
           this._fetchingArtifacts,
+          this._fetchedArtifacts,
           this._artifactSets
         )
       );
@@ -226,10 +250,20 @@ export class BuildCommitGroup extends TreeItem {
     );
   }
 
-  iconPath = {
-    light: getAsset('icon-commit-light.svg'),
-    dark: getAsset('icon-commit-dark.svg'),
-  };
+  get tooltip() {
+    return `${this.allCommitDetails.length} ${pluralize(
+      this.allCommitDetails.length,
+      'commit',
+      'commits'
+    )}`;
+  }
+
+  get iconPath() {
+    return {
+      light: getAsset('icon-commit-light.svg'),
+      dark: getAsset('icon-commit-dark.svg'),
+    };
+  }
 
   get children(): TreeItem[] {
     return this.allCommitDetails.map(
@@ -246,13 +280,15 @@ export class BuildCommit extends TreeItem {
   }
 
   get tooltip() {
-    return this.commitDetails.commit;
+    return this.commitDetails.subject;
   }
 
-  iconPath = {
-    light: getAsset('icon-commit-light.svg'),
-    dark: getAsset('icon-commit-dark.svg'),
-  };
+  get iconPath() {
+    return {
+      light: getAsset('icon-commit-light.svg'),
+      dark: getAsset('icon-commit-dark.svg'),
+    };
+  }
 
   copyCommitHash() {
     env.clipboard.writeText(this.commitDetails.commit);
@@ -267,10 +303,16 @@ export class BuildWorkflow extends TreeItem {
     super(data.workflows.workflow_name, TreeItemCollapsibleState.None);
   }
 
-  iconPath = {
-    light: getAsset('icon-workflow-light.svg'),
-    dark: getAsset('icon-workflow-dark.svg'),
-  };
+  get tooltip() {
+    return this.data.workflows.workflow_name;
+  }
+
+  get iconPath() {
+    return {
+      light: getAsset('icon-workflow-light.svg'),
+      dark: getAsset('icon-workflow-dark.svg'),
+    };
+  }
 
   get description() {
     return this.data.workflows.workflow_id;
@@ -308,10 +350,12 @@ export class BuildTime extends TreeItem {
     }
   }
 
-  iconPath = {
-    light: getAsset('icon-time-light.svg'),
-    dark: getAsset('icon-time-dark.svg'),
-  };
+  get iconPath() {
+    return {
+      light: getAsset('icon-time-light.svg'),
+      dark: getAsset('icon-time-dark.svg'),
+    };
+  }
 }
 
 export class BuildArtifacts extends TreeItem {
@@ -319,25 +363,28 @@ export class BuildArtifacts extends TreeItem {
 
   constructor(
     readonly buildFetchArtifacts: Function,
-    readonly loading: boolean,
+    readonly fetching: boolean,
+    readonly fetched: boolean,
     readonly artifactSets: ArtifactData[]
   ) {
     super(
-      artifactSets.length
-        ? `${artifactSets.length} ${pluralize(
-            artifactSets.length,
-            'artifact',
-            'artifacts'
-          )}`
-        : loading
-        ? 'Fetching artifacts...'
-        : 'Look up artifacts',
+      fetched
+        ? fetching
+          ? 'Fetching artifacts...'
+          : artifactSets.length
+          ? `${artifactSets.length} ${pluralize(
+              artifactSets.length,
+              'artifact',
+              'artifacts'
+            )}`
+          : 'No artifacts'
+        : 'Look up artifacts →',
       artifactSets.length
         ? TreeItemCollapsibleState.Expanded
         : TreeItemCollapsibleState.None
     );
 
-    if (loading || !artifactSets?.length) {
+    if (!fetched && !fetching && !artifactSets?.length) {
       this.command = {
         command: 'circleci.buildFetchArtifacts',
         title: 'Fetch artifacts',
@@ -346,10 +393,26 @@ export class BuildArtifacts extends TreeItem {
     }
   }
 
-  iconPath = {
-    light: getAsset('icon-box-light.svg'),
-    dark: getAsset('icon-box-dark.svg'),
-  };
+  get tooltip() {
+    return this.fetched
+      ? this.fetching
+        ? 'Fetching artifacts...'
+        : this.artifactSets.length
+        ? `${this.artifactSets.length} ${pluralize(
+            this.artifactSets.length,
+            'artifact',
+            'artifacts'
+          )}`
+        : 'This build has no artifacts'
+      : 'Click to look up artifacts for this build';
+  }
+
+  get iconPath() {
+    return {
+      light: getAsset('icon-box-light.svg'),
+      dark: getAsset('icon-box-dark.svg'),
+    };
+  }
 
   fetchArtifacts() {
     this.buildFetchArtifacts();
@@ -381,6 +444,7 @@ export class BuildArtifact extends TreeItem {
       try {
         this._downloadedData = await downloadFile(this.artifactSet.url);
       } catch (error) {
+        console.error(error.stack);
         window.showErrorMessage(
           `Could not download artifact: ${this.artifactSet.url}`
         );

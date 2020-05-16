@@ -1,12 +1,17 @@
 # CircleCI for VS Code
 
-**v0.1.1** - A simple extension for VS Code to allow you to monitor, inspect, run, and cancel Pipeline Builds on [CircleCI](https://circleci.com).
+A simple extension for VS Code to allow you to monitor, inspect, run, and cancel Pipeline Builds on [CircleCI](https://circleci.com).
 
-_This extension is not built or endorsed by CircleCI._
+This project is still in beta. You can [report issues here](https://github.com/jodyheavener/circleci-vscode/issues).
+
+_This extension is not built or endorsed by CircleCI. The "C" logo is a trademark of Circle Internet Services, Inc._
 
 ## How to Use
 
-💻 This extension is not published on the Visual Studio Marketplace yet. To install, head to the [Releases](https://github.com/jodyheavener/circleci-vscode/releases) page and download the latest release of the `.vsix` file. In VS Code you can open the command palette, type "vsix", choose "Extensions: Install from VSIX...", and select the downloaded file.
+💻 You have two options for installation:
+
+- From the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=jodyh.circleci-vscode). Just search for "CircleCI" from the Marketplace extension.
+- Manually from the [Releases](https://github.com/jodyheavener/circleci-vscode/releases) page. Download the latest release of the `.vsix` file. In VS Code you can open the command palette, type "vsix", choose "Extensions: Install from VSIX...", and select the downloaded file.
 
 📝 Either `./circle.yaml` _or_ `.circleci/config.yaml` must exist in your workspace.
 
@@ -21,12 +26,16 @@ _This extension is not built or endorsed by CircleCI._
 ⚙️ Beyond the API Token you can also configure:
 
 - "Build Count" (`circleci.buildCount`) determines how many Builds to retrieve in a given Pipeline, to a maximum of 30.
-- "Build Refresh Interval" (`circleci.buildRefreshInterval`) determines how frequently, in seconds, we should poll CircleCI for an update to an active Build (running, scheduled, queued).
-- "Show Master" (`circleci.showMaster`) will, when enabled, always show the `master` branch Pipeline in addition to the Pipeline of the branch you're currently on.
+- "Build Refresh Interval" (`circleci.buildRefreshInterval`) determines how frequently, in seconds, we should poll CircleCI for an update to an active Build (running, scheduled, queued). Set to `0` to disable.
+- "Custom Branches" (`circleci.customBranches`) will, for each line item, attempt to load that branch's Pipeline, in addition to the Pipeline of the branch you're currently on. For example, `master`.
+- "Pipeline Refresh Interval" (`circleci.pipelineRefreshInterval`) determines how frequently, in seconds, we should poll CircleCI for updates to a Pipeline. Does not fire on active branches. Set to `0` to disable.
 
 🛠 Various context menu commands can be performed in the extension view:
 
-- "Open in browser" on a Pipeline or Build row will open the selected item in your default browser.
+- "Open Pipelines in browser" from the CircleCI view title will open your current repository on CircleCi in your default browser.
+- "Refresh Pipelines" from the CircleCI view title will refresh all the current Pipelines.
+- "Open in browser" on a Pipeline or Build row will open the selected item on CircleCi in your default browser.
+- "Remove" on a Pipeline row will remove that saved Pipeline from the "Custom Branches" config option. You cannot remove the active Git branch.
 - "Refresh" on a Pipeline or Build row will query the API for the latest data on that item.
 - "Cancel build" on a Build row will cancel the selected Build if it is running.
 - "Retry build" on a Build row will create a new Build as a retry of the selected Build.
@@ -36,8 +45,9 @@ _This extension is not built or endorsed by CircleCI._
 
 ## Development
 
-This project is built with Node, TypeScript, [vsce](https://github.com/microsoft/vscode-vsce), the VS Code API, and the CircleCI API. Development is pretty straightforward:
+This project is built with Node, TypeScript, [vsce](https://github.com/microsoft/vscode-vsce), the [VS Code Extension API](https://code.visualstudio.com/api), and the [CircleCI API](https://www.npmjs.com/package/circleci). Development is pretty straightforward:
 
+- Clone the [project](https://github.com/jodyheavener/circleci-vscode)
 - Install dependencies: `npm install`
 - Build and watch for changes: `npm run watch`
 - Run the extension locally by pressing F5 or click `Run > Start Debugging`.
