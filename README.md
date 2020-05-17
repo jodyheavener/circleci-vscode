@@ -2,6 +2,8 @@
 
 A simple extension for VS Code to allow you to monitor, inspect, run, and cancel Pipeline Builds on [CircleCI](https://circleci.com).
 
+![Preview image](./preview.png)
+
 This project is still in beta. You can [report issues here](https://github.com/jodyheavener/circleci-vscode/issues).
 
 _This extension is not built or endorsed by CircleCI. The "C" logo is a trademark of Circle Internet Services, Inc._
