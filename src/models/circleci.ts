@@ -40,7 +40,7 @@ export default class CircleCI
     repo: string;
   };
 
-  constructor(private readonly context: ExtensionContext) {
+  constructor(public readonly context: ExtensionContext) {
     this.getConfigs();
     this.getBaseGitData();
     this._pipelineSets = this.getPipelines();

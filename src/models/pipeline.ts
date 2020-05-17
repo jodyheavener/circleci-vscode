@@ -4,6 +4,8 @@ import Build from './build';
 import { getBranchName } from '../lib/git';
 import { pluralize, getAsset, openInBrowser } from '../lib/utils';
 
+let _getAsset: Function;
+
 export default class Pipeline extends TreeItem {
   readonly contextValue = 'circleciPipeline';
   private _initialized = false;
@@ -20,6 +22,8 @@ export default class Pipeline extends TreeItem {
       `${gitData.current ? '★ ' : ''}${gitData.repo}/${gitData.branch}`,
       TreeItemCollapsibleState.Expanded
     );
+
+    _getAsset = getAsset.bind(this.circleci);
 
     if (!this._initialized) {
       this.refresh();
@@ -52,10 +56,9 @@ export default class Pipeline extends TreeItem {
   }
 
   get iconPath() {
-    console.log(getAsset('icon-pipeline-light.svg'));
     return {
-      light: getAsset('icon-pipeline-light.svg'),
-      dark: getAsset('icon-pipeline-dark.svg'),
+      light: _getAsset('icon-pipeline-light.svg'),
+      dark: _getAsset('icon-pipeline-dark.svg'),
     };
   }
 

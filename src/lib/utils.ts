@@ -1,6 +1,7 @@
 import { https } from 'follow-redirects';
 import { resolve } from 'path';
 import { window } from 'vscode';
+import CircleCI from '../models/circleci';
 const open = require('open');
 
 export function pluralize(count: number, singular: string, plural: string) {
@@ -17,8 +18,8 @@ export function msToTime(milliseconds: number) {
   return `${minutes}m ${(seconds < 10 ? '0' : '') + seconds}s`;
 }
 
-export function getAsset(filename: string): string {
-  return resolve(__dirname, '..', 'assets', filename);
+export function getAsset(this: CircleCI, filename: string): string {
+  return resolve(this.context.extensionPath, 'out', 'assets', filename);
 }
 
 export function openInBrowser(url: string) {

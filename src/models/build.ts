@@ -17,6 +17,8 @@ import {
 } from '../lib/utils';
 import Pipeline from './pipeline';
 
+let _getAsset: Function;
+
 const lifecycleMapping = {
   [BuildLifecycle.Finished]: 'dots',
   [BuildLifecycle.NotRun]: 'line',
@@ -71,6 +73,8 @@ export default class Build extends TreeItem {
       TreeItemCollapsibleState.Collapsed
     );
 
+    _getAsset = getAsset.bind(this.circleci);
+
     if (!this._initialized) {
       this._initialized = true;
 
@@ -96,8 +100,8 @@ export default class Build extends TreeItem {
 
   get iconPath() {
     return {
-      light: getAsset(`icon-status-${statusIcon(this.data)}.svg`),
-      dark: getAsset(`icon-status-${statusIcon(this.data)}.svg`),
+      light: _getAsset(`icon-status-${statusIcon(this.data)}.svg`),
+      dark: _getAsset(`icon-status-${statusIcon(this.data)}.svg`),
     };
   }
 
@@ -260,8 +264,8 @@ export class BuildCommitGroup extends TreeItem {
 
   get iconPath() {
     return {
-      light: getAsset('icon-commit-light.svg'),
-      dark: getAsset('icon-commit-dark.svg'),
+      light: _getAsset('icon-commit-light.svg'),
+      dark: _getAsset('icon-commit-dark.svg'),
     };
   }
 
@@ -285,8 +289,8 @@ export class BuildCommit extends TreeItem {
 
   get iconPath() {
     return {
-      light: getAsset('icon-commit-light.svg'),
-      dark: getAsset('icon-commit-dark.svg'),
+      light: _getAsset('icon-commit-light.svg'),
+      dark: _getAsset('icon-commit-dark.svg'),
     };
   }
 
@@ -309,8 +313,8 @@ export class BuildWorkflow extends TreeItem {
 
   get iconPath() {
     return {
-      light: getAsset('icon-workflow-light.svg'),
-      dark: getAsset('icon-workflow-dark.svg'),
+      light: _getAsset('icon-workflow-light.svg'),
+      dark: _getAsset('icon-workflow-dark.svg'),
     };
   }
 
@@ -352,8 +356,8 @@ export class BuildTime extends TreeItem {
 
   get iconPath() {
     return {
-      light: getAsset('icon-time-light.svg'),
-      dark: getAsset('icon-time-dark.svg'),
+      light: _getAsset('icon-time-light.svg'),
+      dark: _getAsset('icon-time-dark.svg'),
     };
   }
 }
@@ -409,8 +413,8 @@ export class BuildArtifacts extends TreeItem {
 
   get iconPath() {
     return {
-      light: getAsset('icon-box-light.svg'),
-      dark: getAsset('icon-box-dark.svg'),
+      light: _getAsset('icon-box-light.svg'),
+      dark: _getAsset('icon-box-dark.svg'),
     };
   }
 
