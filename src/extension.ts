@@ -1,22 +1,49 @@
 import { window, workspace, ExtensionContext } from 'vscode';
-import CircleCI from './models/circleci';
-import { registerCommands } from './commands';
-import { CircleCIContentProvider } from './providers';
+import CircleCI from 'circle-client';
+import Config from './lib/config';
+import GitMonitor from './lib/git-monitor';
+import ArtifactContentProvider from './lib/artifact-content-provider';
+import CircleCITree from './lib/circleci-tree';
+import registerCommands from './lib/commands';
 
-let circleci: CircleCI;
+let circleciTree: CircleCITree;
 
-export async function activate(context: ExtensionContext) {
-  circleci = new CircleCI(context);
+export async function activate(context: ExtensionContext): Promise<void> {
+  function getClient(): CircleCI {
+    const apiToken = config.get('apiToken') as string;
 
-  window.registerTreeDataProvider('circleciPipeline', circleci);
+    if (!apiToken) {
+      window.showErrorMessage(
+        'A CircleCI API token (`circleci.apiToken`) must be set.'
+      );
+    }
+
+    return new CircleCI(apiToken, gitMonitor.circleProjectSlug);
+  }
+
+  function refresh(): void {
+    circleciTree.client = getClient();
+    circleciTree.refresh();
+  }
+
+  const config = new Config();
+  config.onChange(refresh);
+
+  const gitMonitor = new GitMonitor();
+  await gitMonitor.setup();
+  gitMonitor.onChange(refresh);
+
+  circleciTree = new CircleCITree(context, getClient(), config, gitMonitor);
+  window.registerTreeDataProvider('circleci-tree', circleciTree);
+
   workspace.registerTextDocumentContentProvider(
-    'circleci',
-    new CircleCIContentProvider()
+    'circle-artifact',
+    new ArtifactContentProvider()
   );
 
-  registerCommands(circleci);
+  registerCommands();
 }
 
-export function deactivate() {
-  circleci.dispose();
+export function deactivate(): void {
+  circleciTree && circleciTree.dispose();
 }

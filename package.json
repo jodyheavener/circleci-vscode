@@ -2,7 +2,7 @@
   "name": "circleci-vscode",
   "displayName": "CircleCI",
   "description": "Monitor, inspect, run, and cancel Pipeline Builds on CircleCI",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "license": "MIT",
   "publisher": "jodyh",
   "keywords": [
@@ -15,45 +15,41 @@
     "theme": "dark"
   },
   "preview": true,
-  "icon": "out/assets/logo.png",
+  "icon": "dist/assets/logo.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/jodyheavener/circleci-vscode.git"
   },
   "homepage": "https://github.com/jodyheavener/circleci-vscode",
-  "main": "./out/extension.js",
+  "main": "./dist/extension.js",
   "engines": {
-    "vscode": "^1.44.0"
+    "vscode": "^1.49.2"
   },
   "scripts": {
-    "vscode:prepublish": "webpack --mode production",
     "compile": "webpack --mode development",
-    "lint": "tslint -p ./",
+    "lint": "eslint",
+    "vscode:prepublish": "webpack --mode production",
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
-    "circleci": "^0.3.3",
-    "follow-redirects": "^1.11.0",
-    "git-branch": "^2.0.1",
-    "git-repo-name": "^1.0.1",
-    "git-username": "^1.0.0",
-    "open": "^7.0.3"
+    "circle-client": "^0.1.3",
+    "follow-redirects": "^1.13.0",
+    "open": "^7.2.1"
   },
   "devDependencies": {
-    "@types/follow-redirects": "^1.8.0",
-    "@types/git-branch": "^2.0.1",
-    "@types/git-repo-name": "^1.0.0",
-    "@types/git-username": "^1.0.0",
-    "@types/node": "^13.13.5",
-    "@types/vscode": "^1.44.0",
+    "@types/follow-redirects": "^1.13.0",
+    "@types/node": "^14.11.2",
+    "@types/vscode": "^1.49.0",
+    "@typescript-eslint/eslint-plugin": "^4.2.0",
+    "@typescript-eslint/parser": "^4.2.0",
     "clean-webpack-plugin": "^3.0.0",
-    "copy-webpack-plugin": "^6.0.1",
-    "file-loader": "^6.0.0",
-    "ts-loader": "^7.0.4",
-    "tslint": "^6.1.2",
-    "typescript": "^3.8.3",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "copy-webpack-plugin": "^6.1.1",
+    "eslint": "^7.10.0",
+    "eslint-config-prettier": "^6.12.0",
+    "ts-loader": "^8.0.4",
+    "typescript": "^4.0.3",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
   },
   "categories": [
     "Other"
@@ -63,147 +59,115 @@
     "workspaceContains:circle.yaml",
     "workspaceContains:circle.yml",
     "workspaceContains:.circleci/config.yaml",
-    "workspaceContains:.circleci/config.yml",
-    "onCommand:circleci.refreshAll",
-    "onCommand:circleci.refresh",
-    "onCommand:circleci.openPage",
-    "onCommand:circleci.retryBuild",
-    "onCommand:circleci.copyBuildNumber",
-    "onCommand:circleci.copyCommitHash",
-    "onCommand:circleci.copyWorkflowId",
-    "onCommand:circleci.fetchArtifacts",
-    "onCommand:circleci.downloadArtifact"
+    "workspaceContains:.circleci/config.yml"
   ],
   "contributes": {
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "circleciContainer",
+          "id": "circleci-container",
           "title": "CircleCI",
-          "icon": "./out/assets/icon-logo.svg"
+          "icon": "./dist/assets/icon-logo.svg"
         }
       ]
     },
     "views": {
-      "circleciContainer": [
+      "circleci-container": [
         {
-          "id": "circleciPipeline",
+          "id": "circleci-tree",
           "name": "Pipelines"
         }
       ]
     },
     "menus": {
-      "view/title": [
-        {
-          "command": "circleci.refreshAll",
-          "when": "view == circleciPipeline"
-        },
-        {
-          "command": "circleci.openPipelinesPage",
-          "when": "view == circleciPipeline"
-        }
-      ],
       "view/item/context": [
         {
-          "when": "viewItem == circleciPipeline",
-          "command": "circleci.remove",
+          "when": "viewItem == circleci-pipeline || viewItem == circleci-workflow || viewItem == circleci-job",
+          "command": "circleci.reload",
           "group": "circleci"
         },
         {
-          "when": "viewItem == circleciPipeline || viewItem == circleciBuild",
-          "command": "circleci.refresh",
-          "group": "circleci"
-        },
-        {
-          "when": "viewItem == circleciPipeline || viewItem == circleciBuild",
+          "when": "viewItem == circleci-pipeline || viewItem == circleci-workflow || viewItem == circleci-job",
           "command": "circleci.openPage",
           "group": "circleci"
         },
         {
-          "when": "viewItem == circleciBuild",
-          "command": "circleci.retryBuild",
+          "when": "viewItem == circleci-workflow",
+          "command": "circleci.cancelWorkflow",
           "group": "circleci"
         },
         {
-          "when": "viewItem == circleciBuild",
-          "command": "circleci.cancelBuild",
+          "when": "viewItem == circleci-workflow",
+          "command": "circleci.retryWorkflowAll",
           "group": "circleci"
         },
         {
-          "when": "viewItem == circleciBuild",
-          "command": "circleci.copyBuildNumber",
+          "when": "viewItem == circleci-workflow",
+          "command": "circleci.retryWorkflowFailed",
           "group": "circleci"
         },
         {
-          "when": "viewItem == circleciBuildCommit",
-          "command": "circleci.copyCommitHash",
-          "group": "circleci"
-        },
-        {
-          "when": "viewItem == circleciBuildWorkflow",
+          "when": "viewItem == circleci-workflow",
           "command": "circleci.copyWorkflowId",
+          "group": "circleci"
+        },
+        {
+          "when": "viewItem == circleci-job",
+          "command": "circleci.cancelJob",
+          "group": "circleci"
+        },
+        {
+          "when": "viewItem == circleci-job",
+          "command": "circleci.copyJobId",
+          "group": "circleci"
+        },
+        {
+          "when": "viewItem == circleci-job",
+          "command": "circleci.copyJobNumber",
           "group": "circleci"
         }
       ]
     },
     "commands": [
       {
-        "command": "circleci.refreshAll",
-        "title": "Refresh Pipelines"
-      },
-      {
-        "command": "circleci.openPipelinesPage",
-        "title": "Open Pipelines in browser"
-      },
-      {
-        "command": "circleci.remove",
-        "title": "Remove",
-        "category": "circleci"
-      },
-      {
-        "command": "circleci.refresh",
-        "title": "Refresh",
-        "category": "circleci"
+        "command": "circleci.reload",
+        "title": "Reload details"
       },
       {
         "command": "circleci.openPage",
-        "title": "Open in browser",
-        "category": "circleci"
+        "title": "Open in browser"
       },
       {
-        "command": "circleci.cancelBuild",
-        "title": "Cancel build",
-        "category": "circleci"
+        "command": "circleci.cancelWorkflow",
+        "title": "Cancel workflow"
       },
       {
-        "command": "circleci.retryBuild",
-        "title": "Retry build",
-        "category": "circleci"
+        "command": "circleci.retryWorkflowAll",
+        "title": "Retry all jobs"
       },
       {
-        "command": "circleci.copyBuildNumber",
-        "title": "Copy build number",
-        "category": "circleci"
+        "command": "circleci.retryWorkflowFailed",
+        "title": "Retry failed jobs"
       },
       {
-        "command": "circleci.copyCommitHash",
-        "title": "Copy commit hash",
-        "category": "circleci"
+        "command": "circleci.retryWorkflowFailed",
+        "title": "Retry failed jobs"
       },
       {
         "command": "circleci.copyWorkflowId",
-        "title": "Copy workflow ID",
-        "category": "circleci"
+        "title": "Copy workflow ID"
       },
       {
-        "command": "circleci.buildFetchArtifacts",
-        "title": "Fetch artifacts",
-        "category": "circleci"
+        "command": "circleci.cancelJob",
+        "title": "Cancel job"
       },
       {
-        "command": "circleci.downloadArtifact",
-        "title": "Download artifact",
-        "category": "circleci"
+        "command": "circleci.copyJobId",
+        "title": "Copy job ID"
+      },
+      {
+        "command": "circleci.copyJobNumber",
+        "title": "Copy job number"
       }
     ],
     "configuration": {
@@ -213,7 +177,7 @@
         "circleci.apiToken": {
           "type": "string",
           "default": null,
-          "markdownDescription": "A CircleCI API Token. This can be generated on your [Personal API Tokens page](https://app.circleci.com/settings/user/tokens)."
+          "markdownDescription": "A CircleCI API Token. This can be generated on your [Personal API Tokens](https://app.circleci.com/settings/user/tokens) page."
         },
         "circleci.customBranches": {
           "type": "array",
@@ -221,28 +185,9 @@
             "type": "string"
           },
           "default": [
-            "master"
+            "main"
           ],
           "description": "Add any custom branches you'd like to list builds for."
-        },
-        "circleci.pipelineRefreshInterval": {
-          "type": "number",
-          "default": 300,
-          "minimum": 0,
-          "markdownDescription": "The number of seconds to wait before refreshing all **inactive** pipelines. Set to `0` to disable."
-        },
-        "circleci.buildCount": {
-          "type": "number",
-          "default": 10,
-          "minimum": 0,
-          "maximum": 30,
-          "description": "The number of builds to retrieve in a pipeline."
-        },
-        "circleci.buildRefreshInterval": {
-          "type": "number",
-          "default": 10,
-          "minimum": 0,
-          "markdownDescription": "The number of seconds to wait before refreshing an active build's status. Set to `0` to disable."
         }
       }
     }

@@ -1,11 +1,11 @@
 tslint.json
 tsconfig.json
 package-lock.json
+webpack.config.js
 .prettierrc
 .gitignore
 .vscodeignore
+.vscode/
 types/
 src/
-.vscode/
 node_modules/
-webpack.config.js

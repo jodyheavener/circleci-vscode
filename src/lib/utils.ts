@@ -1,47 +1,51 @@
-import { https } from 'follow-redirects';
 import { resolve } from 'path';
-import { window } from 'vscode';
-import CircleCI from '../models/circleci';
-const open = require('open');
+import { ExtensionContext, window } from 'vscode';
+import { exec } from 'child_process';
+import open from 'open';
 
-export function pluralize(count: number, singular: string, plural: string) {
-  return count === 1 ? singular : plural;
+export function pluralize(
+  count: number,
+  singular: string,
+  plural: string
+): string {
+  return `${count} ${count === 1 ? singular : plural}`;
 }
 
-export function humanize(word: string) {
+export function humanize(word: string): string {
   return word.replace(/\b\w/g, (l) => l.toUpperCase()).replace(/ /g, '_');
 }
 
-export function msToTime(milliseconds: number) {
+export function msToTime(milliseconds: number): string {
   const minutes = Math.floor(milliseconds / 60000);
   const seconds = Number(((milliseconds % 60000) / 1000).toFixed(0));
-  return `${minutes}m ${(seconds < 10 ? '0' : '') + seconds}s`;
+  return `${minutes}m ${seconds < 10 ? '0' : ''}${seconds}s`;
 }
 
-export function getAsset(this: CircleCI, filename: string): string {
-  return resolve(this.context.extensionPath, 'out', 'assets', filename);
+export function getAsset(context: ExtensionContext, filename: string): string {
+  return resolve(context.extensionPath, 'dist', 'assets', filename);
 }
 
-export function openInBrowser(url: string) {
+export function openInBrowser(url: string): void {
   try {
     open(url);
   } catch (error) {
     window.showErrorMessage(`Couldn't open URL: ${url}`);
-    console.error(error.stack);
+    console.error(error);
   }
 }
 
-export async function downloadFile(url: string): Promise<string> {
+export async function execCommand(cmd: string, cwd: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    https
-      .get(url, function (response) {
-        response.setEncoding('utf8');
-        response.on('data', (data) => {
-          resolve(data);
-        });
-      })
-      .on('error', (error) => {
-        reject(error);
-      });
+    exec(cmd, { cwd }, (error, stdout, stderr) => {
+      if (error || stderr) {
+        reject(error || stderr);
+      }
+
+      resolve(stdout);
+    });
   });
+}
+
+export function stripNewline(value: string): string {
+  return value.replace(/\n|\r/g, '');
 }
