@@ -1,10 +1,20 @@
-import { existsSync, mkdirSync, unlinkSync } from 'fs';
-import { resolve } from 'path';
+// import * as nls from 'vscode-nls-dev';
+// const localesDir = join('..', 'src', 'i18n');
 
-const localesDir = resolve('..', 'src', '18n');
-
-if (!existsSync(localesDir)) {
-  mkdirSync(localesDir);
+async function run(): Promise<void> {
+	// await del(['package.nls.*.json']);
+	// nls.prepareJsonFiles();
+	// console.log(nls.createXlfFiles('CircleCI', 'circleci'));
+	// nls.debug();
+	// nls.createKeyValuePairFile().queue('');
+	// nls.rewriteLocalizeCalls();
+	// nls.createAdditionalLanguageFiles(
+  //   [{ folderName: 'en', id: 'en' }],
+  //   'i18n',
+  //   'out'
+  // );
 }
 
-// unlinkSync();
+run().then(() => {
+	process.exit(0);
+});
