@@ -1,6 +1,9 @@
 export type ConfigItems = {
   apiToken: string;
   customBranches: string[];
+  autoLoadWorkflows: boolean;
+  autoLoadWorkflowJobs: boolean;
+  VCSProvider: 'github' | 'bitbucket';
 };
 
 export type GitSet = {

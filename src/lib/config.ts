@@ -6,11 +6,20 @@ export default class Config {
   private changeCallback?: () => void;
 
   constructor() {
-    const { apiToken, customBranches } = workspace.getConfiguration('circleci');
+    const {
+      apiToken,
+      customBranches,
+      autoLoadWorkflows,
+      autoLoadWorkflowJobs,
+      VCSProvider,
+    } = workspace.getConfiguration('circleci');
 
     this.items = {
       apiToken,
       customBranches,
+      autoLoadWorkflows,
+      autoLoadWorkflowJobs,
+      VCSProvider,
     };
 
     workspace.onDidChangeConfiguration(() => {

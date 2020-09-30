@@ -5,6 +5,7 @@ import GitMonitor from './lib/git-monitor';
 import ArtifactContentProvider from './lib/artifact-content-provider';
 import CircleCITree from './lib/circleci-tree';
 import registerCommands from './lib/commands';
+import { ConfigItems } from './lib/types';
 
 let circleciTree: CircleCITree;
 
@@ -30,11 +31,13 @@ export async function activate(context: ExtensionContext): Promise<void> {
   config.onChange(refresh);
 
   const gitMonitor = new GitMonitor();
-  await gitMonitor.setup();
+  await gitMonitor.setup(
+    config.get('VCSProvider') as ConfigItems['VCSProvider']
+  );
   gitMonitor.onChange(refresh);
 
   circleciTree = new CircleCITree(context, getClient(), config, gitMonitor);
-  window.registerTreeDataProvider('circleci-tree', circleciTree);
+  window.registerTreeDataProvider('circleciTree', circleciTree);
 
   workspace.registerTextDocumentContentProvider(
     'circle-artifact',

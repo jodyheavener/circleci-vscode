@@ -1,17 +1,20 @@
 import { watchFile } from 'fs';
 import { join } from 'path';
 import { window, workspace } from 'vscode';
-import { GitSet } from './types';
+import { ConfigItems, GitSet } from './types';
 import { execCommand, stripNewline } from './utils';
 
 const REPO_MATCHER = /(?:git@.*\..*:|https?:\/\/.*\..*\/)(.*)\/(.*).git/g;
 
 export default class GitMonitor {
   gitData?: GitSet;
+  vcs?: ConfigItems['VCSProvider'];
 
   private changeCallback?: () => void;
 
-  async setup(): Promise<void> {
+  async setup(vcs: ConfigItems['VCSProvider']): Promise<void> {
+    this.vcs = vcs;
+
     try {
       const { user, repo } = await this.getRepoInfo();
       this.gitData = {
@@ -34,7 +37,7 @@ export default class GitMonitor {
   }
 
   get circleProjectSlug(): string {
-    return ['github', this.user, this.repo].join('/');
+    return [this.vcs, this.user, this.repo].join('/');
   }
 
   get user(): string {

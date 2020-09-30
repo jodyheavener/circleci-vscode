@@ -1,14 +1,21 @@
 import { Workflow as WorkflowData } from 'circle-client';
 import { env, TreeItem, TreeItemCollapsibleState, window } from 'vscode';
 import CircleCITree from '../lib/circleci-tree';
-import { getAsset, openInBrowser, pluralize } from '../lib/utils';
+import {
+  getAsset,
+  openInBrowser,
+  pluralize,
+  statusDescriptions,
+} from '../lib/utils';
 import Pipeline from './Pipeline';
+import Empty from './empty';
 import Job from './job';
+import LoadItems from './load-items';
 
 export default class Workflow extends TreeItem {
-  readonly contextValue = 'circleci-workflow';
+  readonly contextValue = 'circleciWorkflow';
   private reloading = false;
-  private jobs: Job[] = [];
+  private rows: TreeItem[] = [];
 
   constructor(
     readonly workflow: WorkflowData,
@@ -17,35 +24,39 @@ export default class Workflow extends TreeItem {
   ) {
     super(workflow.name, TreeItemCollapsibleState.Expanded);
 
-    this.description = 'Loading...';
     this.tooltip = workflow.name;
-    this.iconPath = {
-      light: getAsset(this.tree.context, 'icon-workflow-light.svg'),
-      dark: getAsset(this.tree.context, 'icon-workflow-dark.svg'),
-    };
+    this.iconPath = getAsset(this.tree.context, 'workflow');
 
-    // TODO: Add option to enable auto-load jobs
-    this.loadJobs();
+    if (this.tree.config.get('autoLoadWorkflowJobs')) {
+      this.description = 'Loading...';
+      this.loadJobs();
+    } else {
+      this.rows = [new LoadItems('Jobs', this.loadJobs.bind(this))];
+    }
   }
 
   private loadJobs(): void {
     this.tree.client
       .listWorkflowJobs(this.workflow.id)
       .then(async ({ items: jobs }) => {
-        const noJobs = 'No jobs';
-        const jobsLabel = pluralize(jobs.length, 'job', 'jobs');
-        this.description = jobs.length ? jobsLabel : noJobs;
+        const noJobs = 'No Jobs';
+        const jobsLabel = pluralize(jobs.length, 'Job', 'Jobs');
+        this.description = `${jobs.length ? jobsLabel : noJobs} - ${
+          statusDescriptions[this.workflow.status || 'Unknown']
+        }`;
         this.tooltip = `${jobs.length ? jobsLabel : noJobs} for ${
           this.workflow.name
         }`;
 
-        this.jobs = jobs.map((job) => new Job(job, this, this.tree));
+        this.rows = jobs.length
+          ? jobs.map((job) => new Job(job, this, this.tree))
+          : [new Empty('jobs', this.tree)];
         this.reloading = false;
         this.pipeline.refresh();
       })
       .catch((error) => {
         window.showErrorMessage(
-          `Couldn't load jobs for workflow ${this.workflow.name}`
+          `Couldn't load Jobs for Workflow ${this.workflow.name}`
         );
         console.error(error);
       });
@@ -62,11 +73,11 @@ export default class Workflow extends TreeItem {
 
   openPage(): void {
     openInBrowser(
-      `https://app.circleci.com/pipelines/github/${encodeURIComponent(
-        this.pipeline.gitSet.user
-      )}/${encodeURIComponent(this.pipeline.gitSet.repo)}/${
-        this.workflow.pipeline_number
-      }/workflows/${this.workflow.id}`
+      `https://app.circleci.com/pipelines/${this.tree.config.get(
+        'VCSProvider'
+      )}/${encodeURIComponent(this.pipeline.gitSet.user)}/${encodeURIComponent(
+        this.pipeline.gitSet.repo
+      )}/${this.workflow.pipeline_number}/workflows/${this.workflow.id}`
     );
   }
 
@@ -85,7 +96,7 @@ export default class Workflow extends TreeItem {
   retryJobs(fromFailed = false): void {
     this.tree.client.rerunWorkflow(this.workflow.id, { fromFailed });
     window.showInformationMessage(
-      `Retrying ${fromFailed ? ' failed' : ''}workflow jobs.`
+      `Retrying ${fromFailed ? ' failed' : ''}Workflow Jobs.`
     );
     // Retry adds *new* jobs, so reload the whole pipeline
     // TODO: is 1 second appropriate?
@@ -93,6 +104,6 @@ export default class Workflow extends TreeItem {
   }
 
   get children(): TreeItem[] {
-    return this.jobs;
+    return this.rows;
   }
 }

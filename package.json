@@ -55,7 +55,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:circleciPipeline",
+    "onView:circleciTree",
     "workspaceContains:circle.yaml",
     "workspaceContains:circle.yml",
     "workspaceContains:.circleci/config.yaml",
@@ -65,16 +65,16 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "circleci-container",
+          "id": "circleciContainer",
           "title": "CircleCI",
           "icon": "./dist/assets/icon-logo.svg"
         }
       ]
     },
     "views": {
-      "circleci-container": [
+      "circleciContainer": [
         {
-          "id": "circleci-tree",
+          "id": "circleciTree",
           "name": "Pipelines"
         }
       ]
@@ -82,47 +82,47 @@
     "menus": {
       "view/item/context": [
         {
-          "when": "viewItem == circleci-pipeline || viewItem == circleci-workflow || viewItem == circleci-job",
+          "when": "viewItem == circleciPipeline || viewItem == circleciWorkflow || viewItem == circleciJob",
           "command": "circleci.reload",
           "group": "circleci"
         },
         {
-          "when": "viewItem == circleci-pipeline || viewItem == circleci-workflow || viewItem == circleci-job",
+          "when": "viewItem == circleciPipeline || viewItem == circleciWorkflow || viewItem == circleciJob",
           "command": "circleci.openPage",
           "group": "circleci"
         },
         {
-          "when": "viewItem == circleci-workflow",
+          "when": "viewItem == circleciWorkflow",
           "command": "circleci.cancelWorkflow",
           "group": "circleci"
         },
         {
-          "when": "viewItem == circleci-workflow",
+          "when": "viewItem == circleciWorkflow",
           "command": "circleci.retryWorkflowAll",
           "group": "circleci"
         },
         {
-          "when": "viewItem == circleci-workflow",
+          "when": "viewItem == circleciWorkflow",
           "command": "circleci.retryWorkflowFailed",
           "group": "circleci"
         },
         {
-          "when": "viewItem == circleci-workflow",
+          "when": "viewItem == circleciWorkflow",
           "command": "circleci.copyWorkflowId",
           "group": "circleci"
         },
         {
-          "when": "viewItem == circleci-job",
+          "when": "viewItem == circleciJob",
           "command": "circleci.cancelJob",
           "group": "circleci"
         },
         {
-          "when": "viewItem == circleci-job",
+          "when": "viewItem == circleciJob",
           "command": "circleci.copyJobId",
           "group": "circleci"
         },
         {
-          "when": "viewItem == circleci-job",
+          "when": "viewItem == circleciJob",
           "command": "circleci.copyJobNumber",
           "group": "circleci"
         }
@@ -179,6 +179,19 @@
           "default": null,
           "markdownDescription": "A CircleCI API Token. This can be generated on your [Personal API Tokens](https://app.circleci.com/settings/user/tokens) page."
         },
+				"circleci.VCSProvider": {
+					"type": "string",
+					"default": "github",
+					"enum": [
+						"github",
+						"bitbucket"
+					],
+					"enumDescriptions": [
+						"GitHub",
+						"Bitbucket"
+					],
+					"description": "Your VCS Provider."
+				},
         "circleci.customBranches": {
           "type": "array",
           "items": {
@@ -187,7 +200,29 @@
           "default": [
             "main"
           ],
-          "description": "Add any custom branches you'd like to list builds for."
+          "description": "Add any custom branches you'd like to list Pipelines for. These will be displayed in addition to the currently checked-out branch."
+        },
+        "circleci.autoLoadWorkflows": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Automatically load Pipeline Workflows."
+        },
+        "circleci.autoLoadWorkflowJobs": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Automatically load Workflow Jobs."
+        },
+        "circleci.pipelineRefreshInterval": {
+          "type": "number",
+          "default": 120,
+          "minimum": 0,
+          "markdownDescription": "Seconds to wait before refreshing all **inactive** Pipelines. Set to `0` to disable."
+        },
+        "circleci.workflowRefreshInterval": {
+          "type": "number",
+          "default": 10,
+          "minimum": 0,
+          "markdownDescription": "Seconds to wait before refreshing an active Workflow's status. Set to `0` to disable."
         }
       }
     }

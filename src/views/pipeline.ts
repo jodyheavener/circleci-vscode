@@ -2,28 +2,30 @@ import { TreeItem, TreeItemCollapsibleState, window } from 'vscode';
 import CircleCITree from '../lib/circleci-tree';
 import { ActivatableGitSet } from '../lib/types';
 import { getAsset, openInBrowser, pluralize } from '../lib/utils';
+import Empty from './empty';
+import LoadItems from './load-items';
 import Workflow from './workflow';
 
 export default class Pipeline extends TreeItem {
-  readonly contextValue = 'circleci-pipeline';
+  readonly contextValue = 'circleciPipeline';
   private reloading = false;
-  private workflows: Workflow[] = [];
+  private rows: TreeItem[] = [];
 
   constructor(readonly gitSet: ActivatableGitSet, readonly tree: CircleCITree) {
     super(
-      `${gitSet.current ? '★ ' : ''}${gitSet.branch}`,
+      `${gitSet.current ? 'Current: ' : ''}${gitSet.branch}`,
       TreeItemCollapsibleState.Expanded
     );
 
-    this.description = 'Loading...';
     this.tooltip = `${this.gitSet.repo}/${this.gitSet.branch}`;
-    this.iconPath = {
-      light: getAsset(this.tree.context, 'icon-pipeline-light.svg'),
-      dark: getAsset(this.tree.context, 'icon-pipeline-dark.svg'),
-    };
+    this.iconPath = getAsset(this.tree.context, 'pipeline');
 
-    // TODO: Add option to enable auto-load workflows
-    this.loadWorkflows();
+    if (this.tree.config.get('autoLoadWorkflows')) {
+      this.description = 'Loading...';
+      this.loadWorkflows();
+    } else {
+      this.rows = [new LoadItems('workflows', this.loadWorkflows.bind(this))];
+    }
   }
 
   private loadWorkflows(): void {
@@ -41,26 +43,26 @@ export default class Pipeline extends TreeItem {
           )
         ).flat();
 
-        const noWorkflows = 'No workflows';
+        const noWorkflows = 'No Workflows';
         const workflowLabel = pluralize(
           workflows.length,
-          'workflow',
-          'workflows'
+          'Workflow',
+          'Workflows'
         );
         this.description = workflows.length ? workflowLabel : noWorkflows;
         this.tooltip = `${workflows.length ? workflowLabel : noWorkflows} for ${
           this.gitSet.repo
         }/${this.gitSet.branch}`;
 
-        this.workflows = workflows.map(
-          (workflow) => new Workflow(workflow, this, this.tree)
-        );
+        this.rows = workflows.length
+          ? workflows.map((workflow) => new Workflow(workflow, this, this.tree))
+          : [new Empty('Workflows', this.tree)];
         this.reloading = false;
         this.tree.reloadPipeline(this);
       })
       .catch((error) => {
         window.showErrorMessage(
-          `Couldn't load workflows for pipeline ${this.gitSet.repo}/${this.gitSet.branch}`
+          `Couldn't load Workflows for Pipeline ${this.gitSet.repo}/${this.gitSet.branch}`
         );
         console.error(error);
       });
@@ -81,15 +83,15 @@ export default class Pipeline extends TreeItem {
 
   openPage(): void {
     openInBrowser(
-      `https://app.circleci.com/pipelines/github/${encodeURIComponent(
-        this.gitSet.user
-      )}/${encodeURIComponent(this.gitSet.repo)}?branch=${encodeURIComponent(
-        this.gitSet.branch
-      )}`
+      `https://app.circleci.com/pipelines/${this.tree.config.get(
+        'VCSProvider'
+      )}/${encodeURIComponent(this.gitSet.user)}/${encodeURIComponent(
+        this.gitSet.repo
+      )}?branch=${encodeURIComponent(this.gitSet.branch)}`
     );
   }
 
   get children(): TreeItem[] {
-    return this.workflows;
+    return this.rows;
   }
 }

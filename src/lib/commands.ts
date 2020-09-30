@@ -2,6 +2,10 @@ import { commands } from 'vscode';
 import Pipeline from '../views/Pipeline';
 import Workflow from '../views/Workflow';
 import Job from '../views/Job';
+import JobArtifacts from '../views/job-artifacts';
+import JobArtifact from '../views/job-artifact';
+import JobTests from '../views/job-tests';
+import LoadItems from '../views/load-items';
 
 const registerCommands = (): void => {
   commands.registerCommand(
@@ -34,9 +38,9 @@ const registerCommands = (): void => {
     item.copyId();
   });
 
-  // commands.registerCommand('circleci.cancelJob', (item: Workflow) => {
-  //   item.cancel();
-  // });
+  commands.registerCommand('circleci.cancelJob', (item: Workflow) => {
+    item.cancel();
+  });
 
   commands.registerCommand('circleci.copyJobId', (item: Job) => {
     item.copyId();
@@ -44,6 +48,22 @@ const registerCommands = (): void => {
 
   commands.registerCommand('circleci.copyJobNumber', (item: Job) => {
     item.copyNumber();
+  });
+
+  commands.registerCommand('circleci.fetchJobArtifacts', (item: JobArtifacts) => {
+    item.fetchArtifacts();
+  });
+
+  commands.registerCommand('circleci.fetchJobTests', (item: JobTests) => {
+    item.fetchTests();
+  });
+
+  commands.registerCommand('circleci.openJobArtifact', (item: JobArtifact) => {
+    item.openJobArtifact();
+  });
+
+  commands.registerCommand('circleci.loadItems', (item: LoadItems) => {
+    item.loadItems();
   });
 };
 

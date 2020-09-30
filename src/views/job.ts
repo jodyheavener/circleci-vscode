@@ -1,44 +1,30 @@
 import { Job as JobData } from 'circle-client';
 import { env, TreeItem, TreeItemCollapsibleState, window } from 'vscode';
 import CircleCITree from '../lib/circleci-tree';
-import { getAsset, openInBrowser } from '../lib/utils';
+import { getAsset, openInBrowser, statusDescriptions } from '../lib/utils';
 import Workflow from './workflow';
 import JobDuration from './job-duration';
 import JobArtifacts from './job-artifacts';
-import JobTests from './job-tests';
-
-const statusDescriptions: {
-  [status: string]: string;
-} = {
-  success: 'Success',
-  running: 'Running',
-  not_run: 'Not Run',
-  failed: 'Failed',
-  error: 'Exclaim',
-  failing: 'Failing',
-  on_hold: 'On Hold',
-  canceled: 'Canceled',
-  unauthorized: 'Unauthorized',
-};
+// import JobTests from './job-tests';
 
 const statusIcons: {
   [status: string]: string;
 } = {
-  success: 'check',
-  running: 'dots-blue',
-  not_run: 'line',
-  failed: 'exclaim',
-  error: 'exclaim',
-  failing: 'exclaim',
-  on_hold: 'dots',
-  canceled: 'line',
-  unauthorized: 'line',
+  success: 'status-check',
+  running: 'status-dots-blue',
+  not_run: 'status-line',
+  failed: 'status-exclaim',
+  error: 'status-exclaim',
+  failing: 'status-exclaim',
+  on_hold: 'status-dots-grey',
+  canceled: 'status-line',
+  unauthorized: 'status-line',
 };
 
 export default class Job extends TreeItem {
-  readonly contextValue = 'circleci-job';
+  readonly contextValue = 'circleciJob';
   private reloading = false;
-  private jobRows: TreeItem[] = [];
+  private rows: TreeItem[] = [];
 
   constructor(
     readonly job: JobData,
@@ -49,16 +35,10 @@ export default class Job extends TreeItem {
 
     this.description = this.statusDescription(this.job.status);
     this.tooltip = job.name;
-    this.iconPath = {
-      light: getAsset(
-        this.tree.context,
-        `icon-status-${this.statusIcon(this.job.status)}.svg`
-      ),
-      dark: getAsset(
-        this.tree.context,
-        `icon-status-${this.statusIcon(this.job.status)}.svg`
-      ),
-    };
+    this.iconPath = getAsset(
+      this.tree.context,
+      this.statusIcon(this.job.status)
+    );
 
     // TODO: Add "click to load details" option
     this.loadDetails();
@@ -81,32 +61,26 @@ export default class Job extends TreeItem {
     this.tree.client
       .getJob(this.job.job_number)
       .then(async (details) => {
-        this.jobRows = [];
+        this.rows = [];
 
         this.description = this.statusDescription(details.status);
-        this.iconPath = {
-          light: getAsset(
-            this.tree.context,
-            `icon-status-${this.statusIcon(details.status)}.svg`
-          ),
-          dark: getAsset(
-            this.tree.context,
-            `icon-status-${this.statusIcon(details.status)}.svg`
-          ),
-        };
+        this.iconPath = getAsset(
+          this.tree.context,
+          this.statusIcon(details.status)
+        );
 
         if (details.duration) {
-          this.jobRows.push(new JobDuration(details.duration, this.tree));
+          this.rows.push(new JobDuration(details.duration, this.tree));
         }
 
-        this.jobRows.push(new JobArtifacts(this.tree));
-        this.jobRows.push(new JobTests(this.tree));
+        this.rows.push(new JobArtifacts(this, this.tree));
+        // this.jobRows.push(new JobTests(this, this.tree));
 
         this.reloading = false;
         this.workflow.pipeline.refresh();
       })
       .catch((error) => {
-        window.showErrorMessage(`Couldn't load details for job ${this.job.id}`);
+        window.showErrorMessage(`Couldn't load details for Job ${this.job.id}`);
         console.error(error);
       });
   }
@@ -122,7 +96,9 @@ export default class Job extends TreeItem {
 
   openPage(): void {
     openInBrowser(
-      `https://app.circleci.com/pipelines/github/${encodeURIComponent(
+      `https://app.circleci.com/pipelines/${this.tree.config.get(
+        'VCSProvider'
+      )}/${encodeURIComponent(
         this.workflow.pipeline.gitSet.user
       )}/${encodeURIComponent(this.workflow.pipeline.gitSet.repo)}/${
         this.workflow.workflow.pipeline_number
@@ -148,6 +124,6 @@ export default class Job extends TreeItem {
   }
 
   get children(): TreeItem[] {
-    return this.jobRows;
+    return this.rows;
   }
 }
