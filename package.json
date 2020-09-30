@@ -29,12 +29,14 @@
     "compile": "webpack --mode development",
     "lint": "eslint",
     "vscode:prepublish": "webpack --mode production",
-    "watch": "webpack --mode development --watch"
+    "watch": "webpack --mode development --watch",
+    "localize": "node --require ts-node/register scripts/localize.ts"
   },
   "dependencies": {
     "circle-client": "^0.1.3",
     "follow-redirects": "^1.13.0",
-    "open": "^7.2.1"
+    "open": "^7.2.1",
+    "vscode-nls": "^5.0.0"
   },
   "devDependencies": {
     "@types/follow-redirects": "^1.13.0",
@@ -47,7 +49,9 @@
     "eslint": "^7.10.0",
     "eslint-config-prettier": "^6.12.0",
     "ts-loader": "^8.0.4",
+    "ts-node": "^9.0.0",
     "typescript": "^4.0.3",
+    "vscode-nls-dev": "^3.3.2",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
   },
@@ -179,19 +183,19 @@
           "default": null,
           "markdownDescription": "A CircleCI API Token. This can be generated on your [Personal API Tokens](https://app.circleci.com/settings/user/tokens) page."
         },
-				"circleci.VCSProvider": {
-					"type": "string",
-					"default": "github",
-					"enum": [
-						"github",
-						"bitbucket"
-					],
-					"enumDescriptions": [
-						"GitHub",
-						"Bitbucket"
-					],
-					"description": "Your VCS Provider."
-				},
+        "circleci.VCSProvider": {
+          "type": "string",
+          "default": "github",
+          "enum": [
+            "github",
+            "bitbucket"
+          ],
+          "enumDescriptions": [
+            "GitHub",
+            "Bitbucket"
+          ],
+          "description": "Your VCS Provider."
+        },
         "circleci.customBranches": {
           "type": "array",
           "items": {

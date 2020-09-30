@@ -1,6 +1,6 @@
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 import CircleCITree from '../lib/circleci-tree';
-import { getAsset, pluralize } from '../lib/utils';
+import { getAsset, localize, pluralize } from '../lib/utils';
 import Job from './job';
 import JobArtifact from './job-artifact';
 
@@ -11,13 +11,16 @@ export default class JobArtifacts extends TreeItem {
   private artifacts: JobArtifact[] = [];
 
   constructor(readonly job: Job, readonly tree: CircleCITree) {
-    super('Look up artifacts →', TreeItemCollapsibleState.None);
+    super(
+      localize('circleci.lookUpArtifacts', 'Look up Artifacts →'),
+      TreeItemCollapsibleState.None
+    );
 
     this.iconPath = getAsset(this.tree.context, 'box');
 
     this.command = {
       command: 'circleci.fetchJobArtifacts',
-      title: 'Fetch artifacts',
+      title: localize('circleci.fetchArtifacts', 'Fetch Artifacts'),
       arguments: [this],
     };
   }
@@ -33,8 +36,12 @@ export default class JobArtifacts extends TreeItem {
     );
 
     this.label = artifacts.length
-      ? `${pluralize(artifacts.length, 'artifact', 'artifacts')}`
-      : 'No artifacts';
+      ? `${pluralize(
+          artifacts.length,
+          localize('circleci.artifactSingular', 'Artifact'),
+          localize('circleci.artifactPlural', 'Artifacts')
+        )}`
+      : localize('circleci.noArtifacts', 'No Artifacts');
 
     this.collapsibleState = artifacts.length
       ? TreeItemCollapsibleState.Expanded

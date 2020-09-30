@@ -1,7 +1,13 @@
 import { JobArtifact as JobArtifactData } from 'circle-client';
-import { TreeItem, TreeItemCollapsibleState, Uri, window, workspace } from 'vscode';
+import {
+  TreeItem,
+  TreeItemCollapsibleState,
+  Uri,
+  window,
+  workspace,
+} from 'vscode';
 import CircleCITree from '../lib/circleci-tree';
-import { downloadFile, getAsset } from '../lib/utils';
+import { downloadFile, getAsset, localize } from '../lib/utils';
 import Job from './job';
 
 const fileTypeIcons: {
@@ -49,7 +55,7 @@ export default class JobArtifact extends TreeItem {
 
     this.command = {
       command: 'circleci.openJobArtifact',
-      title: 'Open artifact',
+      title: localize('circleci.openArtifact', 'Open Artifact'),
       arguments: [this],
     };
   }
@@ -67,7 +73,11 @@ export default class JobArtifact extends TreeItem {
       } catch (error) {
         console.error(error.stack);
         window.showErrorMessage(
-          `Could not download artifact: ${this.artifact.path}`
+          localize(
+            'circleci.downloadArtifactError',
+            'Could not download Artifact: {0}',
+            this.artifact.path
+          )
         );
       }
     }
@@ -77,7 +87,7 @@ export default class JobArtifact extends TreeItem {
       const doc = await workspace.openTextDocument(uri);
       await window.showTextDocument(doc, { preview: false });
 
-      this.description = 'Downloaded';
+      this.description = localize('circleci.artifactDownloaded', 'Downloaded');
       this.job.workflow.pipeline.refresh();
     }
   }

@@ -1,7 +1,7 @@
 import { TreeItem, TreeItemCollapsibleState, window } from 'vscode';
 import CircleCITree from '../lib/circleci-tree';
 import { ActivatableGitSet } from '../lib/types';
-import { getAsset, openInBrowser, pluralize } from '../lib/utils';
+import { getAsset, localize, openInBrowser, pluralize } from '../lib/utils';
 import Empty from './empty';
 import LoadItems from './load-items';
 import Workflow from './workflow';
@@ -13,7 +13,11 @@ export default class Pipeline extends TreeItem {
 
   constructor(readonly gitSet: ActivatableGitSet, readonly tree: CircleCITree) {
     super(
-      `${gitSet.current ? 'Current: ' : ''}${gitSet.branch}`,
+      `${
+        gitSet.current
+          ? localize('circleci.currentBranchLabel', 'Current: ')
+          : ''
+      }${gitSet.branch}`,
       TreeItemCollapsibleState.Expanded
     );
 
@@ -21,10 +25,15 @@ export default class Pipeline extends TreeItem {
     this.iconPath = getAsset(this.tree.context, 'pipeline');
 
     if (this.tree.config.get('autoLoadWorkflows')) {
-      this.description = 'Loading...';
+      this.description = localize('circleci.loadingLabel', 'Loading...');
       this.loadWorkflows();
     } else {
-      this.rows = [new LoadItems('workflows', this.loadWorkflows.bind(this))];
+      this.rows = [
+        new LoadItems(
+          localize('circleci.workflowSingular', 'Workflow'),
+          this.loadWorkflows.bind(this)
+        ),
+      ];
     }
   }
 
@@ -43,11 +52,11 @@ export default class Pipeline extends TreeItem {
           )
         ).flat();
 
-        const noWorkflows = 'No Workflows';
+        const noWorkflows = localize('circleci.noWorkflows', 'No Workflows');
         const workflowLabel = pluralize(
           workflows.length,
-          'Workflow',
-          'Workflows'
+          localize('circleci.workflowSingular', 'Workflow'),
+          localize('circleci.workflowPlural', 'Workflows')
         );
         this.description = workflows.length ? workflowLabel : noWorkflows;
         this.tooltip = `${workflows.length ? workflowLabel : noWorkflows} for ${
@@ -56,13 +65,22 @@ export default class Pipeline extends TreeItem {
 
         this.rows = workflows.length
           ? workflows.map((workflow) => new Workflow(workflow, this, this.tree))
-          : [new Empty('Workflows', this.tree)];
+          : [
+              new Empty(
+                localize('circleci.workflowPlural', 'Workflows'),
+                this.tree
+              ),
+            ];
         this.reloading = false;
         this.tree.reloadPipeline(this);
       })
       .catch((error) => {
         window.showErrorMessage(
-          `Couldn't load Workflows for Pipeline ${this.gitSet.repo}/${this.gitSet.branch}`
+          localize(
+            'circleci.loadWorkflowFail',
+            `Couldn't load Workflows for Pipeline {0}`,
+            `${this.gitSet.repo}/${this.gitSet.branch}`
+          )
         );
         console.error(error);
       });

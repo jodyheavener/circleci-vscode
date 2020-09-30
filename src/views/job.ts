@@ -1,7 +1,12 @@
 import { Job as JobData } from 'circle-client';
 import { env, TreeItem, TreeItemCollapsibleState, window } from 'vscode';
 import CircleCITree from '../lib/circleci-tree';
-import { getAsset, openInBrowser, statusDescriptions } from '../lib/utils';
+import {
+  getAsset,
+  localize,
+  openInBrowser,
+  statusDescriptions,
+} from '../lib/utils';
 import Workflow from './workflow';
 import JobDuration from './job-duration';
 import JobArtifacts from './job-artifacts';
@@ -45,7 +50,9 @@ export default class Job extends TreeItem {
   }
 
   private statusDescription(status?: string): string {
-    return statusDescriptions[status || 'Loading...'];
+    return statusDescriptions[
+      status || localize('circleci.loadingLabel', 'Loading...')
+    ];
   }
 
   private statusIcon(status?: string): string {
@@ -80,7 +87,13 @@ export default class Job extends TreeItem {
         this.workflow.pipeline.refresh();
       })
       .catch((error) => {
-        window.showErrorMessage(`Couldn't load details for Job ${this.job.id}`);
+        window.showErrorMessage(
+          localize(
+            'circleci.loadJobDetailsFail',
+            `Couldn't load details for Job {0}`,
+            this.job.id
+          )
+        );
         console.error(error);
       });
   }
@@ -108,17 +121,23 @@ export default class Job extends TreeItem {
 
   copyId(): void {
     env.clipboard.writeText(this.job.id);
-    window.showInformationMessage('Job ID copied to clipboard.');
+    window.showInformationMessage(
+      localize('circleci.jobIdCopied', 'Job ID copied to clipboard.')
+    );
   }
 
   copyNumber(): void {
     env.clipboard.writeText(String(this.job.job_number));
-    window.showInformationMessage('Job number copied to clipboard.');
+    window.showInformationMessage(
+      localize('circleci.jobNumberCopied', 'Job number copied to clipboard.')
+    );
   }
 
   cancel(): void {
     this.tree.client.cancelJob(this.job.job_number!);
-    window.showInformationMessage('Job canceled.');
+    window.showInformationMessage(
+      localize('circleci.jobCanceled', 'Job canceled.')
+    );
     // TODO: is 1 second appropriate?
     setTimeout(this.reload.bind(this), 1000);
   }

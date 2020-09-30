@@ -6,6 +6,7 @@ import ArtifactContentProvider from './lib/artifact-content-provider';
 import CircleCITree from './lib/circleci-tree';
 import registerCommands from './lib/commands';
 import { ConfigItems } from './lib/types';
+import { localize } from './lib/utils';
 
 let circleciTree: CircleCITree;
 
@@ -15,7 +16,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
     if (!apiToken) {
       window.showErrorMessage(
-        'A CircleCI API token (`circleci.apiToken`) must be set.'
+        localize(
+          'circleci.tokenRequired',
+          'A CircleCI API token (`circleci.apiToken`) must be set.'
+        )
       );
     }
 

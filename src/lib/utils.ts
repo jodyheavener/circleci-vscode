@@ -3,6 +3,9 @@ import { resolve } from 'path';
 import { ExtensionContext, window } from 'vscode';
 import { exec } from 'child_process';
 import open from 'open';
+import * as nls from 'vscode-nls';
+
+export const localize: nls.LocalizeFunc = nls.config()();
 
 export const statusDescriptions: {
   [status: string]: string;
@@ -51,7 +54,9 @@ export function openInBrowser(url: string): void {
   try {
     open(url);
   } catch (error) {
-    window.showErrorMessage(`Couldn't open URL: ${url}`);
+    window.showErrorMessage(
+      localize('circleci.couldntOpenUrl', `Couldn't open URL: {0}`, url)
+    );
     console.error(error);
   }
 }
