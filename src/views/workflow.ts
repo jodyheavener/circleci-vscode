@@ -1,90 +1,43 @@
-import { Workflow as WorkflowData } from 'circle-client';
-import { env, TreeItem, TreeItemCollapsibleState, window } from 'vscode';
+import { Workflow as WorkflowData, Job as JobData } from 'circle-client';
+import { env, TreeItemCollapsibleState, window } from 'vscode';
 import CircleCITree from '../lib/circleci-tree';
-import {
-  getAsset,
-  localize,
-  openInBrowser,
-  pluralize,
-  statusDescriptions,
-} from '../lib/utils';
-import Pipeline from './Pipeline';
-import Empty from './empty';
+import { getAsset, localize, openInBrowser } from '../lib/utils';
+import ResourcesItem from './resources-item';
+import Pipeline from './pipeline';
 import Job from './job';
-import LoadItems from './load-items';
 
-export default class Workflow extends TreeItem {
+export default class Workflow extends ResourcesItem {
   readonly contextValue = 'circleciWorkflow';
-  private reloading = false;
-  private rows: TreeItem[] = [];
 
   constructor(
     readonly workflow: WorkflowData,
     readonly pipeline: Pipeline,
     readonly tree: CircleCITree
   ) {
-    super(workflow.name, TreeItemCollapsibleState.Expanded);
+    super(
+      workflow.name,
+      TreeItemCollapsibleState.Expanded,
+      localize('circleci.jobPlural', 'Jobs'),
+      tree.config.get('autoLoadWorkflowJobs') as boolean,
+      tree
+    );
 
     this.tooltip = workflow.name;
     this.iconPath = getAsset(this.tree.context, 'workflow');
-
-    if (this.tree.config.get('autoLoadWorkflowJobs')) {
-      this.description = localize('circleci.loadingLabel', 'Loading...');
-      this.loadJobs();
-    } else {
-      this.rows = [
-        new LoadItems(
-          localize('circleci.jobSingular', 'Job'),
-          this.loadJobs.bind(this)
-        ),
-      ];
-    }
+    this.setup(pipeline.refresh.bind(pipeline));
   }
 
-  private loadJobs(): void {
-    this.tree.client
-      .listWorkflowJobs(this.workflow.id)
-      .then(async ({ items: jobs }) => {
-        const noJobs = localize('circleci.noJobs', 'No Jobs');
-        const jobsLabel = pluralize(
-          jobs.length,
-          localize('circleci.jobSingular', 'Job'),
-          localize('circleci.jobPlural', 'Jobs')
-        );
-        this.description = `${jobs.length ? jobsLabel : noJobs} - ${
-          statusDescriptions[
-            this.workflow.status || localize('circleci.unknownLabel', 'Unknown')
-          ]
-        }`;
-        this.tooltip = `${jobs.length ? jobsLabel : noJobs} for ${
-          this.workflow.name
-        }`;
-
-        this.rows = jobs.length
-          ? jobs.map((job) => new Job(job, this, this.tree))
-          : [new Empty(localize('circleci.jobPlural', 'Jobs'), this.tree)];
-        this.reloading = false;
-        this.pipeline.refresh();
-      })
-      .catch((error) => {
-        window.showErrorMessage(
-          localize(
-            'circleci.loadJobsFail',
-            `Couldn't load Jobs for Workflow {0}`,
-            this.workflow.name
-          )
-        );
-        console.error(error);
+  updateResources(): void {
+    this.loadResources<JobData>(async () => {
+      return this.tree.client.listWorkflowJobs(this.workflow.id, {
+        pageToken: this.pageToken!,
       });
-  }
-
-  reload(): void {
-    if (this.reloading) {
-      return;
-    }
-
-    this.reloading = true;
-    this.loadJobs();
+    }).then((newJobs) => {
+      this.mainRows.push(
+        ...newJobs.map((job) => new Job(job, this, this.tree))
+      );
+      this.didUpdate();
+    });
   }
 
   openPage(): void {
@@ -126,9 +79,5 @@ export default class Workflow extends TreeItem {
     // Retry adds *new* jobs, so reload the whole pipeline
     // TODO: is 1 second appropriate?
     setTimeout(this.pipeline.reload.bind(this), 1000);
-  }
-
-  get children(): TreeItem[] {
-    return this.rows;
   }
 }

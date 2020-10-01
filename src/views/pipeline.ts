@@ -1,102 +1,62 @@
-import { TreeItem, TreeItemCollapsibleState, window } from 'vscode';
+import { TreeItemCollapsibleState } from 'vscode';
+import { Workflow as WorkflowData } from 'circle-client';
 import CircleCITree from '../lib/circleci-tree';
 import { ActivatableGitSet } from '../lib/types';
-import { getAsset, localize, openInBrowser, pluralize } from '../lib/utils';
-import Empty from './empty';
-import LoadItems from './load-items';
+import { getAsset, localize, openInBrowser } from '../lib/utils';
+import ResourcesItem from './resources-item';
 import Workflow from './workflow';
 
-export default class Pipeline extends TreeItem {
+export default class Pipeline extends ResourcesItem {
   readonly contextValue = 'circleciPipeline';
-  private reloading = false;
-  private rows: TreeItem[] = [];
 
   constructor(readonly gitSet: ActivatableGitSet, readonly tree: CircleCITree) {
     super(
-      `${
-        gitSet.current
-          ? localize('circleci.currentBranchLabel', 'Current: ')
-          : ''
-      }${gitSet.branch}`,
-      TreeItemCollapsibleState.Expanded
+      `${gitSet.current ? '★ ' : ''}${gitSet.branch}`,
+      TreeItemCollapsibleState.Expanded,
+      localize('circleci.workflowPlural', 'Workflows'),
+      tree.config.get('autoLoadWorkflows') as boolean,
+      tree
     );
 
     this.tooltip = `${this.gitSet.repo}/${this.gitSet.branch}`;
     this.iconPath = getAsset(this.tree.context, 'pipeline');
-
-    if (this.tree.config.get('autoLoadWorkflows')) {
-      this.description = localize('circleci.loadingLabel', 'Loading...');
-      this.loadWorkflows();
-    } else {
-      this.rows = [
-        new LoadItems(
-          localize('circleci.workflowSingular', 'Workflow'),
-          this.loadWorkflows.bind(this)
-        ),
-      ];
-    }
+    this.setup(tree.reloadPipeline.bind(tree, this));
   }
 
-  private loadWorkflows(): void {
-    this.tree.client
-      .listProjectPipelines({ branch: this.gitSet.branch })
-      .then(async ({ items: pipelines }) => {
-        const workflows = (
-          await Promise.all(
-            pipelines.map(async (pipeline) => {
-              const result = await this.tree.client.listPipelineWorkflows(
-                pipeline.id
-              );
-              return result.items;
-            })
-          )
-        ).flat();
-
-        const noWorkflows = localize('circleci.noWorkflows', 'No Workflows');
-        const workflowLabel = pluralize(
-          workflows.length,
-          localize('circleci.workflowSingular', 'Workflow'),
-          localize('circleci.workflowPlural', 'Workflows')
-        );
-        this.description = workflows.length ? workflowLabel : noWorkflows;
-        this.tooltip = `${workflows.length ? workflowLabel : noWorkflows} for ${
-          this.gitSet.repo
-        }/${this.gitSet.branch}`;
-
-        this.rows = workflows.length
-          ? workflows.map((workflow) => new Workflow(workflow, this, this.tree))
-          : [
-              new Empty(
-                localize('circleci.workflowPlural', 'Workflows'),
-                this.tree
-              ),
-            ];
-        this.reloading = false;
-        this.tree.reloadPipeline(this);
-      })
-      .catch((error) => {
-        window.showErrorMessage(
-          localize(
-            'circleci.loadWorkflowFail',
-            `Couldn't load Workflows for Pipeline {0}`,
-            `${this.gitSet.repo}/${this.gitSet.branch}`
-          )
-        );
-        console.error(error);
+  updateResources(): void {
+    this.loadResources<WorkflowData>(async () => {
+      const { items: pipelines } = await this.tree.client.listProjectPipelines({
+        branch: this.gitSet.branch,
       });
+      const workflows = (
+        await Promise.all(
+          pipelines.map(async (pipeline) => {
+            const result = await this.tree.client.listPipelineWorkflows(
+              pipeline.id
+            );
+            return result.items;
+          })
+        )
+      ).flat();
+      // This is a hack because we're double mapping pipelines against
+      // workflows and can't produce a next_page_token for both. This
+      // means right now there's no "load more" option unfortunately.
+      return {
+        items: workflows,
+        next_page_token: null,
+      };
+    }).then((newWorkflows) => {
+      this.mainRows.push(
+        ...newWorkflows.map(
+          (workflow) => new Workflow(workflow, this, this.tree)
+        )
+      );
+      this.didUpdate();
+    });
   }
 
   refresh(): void {
     this.tree.reloadPipeline(this);
-  }
-
-  reload(): void {
-    if (this.reloading) {
-      return;
-    }
-
-    this.reloading = true;
-    this.loadWorkflows();
   }
 
   openPage(): void {
@@ -107,9 +67,5 @@ export default class Pipeline extends TreeItem {
         this.gitSet.repo
       )}?branch=${encodeURIComponent(this.gitSet.branch)}`
     );
-  }
-
-  get children(): TreeItem[] {
-    return this.rows;
   }
 }

@@ -1,63 +1,53 @@
-import { TreeItem, TreeItemCollapsibleState } from 'vscode';
+import { JobArtifact as JobArtifactData } from 'circle-client';
+import { TreeItemCollapsibleState } from 'vscode';
 import CircleCITree from '../lib/circleci-tree';
-import { getAsset, localize, pluralize } from '../lib/utils';
+import { getAsset, localize } from '../lib/utils';
 import Job from './job';
 import JobArtifact from './job-artifact';
+import ResourcesItem from './resources-item';
 
-export default class JobArtifacts extends TreeItem {
+export default class JobArtifacts extends ResourcesItem {
   readonly contextValue = 'circleciJobArtifacts';
-  private fetching = false;
-  private fetched = false;
-  private artifacts: JobArtifact[] = [];
 
   constructor(readonly job: Job, readonly tree: CircleCITree) {
     super(
       localize('circleci.lookUpArtifacts', 'Look up Artifacts →'),
-      TreeItemCollapsibleState.None
+      TreeItemCollapsibleState.None,
+      localize('circleci.artifactPlural', 'Artifacts'),
+      false,
+      tree
     );
-
-    this.iconPath = getAsset(this.tree.context, 'box');
 
     this.command = {
       command: 'circleci.fetchJobArtifacts',
       title: localize('circleci.fetchArtifacts', 'Fetch Artifacts'),
       arguments: [this],
     };
+
+    this.iconPath = getAsset(this.tree.context, 'box');
+    this.setup(
+      this.job.workflow.pipeline.refresh.bind(this.job.workflow.pipeline)
+    );
   }
 
-  async fetchArtifacts(): Promise<void> {
-    if (this.fetching || this.fetched) {
-      return;
-    }
-
-    this.fetching = true;
-    const { items: artifacts } = await this.tree.client.listJobArtifacts(
-      this.job.job.job_number!
-    );
-
-    this.label = artifacts.length
-      ? `${pluralize(
-          artifacts.length,
-          localize('circleci.artifactSingular', 'Artifact'),
-          localize('circleci.artifactPlural', 'Artifacts')
-        )}`
-      : localize('circleci.noArtifacts', 'No Artifacts');
-
-    this.collapsibleState = artifacts.length
-      ? TreeItemCollapsibleState.Expanded
-      : TreeItemCollapsibleState.None;
-
-    this.artifacts = artifacts.map(
-      (artifact) => new JobArtifact(artifact, this.job, this.tree)
-    );
-
-    this.fetching = false;
-    this.fetched = true;
+  updateResources(): void {
     this.command = undefined;
+    this.collapsibleState = TreeItemCollapsibleState.Expanded;
     this.job.workflow.pipeline.refresh();
-  }
 
-  get children(): TreeItem[] {
-    return this.artifacts;
+    this.loadResources<JobArtifactData>(async () => {
+      return this.tree.client.listJobArtifacts(this.job.job.job_number!);
+    }).then((newArtifacts) => {
+      this.mainRows.push(
+        ...newArtifacts.map(
+          (artifact) => new JobArtifact(artifact, this.job, this.tree)
+        )
+      );
+      this.label = this.label = localize(
+        'circleci.viewArtifacts',
+        'View Artifacts'
+      );
+      this.didUpdate();
+    });
   }
 }
