@@ -37,7 +37,9 @@ export default class JobArtifacts extends ResourcesItem {
     this.job.workflow.pipeline.refresh();
 
     this.loadResources<JobArtifactData>(async () => {
-      return (await circleClient()).listJobArtifacts(this.job.job.job_number!);
+      return (await circleClient()).listJobArtifacts(this.job.job.job_number!, {
+        pageToken: this.pageToken!,
+      });
     }).then((newArtifacts) => {
       this.mainRows.push(
         ...newArtifacts.map(

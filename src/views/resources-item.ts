@@ -3,12 +3,7 @@ import Loader from './loader';
 import Empty from './empty';
 import CircleCITree from '../lib/circleci-tree';
 import { l } from '../lib/utils';
-
-// Would have been nice if I exported Paged from circle-client
-type Paged<T> = {
-  items: T[];
-  next_page_token: string | null;
-};
+import { Paged } from 'circle-client';
 
 export default class ResourcesItem extends TreeItem {
   protected prefixRows: TreeItem[] = [];

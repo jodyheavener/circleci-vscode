@@ -899,10 +899,10 @@ cipher-base@^1.0.0, cipher-base@^1.0.1, cipher-base@^1.0.3:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
-circle-client@^0.1.3:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/circle-client/-/circle-client-0.1.3.tgz#2c25cb0ed7f46f91638e55976d8cc7fa34afe125"
-  integrity sha512-a+A6BWDccYRkSJMBzwj2Jq7si/5q/vTI90gBU/W6j/2WoJ9SiOuLe2ZBCF5IS+ACBR3H7ATQ765MrtbW3+JkGg==
+circle-client@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/circle-client/-/circle-client-0.1.6.tgz#128e8b64d0efbafbaaf1ae070e848d9185299c69"
+  integrity sha512-Kl5uITr/bVTJlqDorFZSQNCnb6D2yb7nqmDWJ2hWY37f7brGApd1gOEGpdjKJFi+nCT9z2yNwPr+uzowwPhCFQ==
   dependencies:
     isomorphic-fetch "^2.2.1"
 

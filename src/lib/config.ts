@@ -4,33 +4,17 @@ import { ConfigItems } from './types';
 let exportedConfig: Config;
 
 export class Config {
-  readonly items: ConfigItems;
   private changeCallback?: () => void;
 
   constructor() {
-    const {
-      apiToken,
-      customBranches,
-      autoLoadWorkflows,
-      autoLoadWorkflowJobs,
-      VCSProvider,
-    } = workspace.getConfiguration('circleci');
-
-    this.items = {
-      apiToken,
-      customBranches,
-      autoLoadWorkflows,
-      autoLoadWorkflowJobs,
-      VCSProvider,
-    };
-
     workspace.onDidChangeConfiguration(() => {
       this.changeCallback && this.changeCallback();
     });
   }
 
   get(key: keyof ConfigItems): ConfigItems[typeof key] {
-    return this.items[key];
+    const config = workspace.getConfiguration('circleci');
+    return config[key] as ConfigItems[typeof key];
   }
 
   onChange(callback: () => void): void {
