@@ -59,9 +59,7 @@ export default class Workflow extends ResourcesItem {
 
   cancel(): void {
     this.tree.client.cancelWorkflow(this.workflow.id);
-    window.showInformationMessage(
-      l('workflowCanceled', 'Workflow canceled.')
-    );
+    window.showInformationMessage(l('workflowCanceled', 'Workflow canceled.'));
     // TODO: is 1 second appropriate?
     setTimeout(this.reload.bind(this), 1000);
   }
@@ -71,10 +69,7 @@ export default class Workflow extends ResourcesItem {
     window.showInformationMessage(
       fromFailed
         ? l('retryingJobs', 'Retrying Workflow Jobs')
-        : l(
-            'retryingFailedJobs',
-            'Retrying failed Workflow Jobs'
-          )
+        : l('retryingFailedJobs', 'Retrying failed Workflow Jobs')
     );
     // Retry adds *new* jobs, so reload the whole pipeline
     // TODO: is 1 second appropriate?

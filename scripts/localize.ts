@@ -2,13 +2,13 @@
 // const localesDir = join('..', 'src', 'i18n');
 
 async function run(): Promise<void> {
-	// await del(['package.nls.*.json']);
-	// nls.prepareJsonFiles();
-	// console.log(nls.createXlfFiles('CircleCI', 'circleci'));
-	// nls.debug();
-	// nls.createKeyValuePairFile().queue('');
-	// nls.rewriteLocalizeCalls();
-	// nls.createAdditionalLanguageFiles(
+  // await del(['package.nls.*.json']);
+  // nls.prepareJsonFiles();
+  // console.log(nls.createXlfFiles('CircleCI', 'circleci'));
+  // nls.debug();
+  // nls.createKeyValuePairFile().queue('');
+  // nls.rewriteLocalizeCalls();
+  // nls.createAdditionalLanguageFiles(
   //   [{ folderName: 'en', id: 'en' }],
   //   'i18n',
   //   'out'
@@ -16,5 +16,5 @@ async function run(): Promise<void> {
 }
 
 run().then(() => {
-	process.exit(0);
+  process.exit(0);
 });

@@ -1,12 +1,7 @@
 import { Job as JobData } from 'circle-client';
 import { env, TreeItem, TreeItemCollapsibleState, window } from 'vscode';
 import CircleCITree from '../lib/circleci-tree';
-import {
-  getAsset,
-  l,
-  openInBrowser,
-  statusDescriptions,
-} from '../lib/utils';
+import { getAsset, l, openInBrowser, statusDescriptions } from '../lib/utils';
 import Workflow from './workflow';
 import JobDuration from './job-duration';
 import JobArtifacts from './job-artifacts';
@@ -47,9 +42,7 @@ export default class Job extends TreeItem {
   }
 
   private statusDescription(status?: string): string {
-    return statusDescriptions[
-      status || l('loadingLabel', 'Loading...')
-    ];
+    return statusDescriptions[status || l('loadingLabel', 'Loading...')];
   }
 
   private statusIcon(status?: string): string {
@@ -129,9 +122,7 @@ export default class Job extends TreeItem {
 
   cancel(): void {
     this.tree.client.cancelJob(this.job.job_number!);
-    window.showInformationMessage(
-      l('jobCanceled', 'Job canceled.')
-    );
+    window.showInformationMessage(l('jobCanceled', 'Job canceled.'));
     // TODO: is 1 second appropriate?
     setTimeout(this.reload.bind(this), 1000);
   }

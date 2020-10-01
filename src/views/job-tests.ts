@@ -9,10 +9,7 @@ export default class JobTests extends TreeItem {
   private fetched = false;
 
   constructor(readonly job: Job, readonly tree: CircleCITree) {
-    super(
-      l('lookUpTests', 'Look up Tests →'),
-      TreeItemCollapsibleState.None
-    );
+    super(l('lookUpTests', 'Look up Tests →'), TreeItemCollapsibleState.None);
 
     this.iconPath = getAsset('clipboard');
 

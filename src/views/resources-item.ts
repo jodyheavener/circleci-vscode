@@ -72,11 +72,7 @@ export default class ResourcesItem extends TreeItem {
       return Promise.resolve(items);
     } catch (error) {
       window.showErrorMessage(
-        l(
-          'loadItemsFail',
-          `There was an issue loading`,
-          this.resourceName
-        )
+        l('loadItemsFail', `There was an issue loading`, this.resourceName)
       );
       console.error(error);
       return Promise.resolve([]);
