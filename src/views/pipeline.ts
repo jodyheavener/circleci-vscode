@@ -5,6 +5,8 @@ import { ActivatableGitSet } from '../lib/types';
 import { getAsset, l, openInBrowser } from '../lib/utils';
 import ResourcesItem from './resources-item';
 import Workflow from './workflow';
+import config from '../lib/config';
+import circleClient from '../lib/circle-client';
 
 export default class Pipeline extends ResourcesItem {
   readonly contextValue = 'circleciPipeline';
@@ -14,7 +16,7 @@ export default class Pipeline extends ResourcesItem {
       `${gitSet.current ? '★ ' : ''}${gitSet.branch}`,
       TreeItemCollapsibleState.Expanded,
       l('workflowPlural', 'Workflows'),
-      tree.config.get('autoLoadWorkflows') as boolean,
+      config().get('autoLoadWorkflows') as boolean,
       tree
     );
 
@@ -25,19 +27,23 @@ export default class Pipeline extends ResourcesItem {
 
   updateResources(): void {
     this.loadResources<WorkflowData>(async () => {
-      const { items: pipelines } = await this.tree.client.listProjectPipelines({
+      const { items: pipelines } = await(
+        await circleClient()
+      ).listProjectPipelines({
         branch: this.gitSet.branch,
       });
+
       const workflows = (
         await Promise.all(
           pipelines.map(async (pipeline) => {
-            const result = await this.tree.client.listPipelineWorkflows(
+            const result = await (await circleClient()).listPipelineWorkflows(
               pipeline.id
             );
             return result.items;
           })
         )
       ).flat();
+
       // This is a hack because we're double mapping pipelines against
       // workflows and can't produce a next_page_token for both. This
       // means right now there's no "load more" option unfortunately.
@@ -61,7 +67,7 @@ export default class Pipeline extends ResourcesItem {
 
   openPage(): void {
     openInBrowser(
-      `https://app.circleci.com/pipelines/${this.tree.config.get(
+      `https://app.circleci.com/pipelines/${config().get(
         'VCSProvider'
       )}/${encodeURIComponent(this.gitSet.user)}/${encodeURIComponent(
         this.gitSet.repo

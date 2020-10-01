@@ -1,5 +1,6 @@
 import { JobArtifact as JobArtifactData } from 'circle-client';
 import { TreeItemCollapsibleState } from 'vscode';
+import circleClient from '../lib/circle-client';
 import CircleCITree from '../lib/circleci-tree';
 import { getAsset, l } from '../lib/utils';
 import Job from './job';
@@ -36,7 +37,7 @@ export default class JobArtifacts extends ResourcesItem {
     this.job.workflow.pipeline.refresh();
 
     this.loadResources<JobArtifactData>(async () => {
-      return this.tree.client.listJobArtifacts(this.job.job.job_number!);
+      return (await circleClient()).listJobArtifacts(this.job.job.job_number!);
     }).then((newArtifacts) => {
       this.mainRows.push(
         ...newArtifacts.map(

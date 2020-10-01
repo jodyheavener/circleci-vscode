@@ -1,4 +1,5 @@
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
+import circleClient from '../lib/circle-client';
 import CircleCITree from '../lib/circleci-tree';
 import { getAsset, l, pluralize } from '../lib/utils';
 import Job from './job';
@@ -26,7 +27,7 @@ export default class JobTests extends TreeItem {
     }
 
     this.fetching = true;
-    const { items: tests } = await this.tree.client.listJobTests(
+    const { items: tests } = await (await circleClient()).listJobTests(
       this.job.job.job_number!
     );
 

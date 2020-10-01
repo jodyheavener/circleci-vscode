@@ -6,9 +6,8 @@ import {
   TreeDataProvider,
   TreeItem,
 } from 'vscode';
-import CircleCI from 'circle-client';
-import Config from './config';
-import GitMonitor from './git-monitor';
+import config from './config';
+import { GitService } from './git-service';
 import { ActivatableGitSet } from './types';
 import Pipeline from '../views/Pipeline';
 
@@ -23,11 +22,7 @@ export default class CircleCITree
   readonly onDidChangeTreeData: Event<Pipeline | undefined> = this
     ._onDidChangeTreeData.event;
 
-  constructor(
-    public client: CircleCI,
-    public config: Config,
-    public gitMonitor: GitMonitor
-  ) {}
+  constructor(private git: GitService) {}
 
   dispose(): void {
     this.disposed = true;
@@ -45,14 +40,14 @@ export default class CircleCITree
   private getBranchSets(): ActivatableGitSet[] {
     return [
       ...new Set([
-        this.gitMonitor.branch,
-        ...(this.config.get('customBranches') as string[]),
+        this.git.branch,
+        ...(config().get('customBranches') as string[]),
       ]),
     ].map((branch) => ({
       branch,
-      user: this.gitMonitor.user,
-      repo: this.gitMonitor.repo,
-      current: branch === this.gitMonitor.branch,
+      user: this.git.user,
+      repo: this.git.repo,
+      current: branch === this.git.branch,
     }));
   }
 

@@ -1,20 +1,25 @@
 import { watchFile } from 'fs';
 import { join } from 'path';
 import { window, workspace } from 'vscode';
+import config from './config';
 import { ConfigItems, GitSet } from './types';
 import { execCommand, l, stripNewline } from './utils';
 
 const REPO_MATCHER = /(?:git@.*\..*:|https?:\/\/.*\..*\/)(.*)\/(.*).git/g;
+let exportedService: GitService;
 
-export default class GitMonitor {
+export class GitService {
   gitData?: GitSet;
-  vcs?: ConfigItems['VCSProvider'];
 
   private changeCallback?: () => void;
 
-  async setup(vcs: ConfigItems['VCSProvider']): Promise<void> {
-    this.vcs = vcs;
+  constructor(public vcs: ConfigItems['VCSProvider']) {
+    watchFile(join(workspace.rootPath!, '.git/HEAD'), () => {
+      this.observeBranchChanges();
+    });
+  }
 
+  async setup(): Promise<void> {
     try {
       const { user, repo } = await this.getRepoInfo();
       this.gitData = {
@@ -22,10 +27,6 @@ export default class GitMonitor {
         repo,
         branch: await this.getBranch(),
       };
-
-      watchFile(join(workspace.rootPath!, '.git/HEAD'), () => {
-        this.observeBranchChanges();
-      });
     } catch (error) {
       this.showErrorMessage(error);
       console.error(error);
@@ -104,4 +105,15 @@ export default class GitMonitor {
       throw l('badGitBranch', 'Could not retrieve Git branch.');
     }
   }
+}
+
+export default async function gitService(): Promise<GitService> {
+  if (!exportedService) {
+    exportedService = new GitService(
+      config().get('VCSProvider') as ConfigItems['VCSProvider']
+    );
+    await exportedService.setup();
+  }
+
+  return exportedService;
 }

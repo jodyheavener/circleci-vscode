@@ -5,6 +5,8 @@ import { getAsset, l, openInBrowser, statusDescriptions } from '../lib/utils';
 import Workflow from './workflow';
 import JobDuration from './job-duration';
 import JobArtifacts from './job-artifacts';
+import config from '../lib/config';
+import circleClient from '../lib/circle-client';
 // import JobTests from './job-tests';
 
 const statusIcons: {
@@ -55,34 +57,36 @@ export default class Job extends TreeItem {
       return;
     }
 
-    this.tree.client
-      .getJob(this.job.job_number)
-      .then(async (details) => {
-        this.rows = [];
+    circleClient().then((client) => {
+      client
+        .getJob(this.job.job_number!)
+        .then(async (details) => {
+          this.rows = [];
 
-        this.description = this.statusDescription(details.status);
-        this.iconPath = getAsset(this.statusIcon(details.status));
+          this.description = this.statusDescription(details.status);
+          this.iconPath = getAsset(this.statusIcon(details.status));
 
-        if (details.duration) {
-          this.rows.push(new JobDuration(details.duration, this.tree));
-        }
+          if (details.duration) {
+            this.rows.push(new JobDuration(details.duration, this.tree));
+          }
 
-        this.rows.push(new JobArtifacts(this, this.tree));
-        // this.jobRows.push(new JobTests(this, this.tree));
+          this.rows.push(new JobArtifacts(this, this.tree));
+          // this.jobRows.push(new JobTests(this, this.tree));
 
-        this.reloading = false;
-        this.workflow.pipeline.refresh();
-      })
-      .catch((error) => {
-        window.showErrorMessage(
-          l(
-            'loadJobDetailsFail',
-            `Couldn't load details for Job {0}`,
-            this.job.id
-          )
-        );
-        console.error(error);
-      });
+          this.reloading = false;
+          this.workflow.pipeline.refresh();
+        })
+        .catch((error) => {
+          window.showErrorMessage(
+            l(
+              'loadJobDetailsFail',
+              `Couldn't load details for Job {0}`,
+              this.job.id
+            )
+          );
+          console.error(error);
+        });
+    });
   }
 
   reload(): void {
@@ -96,7 +100,7 @@ export default class Job extends TreeItem {
 
   openPage(): void {
     openInBrowser(
-      `https://app.circleci.com/pipelines/${this.tree.config.get(
+      `https://app.circleci.com/pipelines/${config().get(
         'VCSProvider'
       )}/${encodeURIComponent(
         this.workflow.pipeline.gitSet.user
@@ -120,8 +124,8 @@ export default class Job extends TreeItem {
     );
   }
 
-  cancel(): void {
-    this.tree.client.cancelJob(this.job.job_number!);
+  async cancel(): Promise<void> {
+    (await circleClient()).cancelJob(this.job.job_number!);
     window.showInformationMessage(l('jobCanceled', 'Job canceled.'));
     // TODO: is 1 second appropriate?
     setTimeout(this.reload.bind(this), 1000);

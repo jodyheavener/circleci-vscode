@@ -1,7 +1,9 @@
 import { workspace } from 'vscode';
 import { ConfigItems } from './types';
 
-export default class Config {
+let exportedConfig: Config;
+
+export class Config {
   readonly items: ConfigItems;
   private changeCallback?: () => void;
 
@@ -34,4 +36,12 @@ export default class Config {
   onChange(callback: () => void): void {
     this.changeCallback = callback;
   }
+}
+
+export default function config(): Config {
+  if (!exportedConfig) {
+    exportedConfig = new Config();
+  }
+
+  return exportedConfig;
 }

@@ -5,6 +5,8 @@ import { getAsset, l, openInBrowser } from '../lib/utils';
 import ResourcesItem from './resources-item';
 import Pipeline from './pipeline';
 import Job from './job';
+import config from '../lib/config';
+import circleClient from '../lib/circle-client';
 
 export default class Workflow extends ResourcesItem {
   readonly contextValue = 'circleciWorkflow';
@@ -18,7 +20,7 @@ export default class Workflow extends ResourcesItem {
       workflow.name,
       TreeItemCollapsibleState.Expanded,
       l('jobPlural', 'Jobs'),
-      tree.config.get('autoLoadWorkflowJobs') as boolean,
+      config().get('autoLoadWorkflowJobs') as boolean,
       tree
     );
 
@@ -29,7 +31,7 @@ export default class Workflow extends ResourcesItem {
 
   updateResources(): void {
     this.loadResources<JobData>(async () => {
-      return this.tree.client.listWorkflowJobs(this.workflow.id, {
+      return (await circleClient()).listWorkflowJobs(this.workflow.id, {
         pageToken: this.pageToken!,
       });
     }).then((newJobs) => {
@@ -42,7 +44,7 @@ export default class Workflow extends ResourcesItem {
 
   openPage(): void {
     openInBrowser(
-      `https://app.circleci.com/pipelines/${this.tree.config.get(
+      `https://app.circleci.com/pipelines/${config().get(
         'VCSProvider'
       )}/${encodeURIComponent(this.pipeline.gitSet.user)}/${encodeURIComponent(
         this.pipeline.gitSet.repo
@@ -57,15 +59,15 @@ export default class Workflow extends ResourcesItem {
     );
   }
 
-  cancel(): void {
-    this.tree.client.cancelWorkflow(this.workflow.id);
+  async cancel(): Promise<void> {
+    (await circleClient()).cancelWorkflow(this.workflow.id);
     window.showInformationMessage(l('workflowCanceled', 'Workflow canceled.'));
     // TODO: is 1 second appropriate?
     setTimeout(this.reload.bind(this), 1000);
   }
 
-  retryJobs(fromFailed = false): void {
-    this.tree.client.rerunWorkflow(this.workflow.id, { fromFailed });
+  async retryJobs(fromFailed = false): Promise<void> {
+    (await circleClient()).rerunWorkflow(this.workflow.id, { fromFailed });
     window.showInformationMessage(
       fromFailed
         ? l('retryingJobs', 'Retrying Workflow Jobs')

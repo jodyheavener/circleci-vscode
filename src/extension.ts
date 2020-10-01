@@ -1,49 +1,25 @@
 import { window, workspace, ExtensionContext } from 'vscode';
-import CircleCI from 'circle-client';
-import Config from './lib/config';
-import GitMonitor from './lib/git-monitor';
+import config from './lib/config';
+import gitService from './lib/git-service';
 import ArtifactContentProvider from './lib/artifact-content-provider';
 import CircleCITree from './lib/circleci-tree';
 import registerCommands from './lib/commands';
-import { ConfigItems } from './lib/types';
-import { l } from './lib/utils';
 
 let circleciTree: CircleCITree;
 let exportedContext: ExtensionContext;
 
 export async function activate(context: ExtensionContext): Promise<void> {
+  const git = await gitService();
   exportedContext = context;
 
-  function getClient(): CircleCI {
-    const apiToken = config.get('apiToken') as string;
-
-    if (!apiToken) {
-      window.showErrorMessage(
-        l(
-          'tokenRequired',
-          'A CircleCI API token (`circleci.apiToken`) must be set.'
-        )
-      );
-    }
-
-    return new CircleCI(apiToken, gitMonitor.circleProjectSlug);
-  }
-
   function refresh(): void {
-    circleciTree.client = getClient();
     circleciTree.refresh();
   }
 
-  const config = new Config();
-  config.onChange(refresh);
+  config().onChange(refresh);
+  git.onChange(refresh);
 
-  const gitMonitor = new GitMonitor();
-  await gitMonitor.setup(
-    config.get('VCSProvider') as ConfigItems['VCSProvider']
-  );
-  gitMonitor.onChange(refresh);
-
-  circleciTree = new CircleCITree(getClient(), config, gitMonitor);
+  circleciTree = new CircleCITree(git);
   window.registerTreeDataProvider('circleciTree', circleciTree);
 
   workspace.registerTextDocumentContentProvider(
