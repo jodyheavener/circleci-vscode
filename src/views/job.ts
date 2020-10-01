@@ -40,10 +40,7 @@ export default class Job extends TreeItem {
 
     this.description = this.statusDescription(this.job.status);
     this.tooltip = job.name;
-    this.iconPath = getAsset(
-      this.tree.context,
-      this.statusIcon(this.job.status)
-    );
+    this.iconPath = getAsset(this.statusIcon(this.job.status));
 
     // TODO: Add "click to load details" option
     this.loadDetails();
@@ -71,10 +68,7 @@ export default class Job extends TreeItem {
         this.rows = [];
 
         this.description = this.statusDescription(details.status);
-        this.iconPath = getAsset(
-          this.tree.context,
-          this.statusIcon(details.status)
-        );
+        this.iconPath = getAsset(this.statusIcon(details.status));
 
         if (details.duration) {
           this.rows.push(new JobDuration(details.duration, this.tree));

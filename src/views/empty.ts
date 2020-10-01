@@ -11,6 +11,6 @@ export default class Empty extends TreeItem {
       TreeItemCollapsibleState.None
     );
 
-    this.iconPath = getAsset(this.tree.context, 'ex');
+    this.iconPath = getAsset('ex');
   }
 }

@@ -51,7 +51,7 @@ export default class JobArtifact extends TreeItem {
   ) {
     super(stripPathPrefix(artifact.path), TreeItemCollapsibleState.None);
 
-    this.iconPath = getAsset(this.tree.context, getfileTypeIcon(artifact.path));
+    this.iconPath = getAsset(getfileTypeIcon(artifact.path));
 
     this.command = {
       command: 'circleci.openJobArtifact',

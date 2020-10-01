@@ -24,7 +24,7 @@ export default class JobArtifacts extends ResourcesItem {
       arguments: [this],
     };
 
-    this.iconPath = getAsset(this.tree.context, 'box');
+    this.iconPath = getAsset('box');
     this.setup(
       this.job.workflow.pipeline.refresh.bind(this.job.workflow.pipeline)
     );

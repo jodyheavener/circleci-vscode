@@ -2,7 +2,6 @@ import {
   Disposable,
   Event,
   EventEmitter,
-  ExtensionContext,
   ProviderResult,
   TreeDataProvider,
   TreeItem,
@@ -25,7 +24,6 @@ export default class CircleCITree
     ._onDidChangeTreeData.event;
 
   constructor(
-    readonly context: ExtensionContext,
     public client: CircleCI,
     public config: Config,
     public gitMonitor: GitMonitor

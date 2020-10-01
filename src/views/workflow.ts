@@ -23,7 +23,7 @@ export default class Workflow extends ResourcesItem {
     );
 
     this.tooltip = workflow.name;
-    this.iconPath = getAsset(this.tree.context, 'workflow');
+    this.iconPath = getAsset('workflow');
     this.setup(pipeline.refresh.bind(pipeline));
   }
 

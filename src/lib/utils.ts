@@ -1,9 +1,10 @@
 import { https } from 'follow-redirects';
 import { resolve } from 'path';
-import { ExtensionContext, window } from 'vscode';
+import { window } from 'vscode';
 import { exec } from 'child_process';
 import open from 'open';
 import * as nls from 'vscode-nls';
+import { getContext } from '../extension';
 
 export const localize: nls.LocalizeFunc = nls.config()();
 
@@ -39,10 +40,8 @@ export function msToTime(milliseconds: number): string {
   return `${minutes}m ${seconds < 10 ? '0' : ''}${seconds}s`;
 }
 
-export function getAsset(
-  context: ExtensionContext,
-  name: string
-): { light: string; dark: string } {
+export function getAsset(name: string): { light: string; dark: string } {
+  const context = getContext();
   const filename = `${name}.svg`;
   return {
     light: resolve(context.extensionPath, 'dist', 'assets', 'light', filename),

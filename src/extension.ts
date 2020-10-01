@@ -9,8 +9,11 @@ import { ConfigItems } from './lib/types';
 import { localize } from './lib/utils';
 
 let circleciTree: CircleCITree;
+let exportedContext: ExtensionContext;
 
 export async function activate(context: ExtensionContext): Promise<void> {
+  exportedContext = context;
+
   function getClient(): CircleCI {
     const apiToken = config.get('apiToken') as string;
 
@@ -40,7 +43,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   );
   gitMonitor.onChange(refresh);
 
-  circleciTree = new CircleCITree(context, getClient(), config, gitMonitor);
+  circleciTree = new CircleCITree(getClient(), config, gitMonitor);
   window.registerTreeDataProvider('circleciTree', circleciTree);
 
   workspace.registerTextDocumentContentProvider(
@@ -53,4 +56,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
 export function deactivate(): void {
   circleciTree && circleciTree.dispose();
+}
+
+export function getContext(): ExtensionContext {
+  return exportedContext;
 }

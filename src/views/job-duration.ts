@@ -8,6 +8,6 @@ export default class JobDuration extends TreeItem {
   constructor(readonly duration: number, readonly tree: CircleCITree) {
     super(msToTime(duration), TreeItemCollapsibleState.None);
 
-    this.iconPath = getAsset(this.tree.context, 'stopwatch');
+    this.iconPath = getAsset('stopwatch');
   }
 }

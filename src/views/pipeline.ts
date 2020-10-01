@@ -19,7 +19,7 @@ export default class Pipeline extends ResourcesItem {
     );
 
     this.tooltip = `${this.gitSet.repo}/${this.gitSet.branch}`;
-    this.iconPath = getAsset(this.tree.context, 'pipeline');
+    this.iconPath = getAsset('pipeline');
     this.setup(tree.reloadPipeline.bind(tree, this));
   }
 

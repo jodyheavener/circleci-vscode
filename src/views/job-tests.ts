@@ -14,7 +14,7 @@ export default class JobTests extends TreeItem {
       TreeItemCollapsibleState.None
     );
 
-    this.iconPath = getAsset(this.tree.context, 'clipboard');
+    this.iconPath = getAsset('clipboard');
 
     this.command = {
       command: 'circleci.fetchJobTests',
