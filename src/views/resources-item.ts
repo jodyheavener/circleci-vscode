@@ -2,7 +2,7 @@ import { TreeItem, TreeItemCollapsibleState, window } from 'vscode';
 import Loader from './loader';
 import Empty from './empty';
 import CircleCITree from '../lib/circleci-tree';
-import { localize } from '../lib/utils';
+import { l } from '../lib/utils';
 
 // Would have been nice if I exported Paged from circle-client
 type Paged<T> = {
@@ -72,8 +72,8 @@ export default class ResourcesItem extends TreeItem {
       return Promise.resolve(items);
     } catch (error) {
       window.showErrorMessage(
-        localize(
-          'circleci.loadItemsFail',
+        l(
+          'loadItemsFail',
           `There was an issue loading`,
           this.resourceName
         )

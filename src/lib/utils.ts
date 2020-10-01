@@ -6,7 +6,17 @@ import open from 'open';
 import * as nls from 'vscode-nls';
 import { getContext } from '../extension';
 
-export const localize: nls.LocalizeFunc = nls.config()();
+export function l(
+  key: string | nls.LocalizeInfo,
+  message: string,
+  ...args: (string | number | boolean | undefined | null)[]
+): string {
+  if (typeof key === 'string') {
+    return nls.config()()(`circleci-extension.${key}`, message, ...args);
+  } else {
+    return nls.config()()(key, message, ...args);
+  }
+}
 
 export const statusDescriptions: {
   [status: string]: string;
@@ -53,9 +63,7 @@ export function openInBrowser(url: string): void {
   try {
     open(url);
   } catch (error) {
-    window.showErrorMessage(
-      localize('circleci.couldntOpenUrl', `Couldn't open URL: {0}`, url)
-    );
+    window.showErrorMessage(l('couldntOpenUrl', `Couldn't open URL: {0}`, url));
     console.error(error);
   }
 }

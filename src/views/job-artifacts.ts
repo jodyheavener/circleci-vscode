@@ -1,7 +1,7 @@
 import { JobArtifact as JobArtifactData } from 'circle-client';
 import { TreeItemCollapsibleState } from 'vscode';
 import CircleCITree from '../lib/circleci-tree';
-import { getAsset, localize } from '../lib/utils';
+import { getAsset, l } from '../lib/utils';
 import Job from './job';
 import JobArtifact from './job-artifact';
 import ResourcesItem from './resources-item';
@@ -11,16 +11,16 @@ export default class JobArtifacts extends ResourcesItem {
 
   constructor(readonly job: Job, readonly tree: CircleCITree) {
     super(
-      localize('circleci.lookUpArtifacts', 'Look up Artifacts →'),
+      l('lookUpArtifacts', 'Look up Artifacts →'),
       TreeItemCollapsibleState.None,
-      localize('circleci.artifactPlural', 'Artifacts'),
+      l('artifactPlural', 'Artifacts'),
       false,
       tree
     );
 
     this.command = {
       command: 'circleci.fetchJobArtifacts',
-      title: localize('circleci.fetchArtifacts', 'Fetch Artifacts'),
+      title: l('fetchArtifacts', 'Fetch Artifacts'),
       arguments: [this],
     };
 
@@ -43,8 +43,8 @@ export default class JobArtifacts extends ResourcesItem {
           (artifact) => new JobArtifact(artifact, this.job, this.tree)
         )
       );
-      this.label = this.label = localize(
-        'circleci.viewArtifacts',
+      this.label = this.label = l(
+        'viewArtifacts',
         'View Artifacts'
       );
       this.didUpdate();

@@ -2,7 +2,7 @@ import { watchFile } from 'fs';
 import { join } from 'path';
 import { window, workspace } from 'vscode';
 import { ConfigItems, GitSet } from './types';
-import { execCommand, localize, stripNewline } from './utils';
+import { execCommand, l, stripNewline } from './utils';
 
 const REPO_MATCHER = /(?:git@.*\..*:|https?:\/\/.*\..*\/)(.*)\/(.*).git/g;
 
@@ -83,8 +83,8 @@ export default class GitMonitor {
       return { user: matches[0][1], repo: matches[0][2] };
     } catch (error) {
       console.error(error);
-      throw localize(
-        'circleci.badGitInfo',
+      throw l(
+        'badGitInfo',
         'Could not retrieve Git info. Is the "origin" remote set?'
       );
     }
@@ -101,7 +101,7 @@ export default class GitMonitor {
       return cmdOutput;
     } catch (error) {
       console.error(error);
-      throw localize('circleci.badGitBranch', 'Could not retrieve Git branch.');
+      throw l('badGitBranch', 'Could not retrieve Git branch.');
     }
   }
 }

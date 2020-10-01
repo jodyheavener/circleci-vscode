@@ -2,7 +2,7 @@ import { TreeItemCollapsibleState } from 'vscode';
 import { Workflow as WorkflowData } from 'circle-client';
 import CircleCITree from '../lib/circleci-tree';
 import { ActivatableGitSet } from '../lib/types';
-import { getAsset, localize, openInBrowser } from '../lib/utils';
+import { getAsset, l, openInBrowser } from '../lib/utils';
 import ResourcesItem from './resources-item';
 import Workflow from './workflow';
 
@@ -13,7 +13,7 @@ export default class Pipeline extends ResourcesItem {
     super(
       `${gitSet.current ? '★ ' : ''}${gitSet.branch}`,
       TreeItemCollapsibleState.Expanded,
-      localize('circleci.workflowPlural', 'Workflows'),
+      l('workflowPlural', 'Workflows'),
       tree.config.get('autoLoadWorkflows') as boolean,
       tree
     );

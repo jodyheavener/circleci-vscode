@@ -3,7 +3,7 @@ import { env, TreeItem, TreeItemCollapsibleState, window } from 'vscode';
 import CircleCITree from '../lib/circleci-tree';
 import {
   getAsset,
-  localize,
+  l,
   openInBrowser,
   statusDescriptions,
 } from '../lib/utils';
@@ -48,7 +48,7 @@ export default class Job extends TreeItem {
 
   private statusDescription(status?: string): string {
     return statusDescriptions[
-      status || localize('circleci.loadingLabel', 'Loading...')
+      status || l('loadingLabel', 'Loading...')
     ];
   }
 
@@ -82,8 +82,8 @@ export default class Job extends TreeItem {
       })
       .catch((error) => {
         window.showErrorMessage(
-          localize(
-            'circleci.loadJobDetailsFail',
+          l(
+            'loadJobDetailsFail',
             `Couldn't load details for Job {0}`,
             this.job.id
           )
@@ -116,21 +116,21 @@ export default class Job extends TreeItem {
   copyId(): void {
     env.clipboard.writeText(this.job.id);
     window.showInformationMessage(
-      localize('circleci.jobIdCopied', 'Job ID copied to clipboard.')
+      l('jobIdCopied', 'Job ID copied to clipboard.')
     );
   }
 
   copyNumber(): void {
     env.clipboard.writeText(String(this.job.job_number));
     window.showInformationMessage(
-      localize('circleci.jobNumberCopied', 'Job number copied to clipboard.')
+      l('jobNumberCopied', 'Job number copied to clipboard.')
     );
   }
 
   cancel(): void {
     this.tree.client.cancelJob(this.job.job_number!);
     window.showInformationMessage(
-      localize('circleci.jobCanceled', 'Job canceled.')
+      l('jobCanceled', 'Job canceled.')
     );
     // TODO: is 1 second appropriate?
     setTimeout(this.reload.bind(this), 1000);

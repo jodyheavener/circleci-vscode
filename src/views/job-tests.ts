@@ -1,6 +1,6 @@
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 import CircleCITree from '../lib/circleci-tree';
-import { getAsset, localize, pluralize } from '../lib/utils';
+import { getAsset, l, pluralize } from '../lib/utils';
 import Job from './job';
 
 export default class JobTests extends TreeItem {
@@ -10,7 +10,7 @@ export default class JobTests extends TreeItem {
 
   constructor(readonly job: Job, readonly tree: CircleCITree) {
     super(
-      localize('circleci.lookUpTests', 'Look up Tests →'),
+      l('lookUpTests', 'Look up Tests →'),
       TreeItemCollapsibleState.None
     );
 
@@ -18,7 +18,7 @@ export default class JobTests extends TreeItem {
 
     this.command = {
       command: 'circleci.fetchJobTests',
-      title: localize('circleci.fetchTests', 'Fetch Tests'),
+      title: l('fetchTests', 'Fetch Tests'),
       arguments: [this],
     };
   }
@@ -36,10 +36,10 @@ export default class JobTests extends TreeItem {
     this.label = tests.length
       ? `${pluralize(
           tests.length,
-          localize('circleci.testSingular', 'Test'),
-          localize('circleci.testPlural', 'Tests')
+          l('testSingular', 'Test'),
+          l('testPlural', 'Tests')
         )}`
-      : localize('circleci.noTests', 'No tests');
+      : l('noTests', 'No tests');
 
     this.collapsibleState = tests.length
       ? TreeItemCollapsibleState.Expanded

@@ -1,7 +1,7 @@
 import { Workflow as WorkflowData, Job as JobData } from 'circle-client';
 import { env, TreeItemCollapsibleState, window } from 'vscode';
 import CircleCITree from '../lib/circleci-tree';
-import { getAsset, localize, openInBrowser } from '../lib/utils';
+import { getAsset, l, openInBrowser } from '../lib/utils';
 import ResourcesItem from './resources-item';
 import Pipeline from './pipeline';
 import Job from './job';
@@ -17,7 +17,7 @@ export default class Workflow extends ResourcesItem {
     super(
       workflow.name,
       TreeItemCollapsibleState.Expanded,
-      localize('circleci.jobPlural', 'Jobs'),
+      l('jobPlural', 'Jobs'),
       tree.config.get('autoLoadWorkflowJobs') as boolean,
       tree
     );
@@ -53,14 +53,14 @@ export default class Workflow extends ResourcesItem {
   copyId(): void {
     env.clipboard.writeText(this.workflow.id);
     window.showInformationMessage(
-      localize('circleci.workflowIdCopied', 'Workflow ID copied to clipboard.')
+      l('workflowIdCopied', 'Workflow ID copied to clipboard.')
     );
   }
 
   cancel(): void {
     this.tree.client.cancelWorkflow(this.workflow.id);
     window.showInformationMessage(
-      localize('circleci.workflowCanceled', 'Workflow canceled.')
+      l('workflowCanceled', 'Workflow canceled.')
     );
     // TODO: is 1 second appropriate?
     setTimeout(this.reload.bind(this), 1000);
@@ -70,9 +70,9 @@ export default class Workflow extends ResourcesItem {
     this.tree.client.rerunWorkflow(this.workflow.id, { fromFailed });
     window.showInformationMessage(
       fromFailed
-        ? localize('circleci.retryingJobs', 'Retrying Workflow Jobs')
-        : localize(
-            'circleci.retryingFailedJobs',
+        ? l('retryingJobs', 'Retrying Workflow Jobs')
+        : l(
+            'retryingFailedJobs',
             'Retrying failed Workflow Jobs'
           )
     );
