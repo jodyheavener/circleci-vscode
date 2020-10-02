@@ -1,6 +1,5 @@
 import { Job as JobData } from 'circle-client';
 import { env, TreeItem, TreeItemCollapsibleState, window } from 'vscode';
-import CircleCITree from '../lib/circleci-tree';
 import { getAsset, l, openInBrowser, statusDescriptions } from '../lib/utils';
 import Workflow from './workflow';
 import JobDuration from './job-duration';
@@ -30,8 +29,7 @@ export default class Job extends TreeItem {
 
   constructor(
     readonly job: JobData,
-    readonly workflow: Workflow,
-    readonly tree: CircleCITree
+    readonly workflow: Workflow
   ) {
     super(job.name, TreeItemCollapsibleState.Collapsed);
 
@@ -67,11 +65,11 @@ export default class Job extends TreeItem {
           this.iconPath = getAsset(this.statusIcon(details.status));
 
           if (details.duration) {
-            this.rows.push(new JobDuration(details.duration, this.tree));
+            this.rows.push(new JobDuration(details.duration));
           }
 
-          this.rows.push(new JobArtifacts(this, this.tree));
-          // this.jobRows.push(new JobTests(this, this.tree));
+          this.rows.push(new JobArtifacts(this));
+          // this.jobRows.push(new JobTests(this));
 
           this.reloading = false;
           this.workflow.pipeline.refresh();

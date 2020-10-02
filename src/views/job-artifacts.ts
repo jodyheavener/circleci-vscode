@@ -1,7 +1,6 @@
 import { JobArtifact as JobArtifactData } from 'circle-client';
 import { TreeItemCollapsibleState } from 'vscode';
 import circleClient from '../lib/circle-client';
-import CircleCITree from '../lib/circleci-tree';
 import { getAsset, l } from '../lib/utils';
 import Job from './job';
 import JobArtifact from './job-artifact';
@@ -10,13 +9,12 @@ import ResourcesItem from './resources-item';
 export default class JobArtifacts extends ResourcesItem {
   readonly contextValue = 'circleciJobArtifacts';
 
-  constructor(readonly job: Job, readonly tree: CircleCITree) {
+  constructor(readonly job: Job) {
     super(
       l('lookUpArtifacts', 'Look up Artifacts →'),
       TreeItemCollapsibleState.None,
       l('artifactPlural', 'Artifacts'),
-      false,
-      tree
+      false
     );
 
     this.command = {
@@ -26,9 +24,7 @@ export default class JobArtifacts extends ResourcesItem {
     };
 
     this.iconPath = getAsset('box');
-    this.setup(
-      this.job.workflow.pipeline.refresh.bind(this.job.workflow.pipeline)
-    );
+    this.setup();
   }
 
   updateResources(): void {
@@ -42,12 +38,14 @@ export default class JobArtifacts extends ResourcesItem {
       });
     }).then((newArtifacts) => {
       this.mainRows.push(
-        ...newArtifacts.map(
-          (artifact) => new JobArtifact(artifact, this.job, this.tree)
-        )
+        ...newArtifacts.map((artifact) => new JobArtifact(artifact, this.job))
       );
       this.label = this.label = l('viewArtifacts', 'View Artifacts');
       this.didUpdate();
     });
+  }
+
+  refresh(): void {
+    this.job.workflow.pipeline.refresh();
   }
 }

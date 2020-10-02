@@ -1,6 +1,5 @@
 import { Workflow as WorkflowData, Job as JobData } from 'circle-client';
 import { env, TreeItemCollapsibleState, window } from 'vscode';
-import CircleCITree from '../lib/circleci-tree';
 import { getAsset, l, openInBrowser } from '../lib/utils';
 import ResourcesItem from './resources-item';
 import Pipeline from './pipeline';
@@ -14,19 +13,17 @@ export default class Workflow extends ResourcesItem {
   constructor(
     readonly workflow: WorkflowData,
     readonly pipeline: Pipeline,
-    readonly tree: CircleCITree
   ) {
     super(
       workflow.name,
       TreeItemCollapsibleState.Expanded,
       l('jobPlural', 'Jobs'),
-      config().get('autoLoadWorkflowJobs') as boolean,
-      tree
+      config().get('autoLoadWorkflowJobs') as boolean
     );
 
     this.tooltip = workflow.name;
     this.iconPath = getAsset('workflow');
-    this.setup(pipeline.refresh.bind(pipeline));
+    this.setup();
   }
 
   updateResources(): void {
@@ -35,11 +32,13 @@ export default class Workflow extends ResourcesItem {
         pageToken: this.pageToken!,
       });
     }).then((newJobs) => {
-      this.mainRows.push(
-        ...newJobs.map((job) => new Job(job, this, this.tree))
-      );
+      this.mainRows.push(...newJobs.map((job) => new Job(job, this)));
       this.didUpdate();
     });
+  }
+
+  refresh(): void {
+    this.pipeline.refresh();
   }
 
   openPage(): void {

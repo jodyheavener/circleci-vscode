@@ -16,18 +16,17 @@ export default class Pipeline extends ResourcesItem {
       `${gitSet.current ? '★ ' : ''}${gitSet.branch}`,
       TreeItemCollapsibleState.Expanded,
       l('workflowPlural', 'Workflows'),
-      config().get('autoLoadWorkflows') as boolean,
-      tree
+      config().get('autoLoadWorkflows') as boolean
     );
 
     this.tooltip = `${this.gitSet.repo}/${this.gitSet.branch}`;
     this.iconPath = getAsset('pipeline');
-    this.setup(tree.reloadPipeline.bind(tree, this));
+    this.setup();
   }
 
   updateResources(): void {
     this.loadResources<WorkflowData>(async () => {
-      const { items: pipelines } = await(
+      const { items: pipelines } = await (
         await circleClient()
       ).listProjectPipelines({
         branch: this.gitSet.branch,
@@ -53,9 +52,7 @@ export default class Pipeline extends ResourcesItem {
       };
     }).then((newWorkflows) => {
       this.mainRows.push(
-        ...newWorkflows.map(
-          (workflow) => new Workflow(workflow, this, this.tree)
-        )
+        ...newWorkflows.map((workflow) => new Workflow(workflow, this))
       );
       this.didUpdate();
     });

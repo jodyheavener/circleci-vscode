@@ -1,6 +1,5 @@
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 import circleClient from '../lib/circle-client';
-import CircleCITree from '../lib/circleci-tree';
 import { getAsset, l, pluralize } from '../lib/utils';
 import Job from './job';
 
@@ -9,7 +8,7 @@ export default class JobTests extends TreeItem {
   private fetching = false;
   private fetched = false;
 
-  constructor(readonly job: Job, readonly tree: CircleCITree) {
+  constructor(readonly job: Job) {
     super(l('lookUpTests', 'Look up Tests →'), TreeItemCollapsibleState.None);
 
     this.iconPath = getAsset('clipboard');
@@ -42,8 +41,6 @@ export default class JobTests extends TreeItem {
     this.collapsibleState = tests.length
       ? TreeItemCollapsibleState.Expanded
       : TreeItemCollapsibleState.None;
-
-    console.log(tests);
 
     this.fetching = false;
     this.fetched = true;

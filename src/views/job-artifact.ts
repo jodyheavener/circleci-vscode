@@ -6,7 +6,6 @@ import {
   window,
   workspace,
 } from 'vscode';
-import CircleCITree from '../lib/circleci-tree';
 import { downloadFile, getAsset, l } from '../lib/utils';
 import Job from './job';
 
@@ -44,11 +43,7 @@ export default class JobArtifact extends TreeItem {
   private downloading = false;
   private fileData?: string;
 
-  constructor(
-    readonly artifact: JobArtifactData,
-    readonly job: Job,
-    readonly tree: CircleCITree
-  ) {
+  constructor(readonly artifact: JobArtifactData, readonly job: Job) {
     super(stripPathPrefix(artifact.path), TreeItemCollapsibleState.None);
 
     this.iconPath = getAsset(getfileTypeIcon(artifact.path));
@@ -71,7 +66,7 @@ export default class JobArtifact extends TreeItem {
         this.fileData = await downloadFile(this.artifact.url);
         this.downloading = false;
       } catch (error) {
-        console.error(error.stack);
+        console.error(error);
         window.showErrorMessage(
           l(
             'downloadArtifactError',

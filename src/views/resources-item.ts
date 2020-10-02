@@ -1,7 +1,6 @@
 import { TreeItem, TreeItemCollapsibleState, window } from 'vscode';
 import Loader from './loader';
 import Empty from './empty';
-import CircleCITree from '../lib/circleci-tree';
 import { l } from '../lib/utils';
 import { Paged } from 'circle-client';
 
@@ -10,22 +9,18 @@ export default class ResourcesItem extends TreeItem {
   protected mainRows: TreeItem[] = [];
   private allRows: TreeItem[] = [];
   private loaderRow?: Loader;
-  private refreshFn?: () => void;
   pageToken: string | null = null;
 
   constructor(
     label: string,
     collapsibleState: TreeItemCollapsibleState,
     private readonly resourceName: string,
-    private readonly autoload: boolean,
-    readonly tree: CircleCITree
+    private readonly autoload: boolean
   ) {
     super(label, collapsibleState);
   }
 
-  setup(refreshFn: () => void): void {
-    this.refreshFn = refreshFn;
-
+  setup(): void {
     this.loaderRow = new Loader(
       this.resourceName,
       this.updateResources.bind(this)
@@ -42,13 +37,17 @@ export default class ResourcesItem extends TreeItem {
     this.loaderRow!.setLoading(false);
     this.allRows = this.mainRows.length
       ? this.mainRows
-      : [new Empty(this.resourceName, this.tree)];
+      : [new Empty(this.resourceName)];
 
     if (this.pageToken) {
       this.allRows.push(this.loaderRow!);
     }
 
-    this.refreshFn!();
+    this.refresh();
+  }
+
+  refresh(): void {
+    throw 'Sub-class must implement refresh';
   }
 
   updateResources(): void {
@@ -59,7 +58,7 @@ export default class ResourcesItem extends TreeItem {
     loader: () => Promise<Paged<T>>
   ): Promise<Paged<T>['items']> {
     this.loaderRow!.setLoading(true);
-    this.refreshFn!();
+    this.refresh();
 
     try {
       const { items, next_page_token: pageToken } = await loader();
