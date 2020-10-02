@@ -20,8 +20,6 @@ import Pipeline from './pipeline';
 import Job from './job';
 
 export default class Workflow extends ResourcesItem {
-  readonly contextValue = constants.WORKFLOW_CONTEXT_BASE;
-
   constructor(public workflow: WorkflowData, readonly pipeline: Pipeline) {
     super(
       workflow.name,
@@ -33,6 +31,7 @@ export default class Workflow extends ResourcesItem {
     this.tooltip = workflow.name;
     this.iconPath = getAsset('workflow');
     this.setup();
+    this.setContextValue();
   }
 
   updateResources(): void {
@@ -49,6 +48,7 @@ export default class Workflow extends ResourcesItem {
         statusDescriptions[
           this.workflow.status || l('unknownLabel', 'Unknown')
         ];
+      this.setContextValue();
       this.didUpdate();
     });
   }
@@ -99,5 +99,23 @@ export default class Workflow extends ResourcesItem {
     );
     // Retry adds *new* jobs, so reload the whole pipeline
     setTimeout(this.pipeline.reload.bind(this), 1000);
+  }
+
+  private setContextValue(): void {
+    let value = constants.WORKFLOW_CONTEXT_BASE;
+
+    if (this.workflow.status === WorkflowStatus.Running) {
+      value += ':running';
+    }
+
+    if (this.workflow.status === WorkflowStatus.Failing) {
+      value += ':failing';
+    }
+
+    if (this.workflow.status === WorkflowStatus.Failed) {
+      value += ':failed';
+    }
+
+    this.contextValue = value;
   }
 }

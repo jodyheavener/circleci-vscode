@@ -28,7 +28,6 @@ const statusIcons: {
 };
 
 export default class Job extends TreeItem {
-  readonly contextValue = constants.JOB_CONTEXT_BASE;
   private reloading = false;
   private rows: TreeItem[] = [];
 
@@ -40,6 +39,7 @@ export default class Job extends TreeItem {
     this.iconPath = getAsset(this.statusIcon(this.job.status));
 
     this.loadDetails();
+    this.setContextValue();
   }
 
   private statusDescription(status?: string): string {
@@ -65,6 +65,7 @@ export default class Job extends TreeItem {
           }
 
           this.rows.push(new JobArtifacts(this));
+          this.setContextValue();
 
           this.reloading = false;
           this.workflow.pipeline.refresh();
@@ -126,5 +127,15 @@ export default class Job extends TreeItem {
 
   get children(): TreeItem[] {
     return this.rows;
+  }
+
+  private setContextValue(): void {
+    let value = constants.JOB_CONTEXT_BASE;
+
+    if (this.job.status === 'running') {
+      value += ':running';
+    }
+
+    this.contextValue = value;
   }
 }
