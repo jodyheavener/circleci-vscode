@@ -1,5 +1,5 @@
 import { Command, TreeItem, TreeItemCollapsibleState } from 'vscode';
-import { l } from '../lib/utils';
+import { getAsset, l } from '../lib/utils';
 
 export default class Loader extends TreeItem {
   readonly contextValue = 'circleci-load-items';
@@ -17,6 +17,7 @@ export default class Loader extends TreeItem {
       arguments: [this],
     };
     this.command = this.storedCommand;
+    this.iconPath = getAsset('download');
   }
 
   setLoading(isLoading: boolean): void {
