@@ -218,17 +218,17 @@
           "default": true,
           "markdownDescription": "Automatically load Workflow Jobs."
         },
-        "circleci.pipelineRefreshInterval": {
+        "circleci.pipelineReloadInterval": {
           "type": "number",
           "default": 120,
           "minimum": 0,
-          "markdownDescription": "Seconds to wait before refreshing all **inactive** Pipelines. Set to `0` to disable."
+          "markdownDescription": "Seconds to wait before reloading all Pipelines. This will load in any new Workflows. Set to `0` to disable."
         },
-        "circleci.workflowRefreshInterval": {
+        "circleci.workflowReloadInterval": {
           "type": "number",
           "default": 10,
           "minimum": 0,
-          "markdownDescription": "Seconds to wait before refreshing an active Workflow's status. Set to `0` to disable."
+          "markdownDescription": "Seconds to wait before reloading an active Workflow's status. Set to `0` to disable."
         }
       }
     }

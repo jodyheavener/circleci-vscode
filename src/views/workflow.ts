@@ -1,4 +1,8 @@
-import { Workflow as WorkflowData, Job as JobData } from 'circle-client';
+import {
+  Workflow as WorkflowData,
+  Job as JobData,
+  WorkflowStatus,
+} from 'circle-client';
 import { env, TreeItemCollapsibleState, window } from 'vscode';
 import { getAsset, l, openInBrowser } from '../lib/utils';
 import ResourcesItem from './resources-item';
@@ -10,10 +14,7 @@ import circleClient from '../lib/circle-client';
 export default class Workflow extends ResourcesItem {
   readonly contextValue = 'circleciWorkflow';
 
-  constructor(
-    readonly workflow: WorkflowData,
-    readonly pipeline: Pipeline,
-  ) {
+  constructor(readonly workflow: WorkflowData, readonly pipeline: Pipeline) {
     super(
       workflow.name,
       TreeItemCollapsibleState.Expanded,
@@ -39,6 +40,14 @@ export default class Workflow extends ResourcesItem {
 
   refresh(): void {
     this.pipeline.refresh();
+  }
+
+  get reloadRate(): number {
+    return config().get('workflowReloadInterval') as number;
+  }
+
+  get shouldReload(): boolean {
+    return this.workflow.status === WorkflowStatus.Running;
   }
 
   openPage(): void {

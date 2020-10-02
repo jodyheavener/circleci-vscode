@@ -58,6 +58,14 @@ export default class Pipeline extends ResourcesItem {
     });
   }
 
+  get reloadRate(): number {
+    return config().get('pipelineReloadInterval') as number;
+  }
+
+  get shouldReload(): boolean {
+    return true;
+  }
+
   refresh(): void {
     this.tree.reloadPipeline(this);
   }

@@ -9,6 +9,7 @@ export default class ResourcesItem extends TreeItem {
   protected mainRows: TreeItem[] = [];
   private allRows: TreeItem[] = [];
   private loaderRow?: Loader;
+  private reloadTimer?: NodeJS.Timeout;
   pageToken: string | null = null;
 
   constructor(
@@ -31,6 +32,18 @@ export default class ResourcesItem extends TreeItem {
     if (this.autoload) {
       this.updateResources.call(this);
     }
+
+    this.timedReload();
+  }
+
+  timedReload(): void {
+    clearTimeout(this.reloadTimer!);
+    if (this.reloadRate > 0 && this.shouldReload) {
+      this.reloadTimer = setTimeout(
+        this.reload.bind(this),
+        this.reloadRate * 1000
+      );
+    }
   }
 
   didUpdate(): void {
@@ -43,6 +56,7 @@ export default class ResourcesItem extends TreeItem {
       this.allRows.push(this.loaderRow!);
     }
 
+    this.timedReload();
     this.refresh();
   }
 
@@ -52,6 +66,14 @@ export default class ResourcesItem extends TreeItem {
 
   updateResources(): void {
     throw 'Sub-class must implement updateResources';
+  }
+
+  get reloadRate(): number {
+    return 0;
+  }
+
+  get shouldReload(): boolean {
+    return false;
   }
 
   async loadResources<T>(

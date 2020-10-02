@@ -3,6 +3,8 @@ export type ConfigItems = {
   customBranches: string[];
   autoLoadWorkflows: boolean;
   autoLoadWorkflowJobs: boolean;
+  pipelineReloadInterval: number;
+  workflowReloadInterval: number;
   VCSProvider: 'github' | 'bitbucket';
 };
 
