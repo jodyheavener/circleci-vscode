@@ -87,39 +87,39 @@
     },
     "menus": {
       "view/item/context": [
-        {
-          "when": "viewItem == circleciPipeline || viewItem == circleciWorkflow || viewItem == circleciJob",
-          "command": "circleci.reload",
-          "group": "circleci"
-        },
+				{
+					"when": "viewItem == circleciPipeline || viewItem == circleciWorkflow || viewItem == circleciJob",
+					"command": "circleci.reload",
+					"group": "inline"
+				},
         {
           "when": "viewItem == circleciPipeline || viewItem == circleciWorkflow || viewItem == circleciJob",
           "command": "circleci.openPage",
-          "group": "circleci"
+          "group": "inline"
         },
         {
           "when": "viewItem == circleciWorkflow",
           "command": "circleci.cancelWorkflow",
-          "group": "circleci"
-        },
-        {
-          "when": "viewItem == circleciWorkflow",
-          "command": "circleci.retryWorkflowAll",
-          "group": "circleci"
-        },
-        {
-          "when": "viewItem == circleciWorkflow",
-          "command": "circleci.retryWorkflowFailed",
-          "group": "circleci"
-        },
-        {
-          "when": "viewItem == circleciWorkflow",
-          "command": "circleci.copyWorkflowId",
-          "group": "circleci"
+          "group": "inline"
         },
         {
           "when": "viewItem == circleciJob",
           "command": "circleci.cancelJob",
+          "group": "inline"
+        },
+        {
+          "when": "viewItem == circleciWorkflow",
+          "command": "circleci.retryWorkflowAll",
+          "group": "inline"
+        },
+        {
+          "when": "viewItem == circleciWorkflow",
+          "command": "circleci.retryWorkflowFailed",
+          "group": "inline"
+        },
+        {
+          "when": "viewItem == circleciWorkflow",
+          "command": "circleci.copyWorkflowId",
           "group": "circleci"
         },
         {
@@ -135,45 +135,71 @@
       ]
     },
     "commands": [
-      {
-        "command": "circleci.reload",
-        "title": "Reload details"
-      },
-      {
-        "command": "circleci.openPage",
-        "title": "Open in browser"
-      },
+			{
+				"command": "circleci.reload",
+				"title": "Reload details",
+				"category": "CircleCI",
+				"icon": {
+					"dark": "./dist/assets/dark/rotate.svg",
+					"light": "./dist/assets/light/rotate.svg"
+				}
+			},
+			{
+				"command": "circleci.openPage",
+				"title": "Open in browser",
+				"category": "CircleCI",
+				"icon": {
+					"dark": "./dist/assets/dark/globe.svg",
+					"light": "./dist/assets/light/globe.svg"
+				}
+			},
       {
         "command": "circleci.cancelWorkflow",
-        "title": "Cancel workflow"
-      },
-      {
-        "command": "circleci.retryWorkflowAll",
-        "title": "Retry all jobs"
-      },
-      {
-        "command": "circleci.retryWorkflowFailed",
-        "title": "Retry failed jobs"
-      },
-      {
-        "command": "circleci.retryWorkflowFailed",
-        "title": "Retry failed jobs"
-      },
-      {
-        "command": "circleci.copyWorkflowId",
-        "title": "Copy workflow ID"
+        "title": "Cancel Workflow",
+				"category": "CircleCI",
+				"icon": {
+					"dark": "./dist/assets/dark/ex.svg",
+					"light": "./dist/assets/light/ex.svg"
+				}
       },
       {
         "command": "circleci.cancelJob",
-        "title": "Cancel job"
+        "title": "Cancel Job",
+				"category": "CircleCI",
+				"icon": {
+					"dark": "./dist/assets/dark/ex.svg",
+					"light": "./dist/assets/light/ex.svg"
+				}
+      },
+      {
+        "command": "circleci.retryWorkflowAll",
+        "title": "Retry all Jobs",
+				"category": "CircleCI",
+				"icon": {
+					"dark": "./dist/assets/dark/retry-all.svg",
+					"light": "./dist/assets/light/retry-all.svg"
+				}
+      },
+      {
+        "command": "circleci.retryWorkflowFailed",
+        "title": "Retry failed Jobs",
+				"category": "CircleCI",
+				"icon": {
+					"dark": "./dist/assets/dark/retry-failed.svg",
+					"light": "./dist/assets/light/retry-failed.svg"
+				}
+      },
+      {
+        "command": "circleci.copyWorkflowId",
+        "title": "Copy Workflow ID"
       },
       {
         "command": "circleci.copyJobId",
-        "title": "Copy job ID"
+        "title": "Copy Job ID"
       },
       {
         "command": "circleci.copyJobNumber",
-        "title": "Copy job number"
+        "title": "Copy Job number"
       }
     ],
     "configuration": {
