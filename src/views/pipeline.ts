@@ -1,22 +1,26 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import { Workflow as WorkflowData } from 'circle-client';
+import constants from '../lib/constants';
 import PipelinesTree from '../lib/pipelines-tree';
-import { ActivatableGitSet } from '../lib/types';
-import { getAsset, l, openInBrowser } from '../lib/utils';
-import ResourcesItem from './resources-item';
-import Workflow from './workflow';
+import { ActivatableGitSet, ConfigKey } from '../lib/types';
+import { getAsset, interpolate, l, openInBrowser } from '../lib/utils';
 import config from '../lib/config';
 import circleClient from '../lib/circle-client';
+import ResourcesItem from './resources-item';
+import Workflow from './workflow';
 
 export default class Pipeline extends ResourcesItem {
-  readonly contextValue = 'circleciPipeline';
+  readonly contextValue = constants.PIPELINE_CONTEXT_BASE;
 
-  constructor(readonly gitSet: ActivatableGitSet, readonly tree: PipelinesTree) {
+  constructor(
+    readonly gitSet: ActivatableGitSet,
+    readonly tree: PipelinesTree
+  ) {
     super(
       `${gitSet.current ? '★ ' : ''}${gitSet.branch}`,
       TreeItemCollapsibleState.Expanded,
       l('workflowPlural', 'Workflows'),
-      config().get('autoLoadWorkflows') as boolean
+      config().get(ConfigKey.AutoLoadWorkflows) as boolean
     );
 
     this.tooltip = `${this.gitSet.repo}/${this.gitSet.branch}`;
@@ -59,7 +63,7 @@ export default class Pipeline extends ResourcesItem {
   }
 
   get reloadRate(): number {
-    return config().get('pipelineReloadInterval') as number;
+    return config().get(ConfigKey.PipelineReloadInterval) as number;
   }
 
   get shouldReload(): boolean {
@@ -72,11 +76,12 @@ export default class Pipeline extends ResourcesItem {
 
   openPage(): void {
     openInBrowser(
-      `https://app.circleci.com/pipelines/${config().get(
-        'VCSProvider'
-      )}/${encodeURIComponent(this.gitSet.user)}/${encodeURIComponent(
-        this.gitSet.repo
-      )}?branch=${encodeURIComponent(this.gitSet.branch)}`
+      interpolate(constants.PIPELINE_URL, {
+        vcs: this.gitSet.vcs,
+        user: this.gitSet.user,
+        repo: this.gitSet.repo,
+        branch: this.gitSet.branch,
+      })
     );
   }
 }

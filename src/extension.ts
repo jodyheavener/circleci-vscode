@@ -1,4 +1,5 @@
 import { window, workspace, ExtensionContext } from 'vscode';
+import constants from './lib/constants';
 import config from './lib/config';
 import gitService from './lib/git-service';
 import ArtifactContentProvider from './lib/artifact-content-provider';
@@ -20,10 +21,13 @@ export async function activate(context: ExtensionContext): Promise<void> {
   git.onChange(refresh);
 
   pipelinesTree = new PipelinesTree(git);
-  window.registerTreeDataProvider('circleciPipelinesTree', pipelinesTree);
+  window.registerTreeDataProvider(
+    constants.PIPELINES_TREE_VIEW_ID,
+    pipelinesTree
+  );
 
   workspace.registerTextDocumentContentProvider(
-    'circle-artifact',
+    constants.TEXT_ARTIFACT_PROVIDER_SCHEME,
     new ArtifactContentProvider()
   );
 

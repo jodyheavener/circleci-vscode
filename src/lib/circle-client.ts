@@ -3,11 +3,12 @@ import { window } from 'vscode';
 import { l } from './utils';
 import config from './config';
 import gitService from './git-service';
+import { ConfigKey } from './types';
 
 let exportedClient: CircleCI;
 
 export default async function circleClient(): Promise<CircleCI> {
-  const apiToken = config().get('apiToken') as string;
+  const apiToken = config().get(ConfigKey.APIToken) as string;
 
   if (!exportedClient) {
     if (!apiToken) {

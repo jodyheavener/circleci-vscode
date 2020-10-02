@@ -2,7 +2,7 @@ import { watchFile } from 'fs';
 import { join } from 'path';
 import { window, workspace } from 'vscode';
 import config from './config';
-import { ConfigItems, GitSet } from './types';
+import { ConfigItems, ConfigKey, GitSet } from './types';
 import { execCommand, l, stripNewline } from './utils';
 
 const REPO_MATCHER = /(?:git@.*\..*:|https?:\/\/.*\..*\/)(.*)\/(.*).git/g;
@@ -26,6 +26,7 @@ export class GitService {
         user,
         repo,
         branch: await this.getBranch(),
+        vcs: this.vcs,
       };
     } catch (error) {
       this.showErrorMessage(error);
@@ -110,7 +111,7 @@ export class GitService {
 export default async function gitService(): Promise<GitService> {
   if (!exportedService) {
     exportedService = new GitService(
-      config().get('VCSProvider') as ConfigItems['VCSProvider']
+      config().get(ConfigKey.VCSProvider) as ConfigItems['VCSProvider']
     );
     await exportedService.setup();
   }

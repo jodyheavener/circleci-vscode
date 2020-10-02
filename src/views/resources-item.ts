@@ -1,8 +1,8 @@
 import { TreeItem, TreeItemCollapsibleState, window } from 'vscode';
+import { Paged } from 'circle-client';
+import { l } from '../lib/utils';
 import Loader from './loader';
 import Empty from './empty';
-import { l } from '../lib/utils';
-import { Paged } from 'circle-client';
 
 export default class ResourcesItem extends TreeItem {
   protected prefixRows: TreeItem[] = [];

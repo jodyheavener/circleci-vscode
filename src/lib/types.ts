@@ -1,14 +1,25 @@
+export enum ConfigKey {
+  APIToken = 'apiToken',
+  VCSProvider = 'VCSProvider',
+  CustomBranches = 'customBranches',
+  AutoLoadWorkflows = 'autoLoadWorkflows',
+  AutoLoadWorkflowJobs = 'autoLoadWorkflowJobs',
+  PipelineReloadInterval = 'pipelineReloadInterval',
+  WorkflowReloadInterval = 'workflowReloadInterval',
+}
+
 export type ConfigItems = {
-  apiToken: string;
-  customBranches: string[];
-  autoLoadWorkflows: boolean;
-  autoLoadWorkflowJobs: boolean;
-  pipelineReloadInterval: number;
-  workflowReloadInterval: number;
-  VCSProvider: 'github' | 'bitbucket';
+  [ConfigKey.APIToken]: string;
+  [ConfigKey.CustomBranches]: string[];
+  [ConfigKey.AutoLoadWorkflows]: boolean;
+  [ConfigKey.AutoLoadWorkflowJobs]: boolean;
+  [ConfigKey.PipelineReloadInterval]: number;
+  [ConfigKey.WorkflowReloadInterval]: number;
+  [ConfigKey.VCSProvider]: 'github' | 'bitbucket';
 };
 
 export type GitSet = {
+  vcs: 'github' | 'bitbucket';
   user: string;
   repo: string;
   branch: string;

@@ -1,8 +1,9 @@
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
+import constants from '../lib/constants';
 import { getAsset, l } from '../lib/utils';
 
 export default class Empty extends TreeItem {
-  readonly contextValue = 'circleci-empty-row';
+  readonly contextValue = constants.EMPTY_CONTEXT_BASE;
 
   constructor(readonly item: string) {
     super(

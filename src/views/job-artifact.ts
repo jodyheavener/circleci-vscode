@@ -1,4 +1,3 @@
-import { JobArtifact as JobArtifactData } from 'circle-client';
 import {
   TreeItem,
   TreeItemCollapsibleState,
@@ -6,7 +5,9 @@ import {
   window,
   workspace,
 } from 'vscode';
+import { JobArtifact as JobArtifactData } from 'circle-client';
 import { downloadFile, getAsset, l } from '../lib/utils';
+import constants from '../lib/constants';
 import Job from './job';
 
 const fileTypeIcons: {
@@ -39,7 +40,7 @@ function getfileTypeIcon(path: string): string {
 }
 
 export default class JobArtifact extends TreeItem {
-  readonly contextValue = 'circleciJobArtifact';
+  readonly contextValue = constants.JOB_ARTIFACT_CONTEXT_BASE;
   private downloading = false;
   private fileData?: string;
 

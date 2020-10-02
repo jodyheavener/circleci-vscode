@@ -1,5 +1,6 @@
-import { JobArtifact as JobArtifactData } from 'circle-client';
 import { TreeItemCollapsibleState } from 'vscode';
+import { JobArtifact as JobArtifactData } from 'circle-client';
+import constants from '../lib/constants';
 import circleClient from '../lib/circle-client';
 import { getAsset, l } from '../lib/utils';
 import Job from './job';
@@ -7,7 +8,7 @@ import JobArtifact from './job-artifact';
 import ResourcesItem from './resources-item';
 
 export default class JobArtifacts extends ResourcesItem {
-  readonly contextValue = 'circleciJobArtifacts';
+  readonly contextValue = constants.JOB_ARTIFACTS_CONTEXT_BASE;
 
   constructor(readonly job: Job) {
     super(

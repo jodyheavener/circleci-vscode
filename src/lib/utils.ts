@@ -1,10 +1,11 @@
 import { https } from 'follow-redirects';
 import { resolve } from 'path';
-import { commands, window } from 'vscode';
+import { window } from 'vscode';
 import { exec } from 'child_process';
 import open from 'open';
 import * as nls from 'vscode-nls';
 import { getContext } from '../extension';
+import constants from './constants';
 
 export function l(
   key: string | nls.LocalizeInfo,
@@ -12,21 +13,14 @@ export function l(
   ...args: (string | number | boolean | undefined | null)[]
 ): string {
   if (typeof key === 'string') {
-    return nls.config()()(`circleci-extension.${key}`, message, ...args);
+    return nls.config()()(
+      `${constants.LOCALIZATION_PREFIX}.${key}`,
+      message,
+      ...args
+    );
   } else {
     return nls.config()()(key, message, ...args);
   }
-}
-
-export enum CommandContext {
-  JobRunning = 'circleci:jobs:running'
-}
-
-export function setCommandContext(
-  key: CommandContext | string,
-  value: any
-): Thenable<unknown> {
-  return commands.executeCommand('setContext', key, value);
 }
 
 // TODO: replace with enum?
@@ -109,4 +103,13 @@ export async function downloadFile(url: string): Promise<string> {
         reject(error);
       });
   });
+}
+
+export function interpolate(
+  value: string,
+  replacements: { [key: string]: string | number }
+): string {
+  return Object.keys(replacements).reduce((p, c) => {
+    return p.split('{' + c + '}').join(String(replacements[c]));
+  }, value);
 }

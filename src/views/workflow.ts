@@ -1,25 +1,27 @@
+import { env, TreeItemCollapsibleState, window } from 'vscode';
 import {
   Workflow as WorkflowData,
   Job as JobData,
   WorkflowStatus,
 } from 'circle-client';
-import { env, TreeItemCollapsibleState, window } from 'vscode';
-import { getAsset, l, openInBrowser } from '../lib/utils';
+import { getAsset, interpolate, l, openInBrowser } from '../lib/utils';
+import config from '../lib/config';
+import circleClient from '../lib/circle-client';
+import constants from '../lib/constants';
+import { ConfigKey } from '../lib/types';
 import ResourcesItem from './resources-item';
 import Pipeline from './pipeline';
 import Job from './job';
-import config from '../lib/config';
-import circleClient from '../lib/circle-client';
 
 export default class Workflow extends ResourcesItem {
-  readonly contextValue = 'circleciWorkflow';
+  readonly contextValue = constants.WORKFLOW_CONTEXT_BASE;
 
   constructor(readonly workflow: WorkflowData, readonly pipeline: Pipeline) {
     super(
       workflow.name,
       TreeItemCollapsibleState.Expanded,
       l('jobPlural', 'Jobs'),
-      config().get('autoLoadWorkflowJobs') as boolean
+      config().get(ConfigKey.AutoLoadWorkflowJobs) as boolean
     );
 
     this.tooltip = workflow.name;
@@ -43,7 +45,7 @@ export default class Workflow extends ResourcesItem {
   }
 
   get reloadRate(): number {
-    return config().get('workflowReloadInterval') as number;
+    return config().get(ConfigKey.WorkflowReloadInterval) as number;
   }
 
   get shouldReload(): boolean {
@@ -53,11 +55,13 @@ export default class Workflow extends ResourcesItem {
 
   openPage(): void {
     openInBrowser(
-      `https://app.circleci.com/pipelines/${config().get(
-        'VCSProvider'
-      )}/${encodeURIComponent(this.pipeline.gitSet.user)}/${encodeURIComponent(
-        this.pipeline.gitSet.repo
-      )}/${this.workflow.pipeline_number}/workflows/${this.workflow.id}`
+      interpolate(constants.WORKFLOW_URL, {
+        vcs: this.pipeline.gitSet.vcs,
+        user: this.pipeline.gitSet.user,
+        repo: this.pipeline.gitSet.repo,
+        pipeline_number: this.workflow.pipeline_number,
+        workflow_id: this.workflow.id,
+      })
     );
   }
 

@@ -8,9 +8,10 @@ import {
 } from 'vscode';
 import config from './config';
 import { GitService } from './git-service';
-import { ActivatableGitSet } from './types';
-import { openInBrowser } from './utils';
+import { ActivatableGitSet, ConfigKey } from './types';
+import { interpolate, openInBrowser } from './utils';
 import Pipeline from '../views/Pipeline';
+import constants from './constants';
 
 export default class PipelinesTree
   implements TreeDataProvider<TreeItem>, Disposable {
@@ -44,11 +45,11 @@ export default class PipelinesTree
 
   openPage(): void {
     openInBrowser(
-      `https://app.circleci.com/pipelines/${encodeURIComponent(
-        this.git.vcs
-      )}/${encodeURIComponent(this.git.user)}/${encodeURIComponent(
-        this.git.repo
-      )}`
+      interpolate(constants.PROJECT_URL, {
+        vcs: this.git.vcs,
+        user: this.git.user,
+        repo: this.git.repo,
+      })
     );
   }
 
@@ -56,12 +57,13 @@ export default class PipelinesTree
     return [
       ...new Set([
         this.git.branch,
-        ...(config().get('customBranches') as string[]),
+        ...(config().get(ConfigKey.CustomBranches) as string[]),
       ]),
     ].map((branch) => ({
       branch,
       user: this.git.user,
       repo: this.git.repo,
+      vcs: this.git.vcs,
       current: branch === this.git.branch,
     }));
   }

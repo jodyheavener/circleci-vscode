@@ -1,8 +1,9 @@
 import { Command, TreeItem, TreeItemCollapsibleState } from 'vscode';
+import constants from '../lib/constants';
 import { getAsset, l } from '../lib/utils';
 
 export default class Loader extends TreeItem {
-  readonly contextValue = 'circleci-load-items';
+  readonly contextValue = constants.LOADER_CONTEXT_BASE;
   private storedCommand: Command;
 
   constructor(readonly itemName: string, readonly loadItems: Function) {

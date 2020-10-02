@@ -1,11 +1,17 @@
-import { Job as JobData } from 'circle-client';
 import { env, TreeItem, TreeItemCollapsibleState, window } from 'vscode';
-import { getAsset, l, openInBrowser, statusDescriptions } from '../lib/utils';
+import { Job as JobData } from 'circle-client';
+import constants from '../lib/constants';
+import {
+  getAsset,
+  interpolate,
+  l,
+  openInBrowser,
+  statusDescriptions,
+} from '../lib/utils';
+import circleClient from '../lib/circle-client';
 import Workflow from './workflow';
 import JobDuration from './job-duration';
 import JobArtifacts from './job-artifacts';
-import config from '../lib/config';
-import circleClient from '../lib/circle-client';
 // import JobTests from './job-tests';
 
 const statusIcons: {
@@ -23,14 +29,11 @@ const statusIcons: {
 };
 
 export default class Job extends TreeItem {
-  readonly contextValue = 'circleciJob';
+  readonly contextValue = constants.JOB_CONTEXT_BASE;
   private reloading = false;
   private rows: TreeItem[] = [];
 
-  constructor(
-    readonly job: JobData,
-    readonly workflow: Workflow
-  ) {
+  constructor(readonly job: JobData, readonly workflow: Workflow) {
     super(job.name, TreeItemCollapsibleState.Collapsed);
 
     this.description = this.statusDescription(this.job.status);
@@ -97,13 +100,14 @@ export default class Job extends TreeItem {
 
   openPage(): void {
     openInBrowser(
-      `https://app.circleci.com/pipelines/${config().get(
-        'VCSProvider'
-      )}/${encodeURIComponent(
-        this.workflow.pipeline.gitSet.user
-      )}/${encodeURIComponent(this.workflow.pipeline.gitSet.repo)}/${
-        this.workflow.workflow.pipeline_number
-      }/workflows/${this.workflow.workflow.id}/jobs/${this.job.job_number}`
+      interpolate(constants.JOB_URL, {
+        vcs: this.workflow.pipeline.gitSet.vcs,
+        user: this.workflow.pipeline.gitSet.user,
+        repo: this.workflow.pipeline.gitSet.repo,
+        pipeline_number: this.workflow.workflow.pipeline_number,
+        workflow_id: this.workflow.workflow.id,
+        job_number: this.job.job_number!,
+      })
     );
   }
 
