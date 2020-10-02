@@ -1,6 +1,7 @@
-import { https } from 'follow-redirects';
-import { resolve } from 'path';
 import { window } from 'vscode';
+import { IncomingMessage } from 'http';
+import { FollowResponse, https } from 'follow-redirects';
+import { resolve } from 'path';
 import { exec } from 'child_process';
 import open from 'open';
 import * as nls from 'vscode-nls';
@@ -89,13 +90,23 @@ export function stripNewline(value: string): string {
   return value.replace(/\n|\r/g, '');
 }
 
-export async function downloadFile(url: string): Promise<string> {
+export async function downloadFile(
+  url: string
+): Promise<{
+  contentType?: string;
+  data: string;
+  response: IncomingMessage & FollowResponse;
+}> {
   return new Promise((resolve, reject) => {
     https
-      .get(url, function (response) {
+      .get(url, (response) => {
         response.setEncoding('utf8');
         response.on('data', (data) => {
-          resolve(data);
+          resolve({
+            contentType: response.headers['content-type']?.split(';')[0],
+            response,
+            data,
+          });
         });
       })
       .on('error', (error) => {
