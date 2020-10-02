@@ -23,7 +23,6 @@ export function l(
   }
 }
 
-// TODO: replace with enum?
 export const statusDescriptions: {
   [status: string]: string;
 } = {

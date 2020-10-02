@@ -4,7 +4,13 @@ import {
   Job as JobData,
   WorkflowStatus,
 } from 'circle-client';
-import { getAsset, interpolate, l, openInBrowser } from '../lib/utils';
+import {
+  getAsset,
+  interpolate,
+  l,
+  openInBrowser,
+  statusDescriptions,
+} from '../lib/utils';
 import config from '../lib/config';
 import circleClient from '../lib/circle-client';
 import constants from '../lib/constants';
@@ -16,7 +22,7 @@ import Job from './job';
 export default class Workflow extends ResourcesItem {
   readonly contextValue = constants.WORKFLOW_CONTEXT_BASE;
 
-  constructor(readonly workflow: WorkflowData, readonly pipeline: Pipeline) {
+  constructor(public workflow: WorkflowData, readonly pipeline: Pipeline) {
     super(
       workflow.name,
       TreeItemCollapsibleState.Expanded,
@@ -34,8 +40,15 @@ export default class Workflow extends ResourcesItem {
       return (await circleClient()).listWorkflowJobs(this.workflow.id, {
         pageToken: this.pageToken!,
       });
-    }).then((newJobs) => {
+    }).then(async (newJobs) => {
+      this.workflow = await (await circleClient()).getWorkflow(
+        this.workflow.id
+      );
       this.mainRows.push(...newJobs.map((job) => new Job(job, this)));
+      this.description =
+        statusDescriptions[
+          this.workflow.status || l('unknownLabel', 'Unknown')
+        ];
       this.didUpdate();
     });
   }
@@ -49,7 +62,6 @@ export default class Workflow extends ResourcesItem {
   }
 
   get shouldReload(): boolean {
-    // TODO: only the jobs are reloaded, not this job status, fix this
     return this.workflow.status === WorkflowStatus.Running;
   }
 
@@ -75,7 +87,6 @@ export default class Workflow extends ResourcesItem {
   async cancel(): Promise<void> {
     (await circleClient()).cancelWorkflow(this.workflow.id);
     window.showInformationMessage(l('workflowCanceled', 'Workflow canceled.'));
-    // TODO: is 1 second appropriate?
     setTimeout(this.reload.bind(this), 1000);
   }
 
@@ -87,7 +98,6 @@ export default class Workflow extends ResourcesItem {
         : l('retryingFailedJobs', 'Retrying failed Workflow Jobs')
     );
     // Retry adds *new* jobs, so reload the whole pipeline
-    // TODO: is 1 second appropriate?
     setTimeout(this.pipeline.reload.bind(this), 1000);
   }
 }

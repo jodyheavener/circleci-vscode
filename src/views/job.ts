@@ -12,7 +12,6 @@ import circleClient from '../lib/circle-client';
 import Workflow from './workflow';
 import JobDuration from './job-duration';
 import JobArtifacts from './job-artifacts';
-// import JobTests from './job-tests';
 
 const statusIcons: {
   [status: string]: string;
@@ -52,11 +51,6 @@ export default class Job extends TreeItem {
   }
 
   private loadDetails(): void {
-    // TODO: What should happen if job_number isn't present?
-    if (!this.job.job_number) {
-      return;
-    }
-
     circleClient().then((client) => {
       client
         .getJob(this.job.job_number!)
@@ -71,7 +65,6 @@ export default class Job extends TreeItem {
           }
 
           this.rows.push(new JobArtifacts(this));
-          // this.jobRows.push(new JobTests(this));
 
           this.reloading = false;
           this.workflow.pipeline.refresh();
@@ -128,7 +121,6 @@ export default class Job extends TreeItem {
   async cancel(): Promise<void> {
     (await circleClient()).cancelJob(this.job.job_number!);
     window.showInformationMessage(l('jobCanceled', 'Job canceled.'));
-    // TODO: is 1 second appropriate?
     setTimeout(this.reload.bind(this), 1000);
   }
 
