@@ -2,10 +2,10 @@ import { window, workspace, ExtensionContext } from 'vscode';
 import config from './lib/config';
 import gitService from './lib/git-service';
 import ArtifactContentProvider from './lib/artifact-content-provider';
-import CircleCITree from './lib/circleci-tree';
+import PipelinesTree from './lib/pipelines-tree';
 import registerCommands from './lib/commands';
 
-let circleciTree: CircleCITree;
+let pipelinesTree: PipelinesTree;
 let exportedContext: ExtensionContext;
 
 export async function activate(context: ExtensionContext): Promise<void> {
@@ -13,25 +13,25 @@ export async function activate(context: ExtensionContext): Promise<void> {
   exportedContext = context;
 
   function refresh(): void {
-    circleciTree.refresh();
+    pipelinesTree.refresh();
   }
 
   config().onChange(refresh);
   git.onChange(refresh);
 
-  circleciTree = new CircleCITree(git);
-  window.registerTreeDataProvider('circleciTree', circleciTree);
+  pipelinesTree = new PipelinesTree(git);
+  window.registerTreeDataProvider('circleciPipelinesTree', pipelinesTree);
 
   workspace.registerTextDocumentContentProvider(
     'circle-artifact',
     new ArtifactContentProvider()
   );
 
-  registerCommands(circleciTree);
+  registerCommands(pipelinesTree);
 }
 
 export function deactivate(): void {
-  circleciTree && circleciTree.dispose();
+  pipelinesTree && pipelinesTree.dispose();
 }
 
 export function getContext(): ExtensionContext {

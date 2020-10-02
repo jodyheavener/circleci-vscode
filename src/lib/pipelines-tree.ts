@@ -12,7 +12,7 @@ import { ActivatableGitSet } from './types';
 import { openInBrowser } from './utils';
 import Pipeline from '../views/Pipeline';
 
-export default class CircleCITree
+export default class PipelinesTree
   implements TreeDataProvider<TreeItem>, Disposable {
   private disposed = false;
   private refreshing = true;

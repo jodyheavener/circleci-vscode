@@ -1,6 +1,6 @@
 import { TreeItemCollapsibleState } from 'vscode';
 import { Workflow as WorkflowData } from 'circle-client';
-import CircleCITree from '../lib/circleci-tree';
+import PipelinesTree from '../lib/pipelines-tree';
 import { ActivatableGitSet } from '../lib/types';
 import { getAsset, l, openInBrowser } from '../lib/utils';
 import ResourcesItem from './resources-item';
@@ -11,7 +11,7 @@ import circleClient from '../lib/circle-client';
 export default class Pipeline extends ResourcesItem {
   readonly contextValue = 'circleciPipeline';
 
-  constructor(readonly gitSet: ActivatableGitSet, readonly tree: CircleCITree) {
+  constructor(readonly gitSet: ActivatableGitSet, readonly tree: PipelinesTree) {
     super(
       `${gitSet.current ? '★ ' : ''}${gitSet.branch}`,
       TreeItemCollapsibleState.Expanded,

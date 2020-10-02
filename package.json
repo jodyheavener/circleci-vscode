@@ -61,7 +61,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:circleciTree",
+    "onView:circleciPipelinesTree",
     "workspaceContains:circle.yaml",
     "workspaceContains:circle.yml",
     "workspaceContains:.circleci/config.yaml",
@@ -80,7 +80,7 @@
     "views": {
       "circleciContainer": [
         {
-          "id": "circleciTree",
+          "id": "circleciPipelinesTree",
           "name": "Pipelines"
         }
       ]
@@ -88,12 +88,12 @@
     "menus": {
       "view/title": [
         {
-          "when": "view == circleciTree",
+          "when": "view == circleciPipelinesTree",
           "command": "circleci.openPage",
           "group": "navigation"
         },
         {
-          "when": "view == circleciTree",
+          "when": "view == circleciPipelinesTree",
           "command": "circleci.reload",
           "group": "navigation"
         }

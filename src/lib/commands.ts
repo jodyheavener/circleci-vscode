@@ -5,9 +5,9 @@ import Job from '../views/Job';
 import JobArtifacts from '../views/job-artifacts';
 import JobArtifact from '../views/job-artifact';
 import Loader from '../views/loader';
-import CircleCITree from './circleci-tree';
+import PipelinesTree from './pipelines-tree';
 
-const registerCommands = (pipelineTree: CircleCITree): void => {
+const registerCommands = (pipelineTree: PipelinesTree): void => {
   commands.registerCommand(
     'circleci.reload',
     (item: Pipeline | Workflow | Job | undefined) => {
