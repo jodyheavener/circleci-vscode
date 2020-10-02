@@ -1,9 +1,4 @@
-import {
-  TreeItem,
-  TreeItemCollapsibleState,
-  window,
-  workspace,
-} from 'vscode';
+import { TreeItem, TreeItemCollapsibleState, window, workspace } from 'vscode';
 import { createWriteStream } from 'fs';
 import { IncomingMessage } from 'http';
 import { JobArtifact as JobArtifactData } from 'circle-client';
@@ -11,7 +6,7 @@ import { downloadFile, getAsset, l } from '../lib/utils';
 import constants from '../lib/constants';
 import Job from './job';
 import { FollowResponse } from 'follow-redirects';
-import { resolve } from 'path';
+import { basename, resolve } from 'path';
 
 const extensionIcons: { [icon: string]: string[] } = {
   'file-image': ['jpg', 'jpeg', 'png', 'gif', 'webp'],
@@ -34,10 +29,6 @@ const imageType = [
   'image/gif',
   'image/webp',
 ];
-
-function stripPathPrefix(path: string): string {
-  return path.replace('artifacts/', '');
-}
 
 function getfileTypeIcon(path: string): string {
   const ext = path.split('.').pop();
@@ -62,12 +53,12 @@ export default class JobArtifact extends TreeItem {
   };
 
   constructor(readonly artifact: JobArtifactData, readonly job: Job) {
-    super(stripPathPrefix(artifact.path), TreeItemCollapsibleState.None);
+    super(basename(artifact.path), TreeItemCollapsibleState.None);
 
     this.iconPath = getAsset(getfileTypeIcon(artifact.path));
 
     this.command = {
-      command: 'circleci.openJobArtifact',
+      command: constants.OPEN_JOB_ARTIFACT_COMMAND,
       title: l('openArtifact', 'Open Artifact'),
       arguments: [this],
     };
@@ -105,7 +96,11 @@ export default class JobArtifact extends TreeItem {
       );
     }
 
-    const downloadLocation = resolve(workspace.rootPath!, this.artifact.path);
+    const downloadLocation = resolve(
+      workspace.rootPath!,
+      basename(this.artifact.path)
+    );
+
     const downloadToWorkspace = async (): Promise<void> => {
       const file = createWriteStream(downloadLocation);
       this.download!.response.pipe(file);

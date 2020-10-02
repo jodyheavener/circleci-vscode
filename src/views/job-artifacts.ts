@@ -19,7 +19,7 @@ export default class JobArtifacts extends ResourcesItem {
     );
 
     this.command = {
-      command: 'circleci.fetchJobArtifacts',
+      command: constants.FETCH_JOB_ARTIFACTS_COMMAND,
       title: l('fetchArtifacts', 'Fetch Artifacts'),
       arguments: [this],
     };

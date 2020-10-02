@@ -6,10 +6,15 @@ import JobArtifacts from '../views/job-artifacts';
 import JobArtifact from '../views/job-artifact';
 import Loader from '../views/loader';
 import PipelinesTree from './pipelines-tree';
+import constants from './constants';
 
 const registerCommands = (pipelineTree: PipelinesTree): void => {
+  commands.registerCommand(constants.LOAD_ITEMS_COMMAND, (item: Loader) => {
+    item.loadItems();
+  });
+
   commands.registerCommand(
-    'circleci.reload',
+    constants.RELOAD_COMMAND,
     (item: Pipeline | Workflow | Job | undefined) => {
       if (!item) {
         pipelineTree.reload();
@@ -20,7 +25,7 @@ const registerCommands = (pipelineTree: PipelinesTree): void => {
   );
 
   commands.registerCommand(
-    'circleci.openPage',
+    constants.OPEN_PAGE_COMMAND,
     (item: Pipeline | Workflow | Job | undefined) => {
       if (!item) {
         pipelineTree.openPage();
@@ -30,48 +35,59 @@ const registerCommands = (pipelineTree: PipelinesTree): void => {
     }
   );
 
-  commands.registerCommand('circleci.cancelWorkflow', (item: Workflow) => {
+  commands.registerCommand(
+    constants.CANCEL_WORKFLOW_COMMAND,
+    (item: Workflow) => {
+      item.cancel();
+    }
+  );
+
+  commands.registerCommand(
+    constants.RETRY_ALL_WORKFLOWS_COMMAND,
+    (item: Workflow) => {
+      item.retryJobs();
+    }
+  );
+
+  commands.registerCommand(
+    constants.RETRY_FAILED_WORKFLOWS_COMMAND,
+    (item: Workflow) => {
+      item.retryJobs(true);
+    }
+  );
+
+  commands.registerCommand(
+    constants.COPY_WORKFLOW_ID_COMMAND,
+    (item: Workflow) => {
+      item.copyId();
+    }
+  );
+
+  commands.registerCommand(constants.CANCEL_JOB_COMMAND, (item: Workflow) => {
     item.cancel();
   });
 
-  commands.registerCommand('circleci.retryWorkflowAll', (item: Workflow) => {
-    item.retryJobs();
-  });
-
-  commands.registerCommand('circleci.retryWorkflowFailed', (item: Workflow) => {
-    item.retryJobs(true);
-  });
-
-  commands.registerCommand('circleci.copyWorkflowId', (item: Workflow) => {
+  commands.registerCommand(constants.COPY_JOB_ID_COMMAND, (item: Job) => {
     item.copyId();
   });
 
-  commands.registerCommand('circleci.cancelJob', (item: Workflow) => {
-    item.cancel();
-  });
-
-  commands.registerCommand('circleci.copyJobId', (item: Job) => {
-    item.copyId();
-  });
-
-  commands.registerCommand('circleci.copyJobNumber', (item: Job) => {
+  commands.registerCommand(constants.COPY_JOB_NUMBER_COMMAND, (item: Job) => {
     item.copyNumber();
   });
 
   commands.registerCommand(
-    'circleci.fetchJobArtifacts',
+    constants.FETCH_JOB_ARTIFACTS_COMMAND,
     (item: JobArtifacts) => {
       item.updateResources();
     }
   );
 
-  commands.registerCommand('circleci.openJobArtifact', (item: JobArtifact) => {
-    item.openJobArtifact();
-  });
-
-  commands.registerCommand('circleci.loadItems', (item: Loader) => {
-    item.loadItems();
-  });
+  commands.registerCommand(
+    constants.OPEN_JOB_ARTIFACT_COMMAND,
+    (item: JobArtifact) => {
+      item.openJobArtifact();
+    }
+  );
 };
 
 export default registerCommands;

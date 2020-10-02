@@ -13,7 +13,7 @@ export default class Loader extends TreeItem {
     );
 
     this.storedCommand = {
-      command: 'circleci.loadItems',
+      command: constants.LOAD_ITEMS_COMMAND,
       title: l('loadItem', `Load {0}`, itemName),
       arguments: [this],
     };
