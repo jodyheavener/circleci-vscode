@@ -1,4 +1,9 @@
-import { TreeItem, TreeItemCollapsibleState, window, workspace } from 'vscode';
+import {
+  TreeItem,
+  TreeItemCollapsibleState,
+  window,
+  workspace,
+} from 'vscode';
 import { createWriteStream } from 'fs';
 import { IncomingMessage } from 'http';
 import { JobArtifact as JobArtifactData } from 'circle-client';
@@ -54,7 +59,7 @@ export default class JobArtifact extends TreeItem {
     contentType?: string | undefined;
     data: string;
     response: IncomingMessage & FollowResponse;
-  } & { location?: string };
+  };
 
   constructor(readonly artifact: JobArtifactData, readonly job: Job) {
     super(stripPathPrefix(artifact.path), TreeItemCollapsibleState.None);
@@ -100,14 +105,13 @@ export default class JobArtifact extends TreeItem {
       );
     }
 
-    const downloadToWorkspace = (): void => {
-      if (this.download!.location) {
-        const file = createWriteStream(
-          resolve(workspace.rootPath!, this.artifact.path)
-        );
-        this.download!.response.pipe(file);
-        this.download!.location = this.artifact.path;
-      }
+    const downloadLocation = resolve(workspace.rootPath!, this.artifact.path);
+    const downloadToWorkspace = async (): Promise<void> => {
+      const file = createWriteStream(downloadLocation);
+      this.download!.response.pipe(file);
+      this.download!.response.on('finish', () => {
+        Promise.resolve();
+      });
 
       window.showInformationMessage(
         l(
@@ -127,12 +131,12 @@ export default class JobArtifact extends TreeItem {
       } else if (imageType.includes(this.download!.contentType)) {
         // TODO: download and show image
         // for now just download
-        downloadToWorkspace();
+        await downloadToWorkspace();
       } else {
-        downloadToWorkspace();
+        await downloadToWorkspace();
       }
     } else {
-      downloadToWorkspace();
+      await downloadToWorkspace();
     }
 
     this.description = l('artifactDownloaded', 'Downloaded');

@@ -17,8 +17,8 @@ export default {
   WORKFLOW_CONTEXT_BASE: 'circleciWorkflow',
   LOADER_CONTEXT_BASE: 'circleciLoader',
   JOB_CONTEXT_BASE: 'circleciJob',
-  JOB_DURATION_CONTEXT_BASE: 'circleciJobDuration',
-  JOB_ARTIFACTS_CONTEXT_BASE: 'circleciJobArtifacts',
-  JOB_ARTIFACT_CONTEXT_BASE: 'circleciJobArtifact',
+  JOB_DURATION_CONTEXT_BASE: 'circleciDuration',
+  JOB_ARTIFACTS_CONTEXT_BASE: 'circleciArtifacts',
+  JOB_ARTIFACT_CONTEXT_BASE: 'circleciArtifact',
   EMPTY_CONTEXT_BASE: 'circleciEmpty',
 };
