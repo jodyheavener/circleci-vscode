@@ -47,6 +47,7 @@ export default class Workflow extends ResourcesItem {
   }
 
   get shouldReload(): boolean {
+    // TODO: only the jobs are reloaded, not this job status, fix this
     return this.workflow.status === WorkflowStatus.Running;
   }
 

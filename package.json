@@ -86,8 +86,20 @@
       ]
     },
     "menus": {
+      "view/title": [
+        {
+          "when": "view == circleciTree",
+          "command": "circleci.openPage",
+          "group": "navigation"
+        },
+        {
+          "when": "view == circleciTree",
+          "command": "circleci.reload",
+          "group": "navigation"
+        }
+      ],
       "view/item/context": [
-				{
+        {
 					"when": "viewItem == circleciPipeline || viewItem == circleciWorkflow || viewItem == circleciJob",
 					"command": "circleci.reload",
 					"group": "inline"

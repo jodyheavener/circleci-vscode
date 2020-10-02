@@ -67,7 +67,7 @@ export default class Pipeline extends ResourcesItem {
   }
 
   refresh(): void {
-    this.tree.reloadPipeline(this);
+    this.tree.refreshPipeline(this);
   }
 
   openPage(): void {

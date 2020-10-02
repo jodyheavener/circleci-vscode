@@ -5,19 +5,28 @@ import Job from '../views/Job';
 import JobArtifacts from '../views/job-artifacts';
 import JobArtifact from '../views/job-artifact';
 import Loader from '../views/loader';
+import CircleCITree from './circleci-tree';
 
-const registerCommands = (): void => {
+const registerCommands = (pipelineTree: CircleCITree): void => {
   commands.registerCommand(
     'circleci.reload',
-    (item: Pipeline | Workflow | Job) => {
-      item.reload();
+    (item: Pipeline | Workflow | Job | undefined) => {
+      if (!item) {
+        pipelineTree.reload();
+      } else {
+        item.reload();
+      }
     }
   );
 
   commands.registerCommand(
     'circleci.openPage',
-    (item: Pipeline | Workflow | Job) => {
-      item.openPage();
+    (item: Pipeline | Workflow | Job | undefined) => {
+      if (!item) {
+        pipelineTree.openPage();
+      } else {
+        item.openPage();
+      }
     }
   );
 

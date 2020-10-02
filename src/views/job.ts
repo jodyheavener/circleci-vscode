@@ -37,7 +37,6 @@ export default class Job extends TreeItem {
     this.tooltip = job.name;
     this.iconPath = getAsset(this.statusIcon(this.job.status));
 
-    // TODO: Add "click to load details" option
     this.loadDetails();
   }
 

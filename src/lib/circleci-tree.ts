@@ -9,6 +9,7 @@ import {
 import config from './config';
 import { GitService } from './git-service';
 import { ActivatableGitSet } from './types';
+import { openInBrowser } from './utils';
 import Pipeline from '../views/Pipeline';
 
 export default class CircleCITree
@@ -28,13 +29,27 @@ export default class CircleCITree
     this.disposed = true;
   }
 
-  reloadPipeline(pipeline: Pipeline): void {
+  refreshPipeline(pipeline: Pipeline): void {
     this._onDidChangeTreeData.fire(pipeline);
   }
 
   refresh(): void {
     this.refreshing = true;
     this._onDidChangeTreeData.fire(undefined);
+  }
+
+  reload(): void {
+    this.refresh();
+  }
+
+  openPage(): void {
+    openInBrowser(
+      `https://app.circleci.com/pipelines/${encodeURIComponent(
+        this.git.vcs
+      )}/${encodeURIComponent(this.git.user)}/${encodeURIComponent(
+        this.git.repo
+      )}`
+    );
   }
 
   private getBranchSets(): ActivatableGitSet[] {

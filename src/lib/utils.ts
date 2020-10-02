@@ -1,6 +1,6 @@
 import { https } from 'follow-redirects';
 import { resolve } from 'path';
-import { window } from 'vscode';
+import { commands, window } from 'vscode';
 import { exec } from 'child_process';
 import open from 'open';
 import * as nls from 'vscode-nls';
@@ -18,18 +18,30 @@ export function l(
   }
 }
 
+export enum CommandContext {
+  JobRunning = 'circleci:jobs:running'
+}
+
+export function setCommandContext(
+  key: CommandContext | string,
+  value: any
+): Thenable<unknown> {
+  return commands.executeCommand('setContext', key, value);
+}
+
+// TODO: replace with enum?
 export const statusDescriptions: {
   [status: string]: string;
 } = {
-  success: 'Success',
-  running: 'Running',
-  not_run: 'Not Run',
-  failed: 'Failed',
-  error: 'Exclaim',
-  failing: 'Failing',
-  on_hold: 'On Hold',
-  canceled: 'Canceled',
-  unauthorized: 'Unauthorized',
+  success: l('statusSuccess', 'Success'),
+  running: l('statusRunning', 'Running'),
+  not_run: l('statusNotRun', 'Not Run'),
+  failed: l('statusFailed', 'Failed'),
+  error: l('statusExclaim', 'Exclaim'),
+  failing: l('statusFailing', 'Failing'),
+  on_hold: l('statusOnHold', 'On Hold'),
+  canceled: l('statusCanceled', 'Canceled'),
+  unauthorized: l('statusUnauthorized', 'Unauthorized'),
 };
 
 export function pluralize(

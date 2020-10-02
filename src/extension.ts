@@ -27,7 +27,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     new ArtifactContentProvider()
   );
 
-  registerCommands();
+  registerCommands(circleciTree);
 }
 
 export function deactivate(): void {
