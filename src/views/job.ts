@@ -12,6 +12,7 @@ import circleClient from '../lib/circle-client';
 import Workflow from './workflow';
 import JobDuration from './job-duration';
 import JobArtifacts from './job-artifacts';
+import JobTests from './job-tests';
 
 const statusIcons: {
   [status: string]: string;
@@ -65,6 +66,7 @@ export default class Job extends TreeItem {
           }
 
           this.rows.push(new JobArtifacts(this));
+          this.rows.push(new JobTests(this));
           this.setContextValue();
 
           this.reloading = false;

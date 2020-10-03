@@ -3,7 +3,13 @@ import { Workflow as WorkflowData } from 'circle-client';
 import constants from '../lib/constants';
 import PipelinesTree from '../lib/pipelines-tree';
 import { ActivatableGitSet, ConfigKey } from '../lib/types';
-import { getAsset, interpolate, l, openInBrowser } from '../lib/utils';
+import {
+  getAsset,
+  interpolate,
+  l,
+  openInBrowser,
+  pluralize,
+} from '../lib/utils';
 import config from '../lib/config';
 import circleClient from '../lib/circle-client';
 import ResourcesItem from './resources-item';
@@ -57,6 +63,11 @@ export default class Pipeline extends ResourcesItem {
     }).then((newWorkflows) => {
       this.mainRows.push(
         ...newWorkflows.map((workflow) => new Workflow(workflow, this))
+      );
+      this.description = pluralize(
+        this.mainRows.length,
+        l('workflowSingular', 'Workflow'),
+        l('workflowPlural', 'Workflows')
       );
       this.didUpdate();
     });

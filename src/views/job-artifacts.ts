@@ -41,7 +41,7 @@ export default class JobArtifacts extends ResourcesItem {
       this.mainRows.push(
         ...newArtifacts.map((artifact) => new JobArtifact(artifact, this.job))
       );
-      this.label = this.label = l('viewArtifacts', 'View Artifacts');
+      this.label = l('viewArtifacts', 'View Artifacts');
       this.didUpdate();
     });
   }

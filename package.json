@@ -73,7 +73,7 @@
         {
           "id": "circleciContainer",
           "title": "CircleCI",
-          "icon": "./dist/assets/icon-logo.svg"
+          "icon": "./dist/assets/dark/circleci-logo.svg"
         }
       ]
     },
@@ -120,7 +120,7 @@
           "group": "inline"
         },
         {
-          "when": "viewItem =~ /circleciWorkflow(?::?\\w*)(?::failed)/ || viewItem =~ /circleciWorkflow(?::?\\w*)(?::failing)/",
+          "when": "viewItem =~ /circleciWorkflow/",
           "command": "circleci.retryWorkflowAll",
           "group": "inline"
         },
@@ -161,8 +161,8 @@
         "title": "Open in browser",
         "category": "CircleCI",
         "icon": {
-          "dark": "./dist/assets/dark/globe.svg",
-          "light": "./dist/assets/light/globe.svg"
+          "dark": "./dist/assets/dark/open.svg",
+          "light": "./dist/assets/light/open.svg"
         }
       },
       {
@@ -203,15 +203,23 @@
       },
       {
         "command": "circleci.copyWorkflowId",
-        "title": "Copy Workflow ID"
+        "title": "Copy Workflow ID",
+        "category": "CircleCI"
       },
       {
         "command": "circleci.copyJobId",
-        "title": "Copy Job ID"
+        "title": "Copy Job ID",
+        "category": "CircleCI"
       },
       {
         "command": "circleci.copyJobNumber",
-        "title": "Copy Job number"
+        "title": "Copy Job number",
+        "category": "CircleCI"
+      },
+      {
+        "command": "circleci.viewJobTests",
+        "title": "View Job Tests",
+        "category": "CircleCI"
       }
     ],
     "configuration": {

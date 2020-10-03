@@ -21,6 +21,7 @@ export default {
   JOB_ARTIFACTS_CONTEXT_BASE: 'circleciArtifacts',
   JOB_ARTIFACT_CONTEXT_BASE: 'circleciArtifact',
   EMPTY_CONTEXT_BASE: 'circleciEmpty',
+  JOB_TESTS_CONTEXT_BASE: 'circleciTests',
 
   LOAD_ITEMS_COMMAND: 'circleci.loadItems',
   RELOAD_COMMAND: 'circleci.reload',
@@ -34,4 +35,11 @@ export default {
   CANCEL_JOB_COMMAND: 'circleci.cancelJob',
   COPY_JOB_ID_COMMAND: 'circleci.copyJobId',
   COPY_JOB_NUMBER_COMMAND: 'circleci.copyJobNumber',
+  LOAD_JOB_TESTS_COMMAND: 'circleci.loadJobTests',
+  OPEN_JOB_TESTS_COMMAND: 'circleci.openJobTests',
+
+  JOB_TESTS_WEBVIEW_ID: 'circleci.jobTestsWebView',
+
+  TEST_DATA_WEBVIEW_EVENT: 'circleci.testData',
+  REQUEST_TESTS_WEBVIEW_EVENT: 'circleci.requestTests',
 };

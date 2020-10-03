@@ -4,7 +4,7 @@ import { l } from '../lib/utils';
 import Loader from './loader';
 import Empty from './empty';
 
-export default class ResourcesItem extends TreeItem {
+export default abstract class ResourcesItem extends TreeItem {
   protected prefixRows: TreeItem[] = [];
   protected mainRows: TreeItem[] = [];
   private allRows: TreeItem[] = [];
@@ -60,13 +60,9 @@ export default class ResourcesItem extends TreeItem {
     this.refresh();
   }
 
-  refresh(): void {
-    throw 'Sub-class must implement refresh';
-  }
+  abstract refresh(): void;
 
-  updateResources(): void {
-    throw 'Sub-class must implement updateResources';
-  }
+  abstract updateResources(): void;
 
   get reloadRate(): number {
     return 0;

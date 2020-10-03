@@ -33,3 +33,5 @@ export type Asset = {
   light: string;
   dark: string;
 };
+
+export type PostMessagePayload = { event: string; data?: any };

@@ -1,4 +1,4 @@
-import { window } from 'vscode';
+import { Uri, window } from 'vscode';
 import { IncomingMessage } from 'http';
 import { FollowResponse, https } from 'follow-redirects';
 import { resolve } from 'path';
@@ -56,12 +56,16 @@ export function msToTime(milliseconds: number): string {
   return `${minutes}m ${seconds < 10 ? '0' : ''}${seconds}s`;
 }
 
-export function getAsset(name: string): { light: string; dark: string } {
+export function getAsset(name: string): { light: Uri; dark: Uri } {
   const context = getContext();
   const filename = `${name}.svg`;
   return {
-    light: resolve(context.extensionPath, 'dist', 'assets', 'light', filename),
-    dark: resolve(context.extensionPath, 'dist', 'assets', 'dark', filename),
+    light: Uri.file(
+      resolve(context.extensionPath, 'dist', 'assets', 'light', filename)
+    ),
+    dark: Uri.file(
+      resolve(context.extensionPath, 'dist', 'assets', 'dark', filename)
+    ),
   };
 }
 
