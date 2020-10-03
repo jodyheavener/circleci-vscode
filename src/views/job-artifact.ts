@@ -97,7 +97,7 @@ export default class JobArtifact extends TreeItem {
     }
 
     const downloadLocation = resolve(
-      workspace.rootPath!,
+      workspace.workspaceFolders![0].uri.fsPath,
       basename(this.artifact.path)
     );
 

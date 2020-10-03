@@ -5,11 +5,21 @@ import gitService from './lib/git-service';
 import ArtifactContentProvider from './lib/artifact-content-provider';
 import PipelinesTree from './lib/pipelines-tree';
 import registerCommands from './lib/commands';
+import { l } from './lib/utils';
 
 let pipelinesTree: PipelinesTree;
 let exportedContext: ExtensionContext;
 
 export async function activate(context: ExtensionContext): Promise<void> {
+  if (!workspace.workspaceFolders || !workspace.workspaceFolders.length) {
+    return void window.showInformationMessage(
+      l(
+        'activationMessage',
+        'CircleCI will activate when a folder is added to your Workspace'
+      )
+    );
+  }
+
   const git = await gitService();
   exportedContext = context;
 

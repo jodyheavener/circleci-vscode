@@ -10,13 +10,12 @@ let exportedService: GitService;
 
 export class GitService {
   gitData?: GitSet;
+  rootPath: string;
 
   private changeCallback?: () => void;
 
   constructor(public vcs: ConfigItems['VCSProvider']) {
-    watchFile(join(workspace.rootPath!, '.git/HEAD'), () => {
-      this.observeBranchChanges();
-    });
+    this.rootPath = workspace.workspaceFolders![0].uri.fsPath;
   }
 
   async setup(): Promise<void> {
@@ -28,6 +27,10 @@ export class GitService {
         branch: await this.getBranch(),
         vcs: this.vcs,
       };
+
+      watchFile(join(this.rootPath, '.git/HEAD'), async () => {
+        await this.observeBranchChanges();
+      });
     } catch (error) {
       this.showErrorMessage(error);
       console.error(error);
@@ -76,10 +79,7 @@ export class GitService {
   private async getRepoInfo(): Promise<{ user: string; repo: string }> {
     try {
       const cmdOutput = stripNewline(
-        await execCommand(
-          'git config --get remote.origin.url',
-          workspace.rootPath!
-        )
+        await execCommand('git config --get remote.origin.url', this.rootPath)
       );
       const matches = [...cmdOutput.matchAll(REPO_MATCHER)];
       return { user: matches[0][1], repo: matches[0][2] };
@@ -95,10 +95,7 @@ export class GitService {
   private async getBranch(): Promise<string> {
     try {
       const cmdOutput = stripNewline(
-        await execCommand(
-          'git rev-parse --abbrev-ref HEAD',
-          workspace.rootPath!
-        )
+        await execCommand('git rev-parse --abbrev-ref HEAD', this.rootPath)
       );
       return cmdOutput;
     } catch (error) {
