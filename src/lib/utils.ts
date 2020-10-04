@@ -1,12 +1,12 @@
 import { Uri, window } from 'vscode';
-import { IncomingMessage } from 'http';
-import { FollowResponse, https } from 'follow-redirects';
+import { https } from 'follow-redirects';
 import { resolve } from 'path';
 import { exec } from 'child_process';
 import open from 'open';
 import * as nls from 'vscode-nls';
 import { getContext } from '../extension';
 import constants from './constants';
+import { createWriteStream } from 'fs';
 
 export function l(
   key: string | nls.LocalizeInfo,
@@ -78,6 +78,17 @@ export function openInBrowser(url: string): void {
   }
 }
 
+export async function openInOS(location: string): Promise<void> {
+  try {
+    await open(location, { wait: true });
+  } catch (error) {
+    window.showErrorMessage(
+      l('couldntOpenPath', `Couldn't open file path: {0}`, location)
+    );
+    console.error(error);
+  }
+}
+
 export async function execCommand(cmd: string, cwd: string): Promise<string> {
   return new Promise((resolve, reject) => {
     exec(cmd, { cwd }, (error, stdout, stderr) => {
@@ -95,23 +106,22 @@ export function stripNewline(value: string): string {
 }
 
 export async function downloadFile(
-  url: string
-): Promise<{
-  contentType?: string;
-  data: string;
-  response: IncomingMessage & FollowResponse;
-}> {
+  url: string,
+  location: string
+): Promise<void> {
   return new Promise((resolve, reject) => {
     https
       .get(url, (response) => {
-        response.setEncoding('utf8');
-        response.on('data', (data) => {
-          resolve({
-            contentType: response.headers['content-type']?.split(';')[0],
-            response,
-            data,
-          });
-        });
+        const file = createWriteStream(location);
+
+        response
+          .on('end', () => {
+            resolve();
+          })
+          .on('finish', () => {
+            resolve();
+          })
+          .pipe(file);
       })
       .on('error', (error) => {
         reject(error);

@@ -88,7 +88,7 @@ const JobTests = (): JSX.Element => {
             />
             {query && (
               <>
-                {l('noQueryResults', 'No matches for the query')}:{' '}
+                {l('noQueryResults', 'No matches for the query: ')}{' '}
                 <span className="query-text">{query}</span>
               </>
             )}
@@ -97,7 +97,7 @@ const JobTests = (): JSX.Element => {
               <>
                 {l(
                   'noJobTestsExplanation',
-                  `We couldn't find any Test metadata for this Job. The Job details page may have additional output.`
+                  `Couldn't find any Test metadata for this Job. The details page may have additional output.`
                 )}{' '}
                 <a href={getJobUrl(jobDetails)}>
                   {l('openJobPage', 'Open Job in browser')}
