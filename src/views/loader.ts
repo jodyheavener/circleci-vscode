@@ -1,7 +1,6 @@
 import { Command, TreeItem, TreeItemCollapsibleState } from 'vscode';
 import constants from '../lib/constants';
-import { getAsset } from '../lib/utils';
-import { l } from '../lib/localize';
+import { getAsset, l } from '../lib/utils';
 
 export default class Loader extends TreeItem {
   readonly contextValue = constants.LOADER_CONTEXT_BASE;

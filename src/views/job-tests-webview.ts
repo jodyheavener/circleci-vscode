@@ -1,16 +1,17 @@
-import { Job as JobData, JobTest as JobTestData } from 'circle-client';
+import { JobTest as JobTestData } from 'circle-client';
 import circleClient from '../lib/circle-client';
 import constants from '../lib/constants';
 import { PostMessagePayload } from '../lib/types';
-import { l } from '../lib/localize';
+import { l } from '../lib/utils';
 import BaseWebView from './base-webview';
+import Job from './job';
 
 export default class JobTestsWebView extends BaseWebView {
   private loading = false;
   private tests: JobTestData[] = [];
   private nextPageToken?: string | null;
 
-  constructor(private job: JobData) {
+  constructor(private job: Job) {
     super();
   }
 
@@ -19,15 +20,15 @@ export default class JobTestsWebView extends BaseWebView {
   }
 
   get id(): string {
-    return `${constants.JOB_TESTS_WEBVIEW_ID}:${this.job.id}`;
+    return `${constants.JOB_TESTS_WEBVIEW_ID}:${this.job.job.id}`;
   }
 
   get title(): string {
     return l(
       'jobTestsTitle',
       `{0} Tests - {1}`,
-      this.job.job_number,
-      this.job.name
+      this.job.job.job_number,
+      this.job.job.name
     );
   }
 
@@ -43,7 +44,7 @@ export default class JobTestsWebView extends BaseWebView {
     this.loading = true;
 
     const results = await (await circleClient()).listJobTests(
-      this.job.job_number!,
+      this.job.job.job_number!,
       { pageToken: this.nextPageToken || undefined }
     );
 
@@ -66,8 +67,13 @@ export default class JobTestsWebView extends BaseWebView {
         this.postMessage({
           event: constants.JOB_DATA_WEBVIEW_EVENT,
           data: {
-            name: this.job.name,
-            number: this.job.job_number,
+            vcs: this.job.workflow.pipeline.gitSet.vcs,
+            user: this.job.workflow.pipeline.gitSet.user,
+            repo: this.job.workflow.pipeline.gitSet.repo,
+            pipelineNumber: this.job.workflow.workflow.pipeline_number,
+            workflowId: this.job.workflow.workflow.id,
+            jobName: this.job.job.name,
+            jobNumber: this.job.job.job_number!,
           },
         });
         break;

@@ -9,8 +9,8 @@ import {
   interpolate,
   openInBrowser,
   statusDescriptions,
+  l,
 } from '../lib/utils';
-import { l } from '../lib/localize';
 import config from '../lib/config';
 import circleClient from '../lib/circle-client';
 import constants from '../lib/constants';

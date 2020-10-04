@@ -87,22 +87,37 @@ body {
 }
 
 .tests {
-	margin-bottom: 20px;
+	margin-bottom: 40px;
 }
 
 .test-row {
 	border-bottom: 1px solid var(--vscode-panel-border);
-	padding: 12px 0 14px 0;
+	padding: 9px 10px 11px;
+
+	&:hover {
+		background-color: rgba(0,0,0,0.1);
+	}
 }
 
 .test-classname {
 	margin: 0;
 	opacity: 0.8;
+	display: flex;
+	justify-content: space-between;
+}
+
+.test-duration {
+	display: flex;
+
+	img {
+		margin-right: 3px;
+    opacity: 0.8;
+	}
 }
 
 .test-name {
-	margin: 5px 0 0;
-	font-size: 1rem;
+	margin: 3px 0 0;
+	font-size: 0.95rem;
 
 	img {
     margin-right: 6px;
@@ -111,7 +126,7 @@ body {
 	}
 }
 
-.load-more {
+.cta-button {
 	background-color: var(--vscode-button-background);
 	color: var(--vscode-button-foreground);
 	border: none;
@@ -123,4 +138,10 @@ body {
 	&:focus {
 		background-color: var(--vscode-button-hoverBackground);
 	}
+}
+
+.query-text {
+	line-height: 1.2em;
+	color: var(--vscode-textPreformat-foreground);
+  font-family: var(--vscode-editor-font-family);
 }

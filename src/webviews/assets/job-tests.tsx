@@ -2,9 +2,19 @@ import { JobTest } from 'circle-client';
 import React, { useCallback, useEffect, useState } from 'react';
 import { render } from 'react-dom';
 import constants from '../../lib/constants';
-import { l } from '../../lib/localize';
 import { PostMessagePayload } from '../../lib/types';
 import './job-tests.scss';
+import { interpolate, l } from './utils';
+
+type JobDetails = {
+  jobName: string;
+  jobNumber: number;
+  pipelineNumber: number;
+  workflowId: string;
+  vcs: string;
+  user: string;
+  repo: string;
+};
 
 // @ts-ignore
 const vscode = acquireVsCodeApi();
@@ -12,14 +22,25 @@ const mountElement = document.getElementById('root')!;
 const vsTheme = document.body.dataset.vscodeThemeKind!.split('-')[1];
 const rootPath = mountElement.dataset.rootPath;
 
+function getJobUrl(jobDetails: JobDetails): string {
+  return interpolate(constants.JOB_URL, {
+    vcs: jobDetails.vcs,
+    user: jobDetails.user,
+    repo: jobDetails.repo,
+    pipeline_number: jobDetails.pipelineNumber,
+    workflow_id: jobDetails.workflowId,
+    job_number: jobDetails.jobNumber,
+  });
+}
+
 const JobTests = (): JSX.Element => {
-  const [job, setJob] = useState<{ name: string; number: number } | null>(null);
+  const [jobDetails, setJobDetails] = useState<JobDetails | null>(null);
   const [tests, setTests] = useState<JobTest[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [query, setQuery] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!job) {
+    if (!jobDetails) {
       window.addEventListener(
         'message',
         ({ data }: { data: PostMessagePayload }) => {
@@ -29,10 +50,7 @@ const JobTests = (): JSX.Element => {
               setHasMore(data.data.hasMore);
               break;
             case constants.JOB_DATA_WEBVIEW_EVENT:
-              setJob({
-                name: data.data.name,
-                number: data.data.number,
-              });
+              setJobDetails(data.data as JobDetails);
               break;
           }
         }
@@ -42,7 +60,7 @@ const JobTests = (): JSX.Element => {
         event: constants.REQUEST_JOB_WEBVIEW_EVENT,
       });
     }
-  }, [job]);
+  }, [jobDetails]);
 
   let filteredTests = tests;
   if (query) {
@@ -54,11 +72,11 @@ const JobTests = (): JSX.Element => {
     );
   }
 
-  return !job ? (
+  return !jobDetails ? (
     <p>Loading...</p>
   ) : (
     <>
-      <Header name={job.name} number={job.number} {...{ query, setQuery }} />
+      <Header {...{ jobDetails, query, setQuery }} />
       <div className="tests">
         {filteredTests.length ? (
           <Tests tests={filteredTests} {...{ query }} />
@@ -68,9 +86,24 @@ const JobTests = (): JSX.Element => {
               src={`${rootPath}/assets/${vsTheme}/none.svg`}
               alt="No tests"
             />
-            {query
-              ? l('noQueryResults', 'No matches for the query "{0}"', query)
-              : l('noJobTests', 'This Job has no Tests')}
+            {query && (
+              <>
+                {l('noQueryResults', 'No matches for the query')}:{' '}
+                <span className="query-text">{query}</span>
+              </>
+            )}
+
+            {!query && (
+              <>
+                {l(
+                  'noJobTestsExplanation',
+                  `We couldn't find any Test metadata for this Job. The Job details page may have additional output.`
+                )}{' '}
+                <a href={getJobUrl(jobDetails)}>
+                  {l('openJobPage', 'Open Job in browser')}
+                </a>
+              </>
+            )}
           </p>
         )}
         {hasMore && <LoadMore />}
@@ -80,13 +113,11 @@ const JobTests = (): JSX.Element => {
 };
 
 const Header = ({
-  name,
-  number,
+  jobDetails,
   query,
   setQuery,
 }: {
-  name: string;
-  number: number;
+  jobDetails: JobDetails;
   query: string | null;
   setQuery: (value: React.SetStateAction<string | null>) => void;
 }): JSX.Element => {
@@ -97,7 +128,7 @@ const Header = ({
     // @ts-ignore
     typeTimer = setTimeout(() => {
       setQuery(value);
-    }, 500);
+    }, 300);
   }, []);
 
   const onClear = useCallback(() => {
@@ -108,13 +139,13 @@ const Header = ({
   return (
     <header className="main-header">
       <div>
-        <h1>{l('jobTestsTitle', 'Job {0} tests', number)}</h1>
+        <h1>{l('jobTestsTitle', 'Job {0} tests', jobDetails.jobNumber)}</h1>
         <p className="name">
           <img
             src={`${rootPath}/assets/${vsTheme}/workflow.svg`}
             alt="Workflow icon"
           />
-          {name}
+          {jobDetails.jobName}
         </p>
       </div>
 
@@ -151,7 +182,11 @@ const Tests = ({
   tests: JobTest[];
 }): JSX.Element => (
   <div className="tests">
-    {query && <p>Query: {query}</p>}
+    {query && (
+      <p>
+        Search query: <span className="query-text">{query}</span>
+      </p>
+    )}
     {tests.map((test: JobTest, index: number) => (
       <Test key={index} {...{ test }} />
     ))}
@@ -165,7 +200,16 @@ const statusIcons: { [key: string]: string } = {
 
 const Test = ({ test }: { test: JobTest }): JSX.Element => (
   <div className="test-row">
-    <p className="test-classname">{test.classname}</p>
+    <p className="test-classname">
+      <span>{test.classname}</span>
+      <span className="test-duration">
+        <img
+          src={`${rootPath}/assets/${vsTheme}/stopwatch.svg`}
+          alt={test.run_time}
+        />
+        {l('testTimeSeconds', '{0}s', test.run_time)}
+      </span>
+    </p>
     <p className="test-name">
       <img
         src={`${rootPath}/assets/${vsTheme}/${statusIcons[test.result]}.svg`}
@@ -184,7 +228,7 @@ const LoadMore = (): JSX.Element => {
   }, []);
 
   return (
-    <button className="load-more" {...{ onClick }}>
+    <button className="cta-button" {...{ onClick }}>
       {l('loadTests', 'Load more')}
     </button>
   );

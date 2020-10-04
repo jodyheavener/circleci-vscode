@@ -1,5 +1,5 @@
 import * as nls from 'vscode-nls';
-import constants from './constants';
+import constants from '../../lib/constants';
 
 export function l(
   key: string | nls.LocalizeInfo,
@@ -15,4 +15,13 @@ export function l(
   } else {
     return nls.config()()(key, message, ...args);
   }
+}
+
+export function interpolate(
+  value: string,
+  replacements: { [key: string]: string | number }
+): string {
+  return Object.keys(replacements).reduce((p, c) => {
+    return p.split('{' + c + '}').join(String(replacements[c]));
+  }, value);
 }

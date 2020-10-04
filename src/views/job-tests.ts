@@ -1,7 +1,6 @@
 import { commands, TreeItem, TreeItemCollapsibleState } from 'vscode';
 import constants from '../lib/constants';
-import { getAsset } from '../lib/utils';
-import { l } from '../lib/localize';
+import { getAsset, l } from '../lib/utils';
 import Job from './job';
 import JobTestsWebView from './job-tests-webview';
 
@@ -15,7 +14,7 @@ export default class JobTests extends TreeItem {
 
     this.iconPath = getAsset('clipboard');
     this.testsCommand = `${constants.OPEN_JOB_TESTS_COMMAND}:${this.job.job.id}`;
-    this.testsWebView = new JobTestsWebView(job.job);
+    this.testsWebView = new JobTestsWebView(job);
 
     commands.registerCommand(
       this.testsCommand,

@@ -6,8 +6,8 @@ import {
   interpolate,
   openInBrowser,
   statusDescriptions,
+  l
 } from '../lib/utils';
-import { l } from '../lib/localize';
 import circleClient from '../lib/circle-client';
 import Workflow from './workflow';
 import JobDuration from './job-duration';
