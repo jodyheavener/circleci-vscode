@@ -1,6 +1,7 @@
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 import constants from '../lib/constants';
-import { getAsset, l } from '../lib/utils';
+import { getAsset } from '../lib/utils';
+import { l } from '../lib/localize';
 
 export default class Empty extends TreeItem {
   readonly contextValue = constants.EMPTY_CONTEXT_BASE;

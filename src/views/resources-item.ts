@@ -1,6 +1,6 @@
 import { TreeItem, TreeItemCollapsibleState, window } from 'vscode';
 import { Paged } from 'circle-client';
-import { l } from '../lib/utils';
+import { l } from '../lib/localize';
 import Loader from './loader';
 import Empty from './empty';
 

@@ -4,10 +4,10 @@ import constants from '../lib/constants';
 import {
   getAsset,
   interpolate,
-  l,
   openInBrowser,
   statusDescriptions,
 } from '../lib/utils';
+import { l } from '../lib/localize';
 import circleClient from '../lib/circle-client';
 import Workflow from './workflow';
 import JobDuration from './job-duration';

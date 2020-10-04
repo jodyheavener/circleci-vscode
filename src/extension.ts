@@ -5,7 +5,7 @@ import gitService from './lib/git-service';
 import ArtifactContentProvider from './lib/artifact-content-provider';
 import PipelinesTree from './lib/pipelines-tree';
 import registerCommands from './lib/commands';
-import { l } from './lib/utils';
+import { l } from './lib/localize';
 
 let pipelinesTree: PipelinesTree;
 let exportedContext: ExtensionContext;

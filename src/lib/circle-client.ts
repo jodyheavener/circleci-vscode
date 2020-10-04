@@ -1,6 +1,6 @@
 import CircleCI from 'circle-client';
 import { window } from 'vscode';
-import { l } from './utils';
+import { l } from './localize';
 import config from './config';
 import gitService from './git-service';
 import { ConfigKey } from './types';

@@ -1,6 +1,7 @@
 import { commands, TreeItem, TreeItemCollapsibleState } from 'vscode';
 import constants from '../lib/constants';
-import { getAsset, l } from '../lib/utils';
+import { getAsset } from '../lib/utils';
+import { l } from '../lib/localize';
 import Job from './job';
 import JobTestsWebView from './job-tests-webview';
 

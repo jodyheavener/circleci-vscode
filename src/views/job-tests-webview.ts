@@ -2,7 +2,7 @@ import { Job as JobData, JobTest as JobTestData } from 'circle-client';
 import circleClient from '../lib/circle-client';
 import constants from '../lib/constants';
 import { PostMessagePayload } from '../lib/types';
-import { l } from '../lib/utils';
+import { l } from '../lib/localize';
 import BaseWebView from './base-webview';
 
 export default class JobTestsWebView extends BaseWebView {

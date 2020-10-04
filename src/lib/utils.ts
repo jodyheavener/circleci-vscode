@@ -4,25 +4,8 @@ import { FollowResponse, https } from 'follow-redirects';
 import { resolve } from 'path';
 import { exec } from 'child_process';
 import open from 'open';
-import * as nls from 'vscode-nls';
 import { getContext } from '../extension';
-import constants from './constants';
-
-export function l(
-  key: string | nls.LocalizeInfo,
-  message: string,
-  ...args: (string | number | boolean | undefined | null)[]
-): string {
-  if (typeof key === 'string') {
-    return nls.config()()(
-      `${constants.LOCALIZATION_PREFIX}.${key}`,
-      message,
-      ...args
-    );
-  } else {
-    return nls.config()()(key, message, ...args);
-  }
-}
+import { l } from './localize';
 
 export const statusDescriptions: {
   [status: string]: string;

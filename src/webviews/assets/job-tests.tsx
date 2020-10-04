@@ -1,26 +1,10 @@
 import { JobTest } from 'circle-client';
-import * as nls from 'vscode-nls';
 import React, { useCallback, useEffect, useState } from 'react';
 import { render } from 'react-dom';
 import constants from '../../lib/constants';
+import { l } from '../../lib/localize';
 import { PostMessagePayload } from '../../lib/types';
 import './job-tests.scss';
-
-export function l(
-  key: string | nls.LocalizeInfo,
-  message: string,
-  ...args: (string | number | boolean | undefined | null)[]
-): string {
-  if (typeof key === 'string') {
-    return nls.config()()(
-      `${constants.LOCALIZATION_PREFIX}.${key}`,
-      message,
-      ...args
-    );
-  } else {
-    return nls.config()()(key, message, ...args);
-  }
-}
 
 // @ts-ignore
 const vscode = acquireVsCodeApi();
@@ -75,8 +59,22 @@ const JobTests = (): JSX.Element => {
   ) : (
     <>
       <Header name={job.name} number={job.number} {...{ query, setQuery }} />
-      <Tests tests={filteredTests} {...{ query }} />
-      {hasMore && <LoadMore />}
+      <div className="tests">
+        {filteredTests.length ? (
+          <Tests tests={filteredTests} {...{ query }} />
+        ) : (
+          <p className="no-tests">
+            <img
+              src={`${rootPath}/assets/${vsTheme}/none.svg`}
+              alt="No tests"
+            />
+            {query
+              ? l('noQueryResults', 'No matches for the query "{0}"', query)
+              : l('noJobTests', 'This Job has no Tests')}
+          </p>
+        )}
+        {hasMore && <LoadMore />}
+      </div>
     </>
   );
 };
@@ -108,10 +106,10 @@ const Header = ({
   }, []);
 
   return (
-    <header>
+    <header className="main-header">
       <div>
-        <h1>Job {number} tests</h1>
-        <p>
+        <h1>{l('jobTestsTitle', 'Job {0} tests', number)}</h1>
+        <p className="name">
           <img
             src={`${rootPath}/assets/${vsTheme}/workflow.svg`}
             alt="Workflow icon"
@@ -120,9 +118,10 @@ const Header = ({
         </p>
       </div>
 
-      <div>
+      <div className="header-right">
         <form>
           <input
+            className={`search-input ${query ? 'has-query' : ''}`}
             type="text"
             placeholder={l('searchTestsPlaceholder', 'Search tests')}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,7 +130,7 @@ const Header = ({
           />
 
           {query && (
-            <button onClick={onClear}>
+            <button onClick={onClear} className="search-clear">
               <img
                 src={`${rootPath}/assets/${vsTheme}/ex.svg`}
                 alt="Clear icon"
@@ -151,12 +150,12 @@ const Tests = ({
   query: string | null;
   tests: JobTest[];
 }): JSX.Element => (
-  <>
+  <div className="tests">
     {query && <p>Query: {query}</p>}
     {tests.map((test: JobTest, index: number) => (
       <Test key={index} {...{ test }} />
     ))}
-  </>
+  </div>
 );
 
 const statusIcons: { [key: string]: string } = {
@@ -165,9 +164,9 @@ const statusIcons: { [key: string]: string } = {
 };
 
 const Test = ({ test }: { test: JobTest }): JSX.Element => (
-  <div>
-    <p>{test.classname}</p>
-    <p>
+  <div className="test-row">
+    <p className="test-classname">{test.classname}</p>
+    <p className="test-name">
       <img
         src={`${rootPath}/assets/${vsTheme}/${statusIcons[test.result]}.svg`}
         alt={`Test status: ${test.result}`}
@@ -184,7 +183,11 @@ const LoadMore = (): JSX.Element => {
     });
   }, []);
 
-  return <button {...{ onClick }}></button>;
+  return (
+    <button className="load-more" {...{ onClick }}>
+      {l('loadTests', 'Load more')}
+    </button>
+  );
 };
 
 render(

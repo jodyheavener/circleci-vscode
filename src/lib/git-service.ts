@@ -3,7 +3,8 @@ import { join } from 'path';
 import { window, workspace } from 'vscode';
 import config from './config';
 import { ConfigItems, ConfigKey, GitSet } from './types';
-import { execCommand, l, stripNewline } from './utils';
+import { execCommand, stripNewline } from './utils';
+import { l } from './localize';
 
 const REPO_MATCHER = /(?:git@.*\..*:|https?:\/\/.*\..*\/)(.*)\/(.*).git/g;
 let exportedService: GitService;

@@ -6,10 +6,10 @@ import { ActivatableGitSet, ConfigKey } from '../lib/types';
 import {
   getAsset,
   interpolate,
-  l,
   openInBrowser,
   pluralize,
 } from '../lib/utils';
+import { l } from '../lib/localize';
 import config from '../lib/config';
 import circleClient from '../lib/circle-client';
 import ResourcesItem from './resources-item';
