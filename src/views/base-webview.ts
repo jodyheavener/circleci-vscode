@@ -73,8 +73,8 @@ export default abstract class BaseWebView implements Disposable {
   private async webviewHTML(): Promise<string> {
     let content;
     const context = getContext();
-    const staticPath = resolve(context.extensionPath, 'dist', 'webviews');
-    const filePath = join(staticPath, this.filename);
+    const staticPath = resolve(context.extensionPath, 'dist');
+    const filePath = join(staticPath, 'webviews', this.filename);
 
     if (this.html) {
       return this.html;
@@ -84,10 +84,8 @@ export default abstract class BaseWebView implements Disposable {
     content = doc.getText();
 
     let html = content.replace(
-      /#{asset}/g,
-      Uri.file(join(staticPath, 'assets'))
-        .with({ scheme: 'vscode-resource' })
-        .toString()
+      /#{root}/g,
+      Uri.file(staticPath).with({ scheme: 'vscode-resource' }).toString()
     );
 
     this.html = html;

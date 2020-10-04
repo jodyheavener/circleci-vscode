@@ -40,6 +40,8 @@ export default {
 
   JOB_TESTS_WEBVIEW_ID: 'circleci.jobTestsWebView',
 
-  TEST_DATA_WEBVIEW_EVENT: 'circleci.testData',
-  REQUEST_TESTS_WEBVIEW_EVENT: 'circleci.requestTests',
+  JOB_DATA_WEBVIEW_EVENT: 'circleci.jobDataWebview',
+  TEST_DATA_WEBVIEW_EVENT: 'circleci.testDataWebview',
+  REQUEST_TESTS_WEBVIEW_EVENT: 'circleci.requestTestsWebview',
+  REQUEST_JOB_WEBVIEW_EVENT: 'circleci.requestJobWebview',
 };

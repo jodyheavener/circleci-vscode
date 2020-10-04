@@ -39,6 +39,7 @@ export default abstract class ResourcesItem extends TreeItem {
   timedReload(): void {
     clearTimeout(this.reloadTimer!);
     if (this.reloadRate > 0 && this.shouldReload) {
+      // @ts-ignore
       this.reloadTimer = setTimeout(
         this.reload.bind(this),
         this.reloadRate * 1000

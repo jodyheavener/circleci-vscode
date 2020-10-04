@@ -61,8 +61,19 @@ export default class JobTestsWebView extends BaseWebView {
   }
 
   onMessage(message: PostMessagePayload): void {
-    if (message.event === constants.REQUEST_TESTS_WEBVIEW_EVENT) {
-      this.getMoreTests();
+    switch (message.event) {
+      case constants.REQUEST_JOB_WEBVIEW_EVENT:
+        this.postMessage({
+          event: constants.JOB_DATA_WEBVIEW_EVENT,
+          data: {
+            name: this.job.name,
+            number: this.job.job_number,
+          },
+        });
+        break;
+      case constants.REQUEST_TESTS_WEBVIEW_EVENT:
+        this.getMoreTests();
+        break;
     }
   }
 }

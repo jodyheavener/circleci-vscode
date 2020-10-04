@@ -48,7 +48,7 @@ const extensionConfig = {
 const webviewConfig = {
   target: 'web',
   entry: {
-    'job-tests': './src/webviews/assets/job-tests.ts',
+    'job-tests': './src/webviews/assets/job-tests.tsx',
   },
   output: {
     path: resolve(__dirname, 'dist/webviews/assets'),
@@ -56,18 +56,22 @@ const webviewConfig = {
     libraryTarget: 'window',
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.js'],
   },
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /\.tsx?$/,
         exclude: /node_modules/,
         use: [
           {
             loader: 'ts-loader',
           },
         ],
+      },
+      {
+        test: /\.s[ac]ss$/i,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
     ],
   },
