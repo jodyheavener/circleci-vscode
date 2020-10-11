@@ -205,7 +205,7 @@ const Test = ({ test }: { test: JobTest }): JSX.Element => (
       <span className="test-duration">
         <img
           src={`${rootPath}/assets/${vsTheme}/stopwatch.svg`}
-          alt={test.run_time}
+          alt={String(test.run_time)}
         />
         {l('testTimeSeconds', '{0}s', test.run_time)}
       </span>

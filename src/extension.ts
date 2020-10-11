@@ -1,14 +1,15 @@
-import { window, workspace, ExtensionContext } from 'vscode';
+import { window, workspace, ExtensionContext, Disposable } from 'vscode';
 import constants from './lib/constants';
 import config from './lib/config';
 import gitService from './lib/git-service';
 import ArtifactContentProvider from './lib/artifact-content-provider';
 import PipelinesTree from './lib/pipelines-tree';
-import registerCommands from './lib/commands';
+import registerGlobalCommands from './lib/global-commands';
 import { l } from './lib/utils';
 
 let pipelinesTree: PipelinesTree;
 let exportedContext: ExtensionContext;
+let globalCommands: Disposable[];
 
 export async function activate(context: ExtensionContext): Promise<void> {
   if (!workspace.workspaceFolders || !workspace.workspaceFolders.length) {
@@ -41,11 +42,12 @@ export async function activate(context: ExtensionContext): Promise<void> {
     new ArtifactContentProvider()
   );
 
-  registerCommands(pipelinesTree);
+  globalCommands = registerGlobalCommands(pipelinesTree);
 }
 
 export function deactivate(): void {
   pipelinesTree && pipelinesTree.dispose();
+  globalCommands.forEach(command => command.dispose());
 }
 
 export function getContext(): ExtensionContext {

@@ -26,7 +26,14 @@ export default class PipelinesTree
 
   constructor(private git: GitService) {}
 
+  disposePipelines(): void {
+    this.pipelines.forEach(pipeline => {
+      pipeline.dispose();
+    });
+  }
+
   dispose(): void {
+    this.disposePipelines();
     this.disposed = true;
   }
 
@@ -36,6 +43,7 @@ export default class PipelinesTree
 
   refresh(): void {
     this.refreshing = true;
+    this.disposePipelines();
     this._onDidChangeTreeData.fire(undefined);
   }
 

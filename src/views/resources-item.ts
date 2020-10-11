@@ -1,13 +1,14 @@
-import { TreeItem, TreeItemCollapsibleState, window } from 'vscode';
+import { Disposable, TreeItem, TreeItemCollapsibleState, window } from 'vscode';
 import { Paged } from 'circle-client';
 import Loader from './loader';
 import Empty from './empty';
 import { l } from '../lib/utils';
 
-export default abstract class ResourcesItem extends TreeItem {
+export default abstract class ResourcesItem extends TreeItem implements Disposable {
   protected prefixRows: TreeItem[] = [];
   protected mainRows: TreeItem[] = [];
   private allRows: TreeItem[] = [];
+  private disposed = false;
   private loaderRow?: Loader;
   private reloadTimer?: NodeJS.Timeout;
   pageToken: string | null = null;
@@ -19,6 +20,16 @@ export default abstract class ResourcesItem extends TreeItem {
     private readonly autoload: boolean
   ) {
     super(label, collapsibleState);
+  }
+
+  dispose(): void {
+    this.allRows.forEach(row => {
+      if ('dispose' in row) {
+        // @ts-ignore
+        row.dispose();
+      }
+    });
+    this.disposed = true;
   }
 
   setup(): void {
@@ -92,7 +103,17 @@ export default abstract class ResourcesItem extends TreeItem {
     }
   }
 
+  disposeRows(): void {
+    this.allRows.forEach(row => {
+      if ('dispose' in row) {
+        // @ts-ignore
+        row.dispose();
+      }
+    });
+  }
+
   reload(): void {
+    this.disposeRows();
     this.allRows = [this.loaderRow!];
     this.mainRows = [];
     this.pageToken = null;

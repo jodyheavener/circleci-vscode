@@ -34,7 +34,7 @@
     "localize": "node --require ts-node/register scripts/localize.ts"
   },
   "dependencies": {
-    "circle-client": "^0.1.6",
+    "circle-client": "^0.1.7",
     "follow-redirects": "^1.13.0",
     "open": "^7.2.1",
     "react": "^16.13.1",

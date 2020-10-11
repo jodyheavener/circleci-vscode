@@ -1,4 +1,4 @@
-import { env, TreeItem, TreeItemCollapsibleState, window } from 'vscode';
+import { Disposable, env, TreeItem, TreeItemCollapsibleState, window } from 'vscode';
 import { Job as JobData } from 'circle-client';
 import constants from '../lib/constants';
 import {
@@ -28,8 +28,9 @@ const statusIcons: {
   unauthorized: 'status-line',
 };
 
-export default class Job extends TreeItem {
+export default class Job extends TreeItem implements Disposable {
   private reloading = false;
+  private disposed = false;
   private rows: TreeItem[] = [];
 
   constructor(readonly job: JobData, readonly workflow: Workflow) {
@@ -85,13 +86,28 @@ export default class Job extends TreeItem {
     });
   }
 
+  disposeRows(): void {
+    this.rows.forEach(row => {
+      if ('dispose' in row) {
+        // @ts-ignore
+        row.dispose();
+      }
+    });
+  }
+
   reload(): void {
     if (this.reloading) {
       return;
     }
 
     this.reloading = true;
+    this.disposeRows();
     this.loadDetails();
+  }
+
+  dispose(): void {
+    this.disposeRows();
+    this.disposed = true;
   }
 
   openPage(): void {
