@@ -26,6 +26,8 @@ const statusIcons: {
   on_hold: 'status-dots-grey',
   canceled: 'status-line',
   unauthorized: 'status-line',
+  hold: 'status-pause',
+  unknown: 'status-unknown',
 };
 
 export default class Job extends TreeItem implements Disposable {
@@ -34,7 +36,7 @@ export default class Job extends TreeItem implements Disposable {
   private rows: TreeItem[] = [];
 
   constructor(readonly job: JobData, readonly workflow: Workflow) {
-    super(job.name, TreeItemCollapsibleState.Collapsed);
+    super(job.name, TreeItemCollapsibleState.None);
 
     this.description = this.statusDescription(this.job.status);
     this.tooltip = job.name;
@@ -45,14 +47,29 @@ export default class Job extends TreeItem implements Disposable {
   }
 
   private statusDescription(status?: string): string {
-    return statusDescriptions[status || l('loadingLabel', 'Loading...')];
+    if (this.job.type === 'build') {
+      return statusDescriptions[status || 'loading'];
+    } else if (this.job.type === 'approval') {
+      return statusDescriptions['on_hold'];
+    } else {
+      return statusDescriptions['loading'];
+    }
+
   }
 
   private statusIcon(status?: string): string {
-    return statusIcons[status || 'not_run'];
+    if (this.job.type === 'build') {
+      return statusIcons[status || 'unknown'];
+    } else if (this.job.type === 'approval') {
+      return statusIcons['hold'];
+    } else {
+      return statusIcons['unknown'];
+    }
   }
 
   private loadDetails(): void {
+    if (this.job.type !== 'build') { return; }
+
     circleClient().then((client) => {
       client
         .getJob(this.job.job_number!)
@@ -72,6 +89,7 @@ export default class Job extends TreeItem implements Disposable {
 
           this.reloading = false;
           this.workflow.pipeline.refresh();
+          this.collapsibleState = TreeItemCollapsibleState.Collapsed;
         })
         .catch((error) => {
           window.showErrorMessage(
@@ -143,12 +161,36 @@ export default class Job extends TreeItem implements Disposable {
     setTimeout(this.reload.bind(this), 1000);
   }
 
+  async approve(): Promise<void> {
+    if (this.job.approval_request_id) {
+      return void window.showErrorMessage(
+        l(
+          'noApprovalRequest',
+          `Couldn't find Approval Request ID for Job {0}`,
+          this.job.id
+        )
+      );
+    }
+
+    (await circleClient()).approveWorkflowJob(this.workflow.workflow.id, this.job.approval_request_id!);
+    window.showInformationMessage(l('jobCanceled', 'Job approved.'));
+    setTimeout(this.reload.bind(this), 1000);
+  }
+
   get children(): TreeItem[] {
     return this.rows;
   }
 
   private setContextValue(): void {
     let value = constants.JOB_CONTEXT_BASE;
+
+    if (this.job.type === 'build') {
+      value += ':build';
+    }
+
+    if (this.job.type === 'approval') {
+      value += ':approval';
+    }
 
     if (this.job.status === 'running') {
       value += ':running';

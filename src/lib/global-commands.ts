@@ -64,8 +64,12 @@ const registerCommands = (pipelineTree: PipelinesTree): Disposable[] => {
       }
     ),
 
-    commands.registerCommand(constants.CANCEL_JOB_COMMAND, (item: Workflow) => {
+    commands.registerCommand(constants.CANCEL_JOB_COMMAND, (item: Job) => {
       item.cancel();
+    }),
+
+    commands.registerCommand(constants.APPROVE_JOB_COMMAND, (item: Job) => {
+      item.approve();
     }),
 
     commands.registerCommand(constants.COPY_JOB_ID_COMMAND, (item: Job) => {

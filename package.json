@@ -113,7 +113,7 @@
           "group": "inline"
         },
         {
-          "when": "viewItem =~ /circleciPipeline/ || viewItem =~ /circleciWorkflow/ || viewItem =~ /circleciJob/",
+          "when": "viewItem =~ /circleciPipeline/ || viewItem =~ /circleciWorkflow/ || viewItem =~ /circleciJob(?::?\\w*)(?::build)/",
           "command": "circleci.openPage",
           "group": "inline"
         },
@@ -123,8 +123,13 @@
           "group": "inline"
         },
         {
-          "when": "viewItem =~ /circleciJob(?::?\\w*)(?::running)/",
+          "when": "viewItem =~ /circleciJob(?::?\\w*)(?::build)(?::?\\w*)(?::running)/",
           "command": "circleci.cancelJob",
+          "group": "inline"
+        },
+        {
+          "when": "viewItem =~ /circleciJob(?::?\\w*)(?::approval)/",
+          "command": "circleci.approveJob",
           "group": "inline"
         },
         {
@@ -148,7 +153,7 @@
           "group": "circleci"
         },
         {
-          "when": "viewItem =~ /circleciJob/",
+          "when": "viewItem =~ /circleciJob(?::?\\w*)(?::build)/",
           "command": "circleci.copyJobNumber",
           "group": "circleci"
         }
@@ -189,6 +194,15 @@
         "icon": {
           "dark": "./dist/assets/dark/ex.svg",
           "light": "./dist/assets/light/ex.svg"
+        }
+      },
+      {
+        "command": "circleci.approveJob",
+        "title": "Approve Job",
+        "category": "CircleCI",
+        "icon": {
+          "dark": "./dist/assets/dark/play.svg",
+          "light": "./dist/assets/light/play.svg"
         }
       },
       {

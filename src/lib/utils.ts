@@ -36,6 +36,7 @@ export const statusDescriptions: {
   on_hold: l('statusOnHold', 'On Hold'),
   canceled: l('statusCanceled', 'Canceled'),
   unauthorized: l('statusUnauthorized', 'Unauthorized'),
+  loading: l('loadingLabel', 'Loading...'),
 };
 
 export function pluralize(

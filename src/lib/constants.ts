@@ -33,6 +33,7 @@ export default {
   OPEN_JOB_ARTIFACT_COMMAND: 'circleci.openJobArtifact',
   FETCH_JOB_ARTIFACTS_COMMAND: 'circleci.fetchJobArtifacts',
   CANCEL_JOB_COMMAND: 'circleci.cancelJob',
+  APPROVE_JOB_COMMAND: 'circleci.approveJob',
   COPY_JOB_ID_COMMAND: 'circleci.copyJobId',
   COPY_JOB_NUMBER_COMMAND: 'circleci.copyJobNumber',
   LOAD_JOB_TESTS_COMMAND: 'circleci.loadJobTests',
