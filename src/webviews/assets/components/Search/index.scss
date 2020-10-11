@@ -1,0 +1,40 @@
+form {
+	position: relative;
+}
+
+.search-form {
+  flex: 1 0 0;
+}
+
+.search-input {
+  background-color: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border: none;
+  padding: 7px 10px;
+  width: 100%;
+  box-sizing: border-box;
+
+  &.has-query {
+    padding-right: 30px;
+  }
+}
+
+.search-clear {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transform: translateY(-50%);
+  margin-top: 1px;
+
+  svg {
+    fill: var(--vscode-icon-foreground);
+  }
+
+  &:focus {
+    // Fix this
+    outline: none;
+  }
+}

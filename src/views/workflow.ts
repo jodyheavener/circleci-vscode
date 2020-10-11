@@ -98,7 +98,9 @@ export default class Workflow extends ResourcesItem {
         : l('retryingFailedJobs', 'Retrying failed Workflow Jobs')
     );
     // Retry adds *new* jobs, so reload the whole pipeline
-    setTimeout(this.pipeline.reload.bind(this), 1000);
+    setTimeout(() => {
+      this.pipeline.reload();
+    }, 1000);
   }
 
   private setContextValue(): void {

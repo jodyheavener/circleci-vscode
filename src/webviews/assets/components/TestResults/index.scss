@@ -1,0 +1,18 @@
+.results-container {
+  margin-bottom: 40px;
+}
+
+.query-text {
+  line-height: 1.2em;
+  color: var(--vscode-textPreformat-foreground);
+  font-family: var(--vscode-editor-font-family);
+}
+
+.no-results {
+  text-align: center;
+}
+
+.load-more-container {
+  text-align: center;
+  margin-top: 20px;
+}

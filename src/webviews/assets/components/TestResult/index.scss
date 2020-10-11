@@ -1,0 +1,40 @@
+.test-result {
+  border-bottom: 1px solid var(--vscode-panel-border);
+  padding: 9px 10px 11px;
+
+  &:first-child {
+    border-top: 1px solid var(--vscode-panel-border);
+  }
+
+  &:hover {
+    background-color: rgba(0,0,0,0.1);
+  }
+}
+
+.test-classname {
+  margin: 0;
+  opacity: 0.8;
+  display: flex;
+  justify-content: space-between;
+}
+
+.test-duration {
+  display: flex;
+  align-items: center;
+
+  svg {
+    margin-right: 3px;
+    fill: var(--vscode-icon-foreground);
+  }
+}
+
+.test-name {
+  margin: 3px 0 0;
+  font-size: 0.95rem;
+
+  svg {
+    margin-right: 6px;
+    position: relative;
+    top: 1px;
+  }
+}

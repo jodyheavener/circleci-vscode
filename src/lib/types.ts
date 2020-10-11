@@ -35,3 +35,13 @@ export type Asset = {
 };
 
 export type PostMessagePayload = { event: string; data?: any };
+
+export type JobTestDetails = {
+  jobName: string;
+  jobNumber: number;
+  pipelineNumber: number;
+  workflowId: string;
+  vcs: string;
+  user: string;
+  repo: string;
+};

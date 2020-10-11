@@ -19,6 +19,9 @@
     "moduleResolution": "node",
     "jsx": "react"
   },
+  "include": [
+    "./src/webviews/types.d.ts"
+  ],
   "exclude": [
     "node_modules",
     ".vscode-test"
