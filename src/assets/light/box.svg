@@ -1,7 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>Artboard</title>
-    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <path d="M15,2 L15,6.28571429 L14.125,6.28571429 L14.125,14 L1.875,14 L1.875,6.28571429 L1,6.28571429 L1,2 L15,2 Z M10,8.97959184 L6,8.97959184 L6,9.95918367 L10,9.95918367 L10,8.97959184 Z M13.25,6.28571429 L2.75,6.28571429 L2.75,13.1428571 L13.25,13.1428571 L13.25,6.28571429 Z M14.125,2.85714286 L1.875,2.85714286 L1.875,5.42857143 L14.125,5.42857143 L14.125,2.85714286 Z" fill="#424242" fill-rule="nonzero"></path>
-    </g>
-</svg>
+<svg height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg"><path d="m15 2v4.28571429h-.875v7.71428571h-12.25v-7.71428571h-.875v-4.28571429zm-5 6.97959184h-4v.97959183h4zm3.25-2.69387755h-10.5v6.85714281h10.5zm.875-3.42857143h-12.25v2.57142857h12.25z" fill="#424242"/></svg>

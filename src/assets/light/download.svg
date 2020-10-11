@@ -1,7 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>Artboard</title>
-    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <path d="M2,8.5 L2,13.5 L14,13.5 L14,8.5 L15,8.5 L15,14 L14.5,14.5 L1.5,14.5 L1,14 L1,8.5 L2,8.5 Z M3.5,6.5 L4,6 L7.5,9.063 L7.5,1.5 L8.5,1.5 L8.5,9.063 L12,6 L12.5,6.5 L8,10.5 L3.5,6.5 Z" fill="#424242"></path>
-    </g>
-</svg>
+<svg height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg"><path d="m2 8.5v5h12v-5h1v5.5l-.5.5h-13l-.5-.5v-5.5zm1.5-2 .5-.5 3.5 3.063v-7.563h1v7.563l3.5-3.063.5.5-4.5 4z" fill="#424242" fill-rule="evenodd"/></svg>
