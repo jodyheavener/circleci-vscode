@@ -6,8 +6,6 @@ A simple extension for VS Code to allow you to monitor, manage, and inspect your
 
 ⚠️ This project is still in beta. It uses CircleCI's [V2 API](https://circleci.com/docs/api/v2/), which includes endpoints that are still evolving, and as such may result in this extention breaking. I'll do my best to keep it updated, but it will remain in beta until those endpoints are finalized. You can [report issues here](https://github.com/jodyheavener/circleci-vscode/issues).
 
-_While I certainly hope they like it, this extension is not built or endorsed by CircleCI._
-
 ## How to Use
 
 💻 You have two options for installation:
@@ -26,7 +24,6 @@ _While I certainly hope they like it, this extension is not built or endorsed by
 - "Auto Load Workflows" and "Auto Load Workflow Jobs" are safeguard options that you can use to stop the extension from automatically performing API requests for each Job from each Workflow. Don't want you to get rate-limited, after all.
 - "Pipeline Reload Interval" determines how frequently, in seconds, the extension should poll CircleCI for updates to a Pipeline. Set to `0` to disable.
 - "Workflow Reload Interval" determines how frequently, in seconds, we should poll CircleCI for an update to an active Workflow (one that is actively running). Set to `0` to disable.
-
 
 ✅ You're all set. When you open VS Code the extension will open in the background and use the Git information from your Workspace's first/main folder to look for a CircleCI Project and the branch with which to query Pipeline Workflows.
 
@@ -123,7 +120,7 @@ This extension is built with Node (yarn), TypeScript, [vsce](https://github.com/
 
 When you're ready to package for distribution run `vsce package`. Don't forget to version bump.
 
-## License, acknowledgement, and disclaimer
+## License and more...
 
 - This extension is provided under the [MIT](./LICENSE) License
 - While I certainly hope they like it, **this extension is not built or endorsed by CircleCI.**
