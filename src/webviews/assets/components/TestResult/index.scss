@@ -38,3 +38,22 @@
     top: 1px;
   }
 }
+
+.test-message {
+  margin: 5px 0 0;
+
+  summary {
+    outline: none;
+    cursor: pointer;
+  }
+}
+
+.test-message-content {
+  font-family: var(--vscode-editor-font-family);
+  background-color: var(--vscode-textCodeBlock-background);
+  padding: 15px;
+  margin-top: 10px;
+  border-radius: 3px;
+  max-height: 240px;
+  overflow-y: scroll;
+}
