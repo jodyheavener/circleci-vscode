@@ -21,12 +21,8 @@ const TestResult = ({ test }: { test: JobTest }): JSX.Element => {
       </p>
 
       <p className="test-name">
-        {test.result === 'success' && (
-          <StatusSuccess />
-        )}
-        {test.result === 'failure' && (
-          <StatusFailed />
-        )}
+        {test.result === 'success' && <StatusSuccess />}
+        {test.result === 'failure' && <StatusFailed />}
 
         {test.name}
       </p>

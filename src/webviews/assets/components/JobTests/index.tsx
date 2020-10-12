@@ -14,7 +14,9 @@ const JobTests = ({ vscode }: { vscode: any }): JSX.Element => {
   const [tests, setTests] = useState<JobTest[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [query, setQuery] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<'status' | 'alphabetically' | 'duration'>('status');
+  const [sortBy, setSortBy] = useState<
+    'status' | 'alphabetically' | 'duration'
+  >('status');
 
   useEffect(() => {
     if (!jobDetails) {
@@ -25,7 +27,7 @@ const JobTests = ({ vscode }: { vscode: any }): JSX.Element => {
             case constants.TEST_DATA_WEBVIEW_EVENT:
               if (!initLoaded) {
                 setInitLoaded(true);
-                setInitHasTests(!!(data.data.tests.length));
+                setInitHasTests(!!data.data.tests.length);
               }
 
               setTests((existing) => existing.concat(data.data.tests));
@@ -55,15 +57,17 @@ const JobTests = ({ vscode }: { vscode: any }): JSX.Element => {
   }
 
   if (sortBy === 'status') {
-    filteredTests.sort((a, b) => a.result.localeCompare(b.result))
+    filteredTests.sort((a, b) => a.result.localeCompare(b.result));
   }
 
   if (sortBy === 'alphabetically') {
-    filteredTests.sort((a, b) => a.classname.localeCompare(b.classname))
+    filteredTests.sort((a, b) => a.classname.localeCompare(b.classname));
   }
 
   if (sortBy === 'duration') {
-    filteredTests.sort((a, b) => { return b.run_time - a.run_time })
+    filteredTests.sort((a, b) => {
+      return b.run_time - a.run_time;
+    });
   }
 
   if (!jobDetails) {
@@ -72,8 +76,27 @@ const JobTests = ({ vscode }: { vscode: any }): JSX.Element => {
 
   return (
     <>
-      <TestsHeader {...{ jobDetails, query, setQuery, hasTests: initHasTests, sortBy, setSortBy }} />
-      <TestResults {...{ vscode, query, setQuery, tests: filteredTests, hasMore, loaded: initLoaded, hasTests: initHasTests } }/>
+      <TestsHeader
+        {...{
+          jobDetails,
+          query,
+          setQuery,
+          hasTests: initHasTests,
+          sortBy,
+          setSortBy,
+        }}
+      />
+      <TestResults
+        {...{
+          vscode,
+          query,
+          setQuery,
+          tests: filteredTests,
+          hasMore,
+          loaded: initLoaded,
+          hasTests: initHasTests,
+        }}
+      />
     </>
   );
 };

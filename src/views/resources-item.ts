@@ -4,7 +4,9 @@ import Loader from './loader';
 import Empty from './empty';
 import { l } from '../lib/utils';
 
-export default abstract class ResourcesItem extends TreeItem implements Disposable {
+export default abstract class ResourcesItem
+  extends TreeItem
+  implements Disposable {
   protected prefixRows: TreeItem[] = [];
   protected mainRows: TreeItem[] = [];
   private allRows: TreeItem[] = [];
@@ -23,7 +25,7 @@ export default abstract class ResourcesItem extends TreeItem implements Disposab
   }
 
   dispose(): void {
-    this.allRows.forEach(row => {
+    this.allRows.forEach((row) => {
       if ('dispose' in row) {
         // @ts-ignore
         row.dispose();
@@ -104,7 +106,7 @@ export default abstract class ResourcesItem extends TreeItem implements Disposab
   }
 
   disposeRows(): void {
-    this.allRows.forEach(row => {
+    this.allRows.forEach((row) => {
       if ('dispose' in row) {
         // @ts-ignore
         row.dispose();

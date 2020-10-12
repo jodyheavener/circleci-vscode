@@ -5,9 +5,12 @@ import { PostMessagePayload } from '../../../../lib/types';
 import Loading from '../Loading';
 import './index.scss';
 
-const Upgrade = ({ vscode }: { vscode: any }): JSX.Element => {
+const Upgrade = ({}: { vscode: any }): JSX.Element => {
   const [initLoaded, setInitLoaded] = useState<boolean>(false);
-  const [changelog, setChangelog] = useState<{ content: string; version: string; } | null>(null);
+  const [changelog, setChangelog] = useState<{
+    content: string;
+    version: string;
+  } | null>(null);
 
   useEffect(() => {
     if (!changelog) {
@@ -26,18 +29,16 @@ const Upgrade = ({ vscode }: { vscode: any }): JSX.Element => {
         }
       );
     }
-	}, [changelog]);
+  }, [changelog]);
 
-	if (!initLoaded) {
-		return <Loading />
+  if (!initLoaded) {
+    return <Loading />;
   }
 
   return (
-		<div>
+    <div>
       <h1>New in CircleCI for VS Code v{changelog!.version}</h1>
-      <div>
-        {<ReactMarkdown source={changelog!.content} />}
-      </div>
+      <div>{<ReactMarkdown source={changelog!.content} />}</div>
     </div>
   );
 };

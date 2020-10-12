@@ -4,7 +4,7 @@ import './index.scss';
 const CTAButton = ({
   text,
   href,
-  onClick
+  onClick,
 }: {
   text: string;
   href?: string;

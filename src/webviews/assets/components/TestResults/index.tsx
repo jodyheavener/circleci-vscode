@@ -25,7 +25,7 @@ const TestResults = ({
   hasTests: boolean;
 }): JSX.Element => {
   if (!loaded) {
-    return (<p>{l('loadingLabel', 'Loading...')}</p>)
+    return <p>{l('loadingLabel', 'Loading...')}</p>;
   }
 
   if (!hasTests) {
@@ -33,7 +33,7 @@ const TestResults = ({
       <div className="results-container">
         <NoTests />
       </div>
-    )
+    );
   }
 
   return (
@@ -47,18 +47,23 @@ const TestResults = ({
             onClick={(event) => {
               event.preventDefault();
               setQuery(null);
-            }}>
+            }}
+          >
             {l('searchQueryClear', 'Clear results')}
           </a>
         </p>
       )}
 
       <div>
-        {tests.length
-          ? tests.map((test: JobTest, index: number) => (
+        {tests.length ? (
+          tests.map((test: JobTest, index: number) => (
             <TestResult key={index} {...{ test }} />
           ))
-          : (<p className="no-results">{l('noSearchResults', 'Sorry, no results.')}</p>)}
+        ) : (
+          <p className="no-results">
+            {l('noSearchResults', 'Sorry, no results.')}
+          </p>
+        )}
       </div>
 
       {!query && hasMore && (

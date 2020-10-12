@@ -18,8 +18,10 @@ const TestsHeader = ({
   query: string | null;
   setQuery: (value: React.SetStateAction<string | null>) => void;
   hasTests: boolean;
-  sortBy: 'status' | 'alphabetically' | 'duration',
-  setSortBy: (value: React.SetStateAction<'status' | 'alphabetically' | 'duration'>) => void,
+  sortBy: 'status' | 'alphabetically' | 'duration';
+  setSortBy: (
+    value: React.SetStateAction<'status' | 'alphabetically' | 'duration'>
+  ) => void;
 }): JSX.Element => {
   return (
     <div className="header-container">
@@ -33,7 +35,10 @@ const TestsHeader = ({
         </div>
 
         <div className="header-right">
-          <CTAButton text={l('openJob', 'Open in browser')} href={getJobUrl(jobDetails)} />
+          <CTAButton
+            text={l('openJob', 'Open in browser')}
+            href={getJobUrl(jobDetails)}
+          />
         </div>
       </header>
 
@@ -43,34 +48,34 @@ const TestsHeader = ({
 
           <p className="sorts">
             {l('sortBy', 'Sort:')}{' '}
-
             <a
               href="#"
               className={sortBy === 'status' ? 'active' : ''}
               onClick={(event) => {
                 event.preventDefault();
                 setSortBy('status');
-              }}>
+              }}
+            >
               {l('sortByStatus', 'Status')}
             </a>
-
             <a
               href="#"
               className={sortBy === 'alphabetically' ? 'active' : ''}
               onClick={(event) => {
                 event.preventDefault();
                 setSortBy('alphabetically');
-              }}>
+              }}
+            >
               {l('sortByAlphabetically', 'Alphabetically')}
             </a>
-
             <a
               href="#"
               className={sortBy === 'duration' ? 'active' : ''}
               onClick={(event) => {
                 event.preventDefault();
                 setSortBy('duration');
-              }}>
+              }}
+            >
               {l('sortByDuration', 'Duration')}
             </a>
           </p>

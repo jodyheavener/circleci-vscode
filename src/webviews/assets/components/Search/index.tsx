@@ -5,7 +5,7 @@ import './index.scss';
 
 const Search = ({
   query,
-  setQuery
+  setQuery,
 }: {
   query: string | null;
   setQuery: (value: React.SetStateAction<string | null>) => void;
@@ -13,13 +13,16 @@ const Search = ({
   let typeTimer: NodeJS.Timeout | null;
   let searchField = useRef<HTMLInputElement | null>(null);
 
-  const onSearch = useCallback((value: string) => {
-    clearTimeout(typeTimer!);
-    // @ts-ignore
-    typeTimer = setTimeout(() => {
-      setQuery(value);
-    }, 300);
-  }, [query]);
+  const onSearch = useCallback(
+    (value: string) => {
+      clearTimeout(typeTimer!);
+      // @ts-ignore
+      typeTimer = setTimeout(() => {
+        setQuery(value);
+      }, 300);
+    },
+    [query]
+  );
 
   const onClear = useCallback(() => {
     setQuery(null);
@@ -27,7 +30,12 @@ const Search = ({
   }, [query]);
 
   return (
-    <form className="search-form" onSubmit={(event) => { event.preventDefault(); }}>
+    <form
+      className="search-form"
+      onSubmit={(event) => {
+        event.preventDefault();
+      }}
+    >
       <input
         ref={searchField}
         className={`search-input ${query ? 'has-query' : ''}`}

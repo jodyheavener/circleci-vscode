@@ -1,4 +1,10 @@
-import { window, workspace, ExtensionContext, Disposable, extensions, commands } from 'vscode';
+import {
+  window,
+  workspace,
+  ExtensionContext,
+  Disposable,
+  extensions,
+} from 'vscode';
 import constants from './lib/constants';
 import config from './lib/config';
 import gitService from './lib/git-service';
@@ -7,7 +13,7 @@ import PipelinesTree from './lib/pipelines-tree';
 import registerGlobalCommands from './lib/global-commands';
 import WelcomeWebView from './views/welcome-webview';
 import UpgradeWebView from './views/upgrade-webview';
-import { l, splitVersion } from './lib/utils';
+import { splitVersion } from './lib/utils';
 
 let pipelinesTree: PipelinesTree;
 let exportedContext: ExtensionContext;
@@ -18,7 +24,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
   const extension = extensions.getExtension(constants.EXTENSION_ID)!;
   const currentVersion = extension.packageJSON.version;
-  const previousVersion = context.globalState.get<string>(constants.EXTENSION_VERSION);
+  const previousVersion = context.globalState.get<string>(
+    constants.EXTENSION_VERSION
+  );
 
   if (!workspace.workspaceFolders || !workspace.workspaceFolders.length) {
     // NOTE: This was getting annoying. Maybe we can
@@ -63,41 +71,44 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
 export function deactivate(): void {
   pipelinesTree && pipelinesTree.dispose();
-  globalCommands.forEach(command => command.dispose());
+  globalCommands.forEach((command) => command.dispose());
 }
 
-async function showStartupView(currentVersion: string, previousVersion: string | undefined) {
+async function showStartupView(
+  currentVersion: string,
+  previousVersion: string | undefined
+): Promise<void> {
   const welcomeWebView = new WelcomeWebView(currentVersion);
   const upgradeWebView = new UpgradeWebView(currentVersion);
 
-	if (previousVersion === undefined) {
-		return welcomeWebView.show();
-	}
+  if (previousVersion === undefined) {
+    return welcomeWebView.show();
+  }
 
   const [currentMajor, currentMinor] = splitVersion(currentVersion);
   const [previousMajor, previousMinor] = splitVersion(previousVersion);
 
   // Don't do anything if...
-	if (
+  if (
     // The versions are the same major and minor
     (currentMajor === previousMajor && currentMinor === previousMinor) ||
     // A major downgrade occurred
     currentMajor < previousMajor ||
     // A minor downgrade occurred
     (currentMajor === previousMajor && currentMinor < previousMinor)
-	) {
-		return;
-	}
+  ) {
+    return;
+  }
 
   // Show upgrade view if...
-	if (
+  if (
     // A major upgrade occurred
     currentMajor !== previousMajor ||
     // A minor upgrade occurred
     (currentMajor === previousMajor && currentMinor > previousMinor)
   ) {
-		upgradeWebView.show();
-	}
+    upgradeWebView.show();
+  }
 }
 
 export function getContext(): ExtensionContext {

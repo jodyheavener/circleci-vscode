@@ -1,4 +1,10 @@
-import { Disposable, env, TreeItem, TreeItemCollapsibleState, window } from 'vscode';
+import {
+  Disposable,
+  env,
+  TreeItem,
+  TreeItemCollapsibleState,
+  window,
+} from 'vscode';
 import { Job as JobData } from 'circle-client';
 import constants from '../lib/constants';
 import {
@@ -6,7 +12,7 @@ import {
   interpolate,
   openInBrowser,
   statusDescriptions,
-  l
+  l,
 } from '../lib/utils';
 import circleClient from '../lib/circle-client';
 import Workflow from './workflow';
@@ -54,7 +60,6 @@ export default class Job extends TreeItem implements Disposable {
     } else {
       return statusDescriptions['loading'];
     }
-
   }
 
   private statusIcon(status?: string): string {
@@ -68,7 +73,9 @@ export default class Job extends TreeItem implements Disposable {
   }
 
   private loadDetails(): void {
-    if (this.job.type !== 'build') { return; }
+    if (this.job.type !== 'build') {
+      return;
+    }
 
     circleClient().then((client) => {
       client
@@ -105,7 +112,7 @@ export default class Job extends TreeItem implements Disposable {
   }
 
   disposeRows(): void {
-    this.rows.forEach(row => {
+    this.rows.forEach((row) => {
       if ('dispose' in row) {
         // @ts-ignore
         row.dispose();
@@ -172,7 +179,10 @@ export default class Job extends TreeItem implements Disposable {
       );
     }
 
-    (await circleClient()).approveWorkflowJob(this.workflow.workflow.id, this.job.approval_request_id!);
+    (await circleClient()).approveWorkflowJob(
+      this.workflow.workflow.id,
+      this.job.approval_request_id!
+    );
     window.showInformationMessage(l('jobCanceled', 'Job approved.'));
     setTimeout(this.reload.bind(this), 1000);
   }

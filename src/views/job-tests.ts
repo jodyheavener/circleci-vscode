@@ -1,4 +1,9 @@
-import { commands, Disposable, TreeItem, TreeItemCollapsibleState } from 'vscode';
+import {
+  commands,
+  Disposable,
+  TreeItem,
+  TreeItemCollapsibleState,
+} from 'vscode';
 import constants from '../lib/constants';
 import { getAsset, l } from '../lib/utils';
 import Job from './job';

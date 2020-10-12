@@ -5,9 +5,12 @@ import { PostMessagePayload } from '../../../../lib/types';
 import Loading from '../Loading';
 import './index.scss';
 
-const Welcome = ({ vscode }: { vscode: any }): JSX.Element => {
+const Welcome = ({}: { vscode: any }): JSX.Element => {
   const [initLoaded, setInitLoaded] = useState<boolean>(false);
-  const [changelog, setChangelog] = useState<{ content: string; version: string; } | null>(null);
+  const [changelog, setChangelog] = useState<{
+    content: string;
+    version: string;
+  } | null>(null);
 
   useEffect(() => {
     if (!changelog) {
@@ -26,23 +29,21 @@ const Welcome = ({ vscode }: { vscode: any }): JSX.Element => {
         }
       );
     }
-	}, [changelog]);
+  }, [changelog]);
 
-	if (!initLoaded) {
-		return <Loading />
+  if (!initLoaded) {
+    return <Loading />;
   }
 
   return (
-		<div>
-			<h1>Welcome!</h1>
+    <div>
+      <h1>Welcome!</h1>
 
       <div>
         <h2>Here's what's new in v{changelog!.version}</h2>
-        <div>
-          {<ReactMarkdown source={changelog!.content} />}
-        </div>
+        <div>{<ReactMarkdown source={changelog!.content} />}</div>
       </div>
-		</div>
+    </div>
   );
 };
 

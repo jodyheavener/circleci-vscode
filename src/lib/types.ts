@@ -1,6 +1,6 @@
 export enum ConfigKey {
   APIToken = 'apiToken',
-  VCSProvider = 'VCSProvider',
+  VcsProvider = 'VcsProvider',
   CustomBranches = 'customBranches',
   AutoLoadWorkflows = 'autoLoadWorkflows',
   AutoLoadWorkflowJobs = 'autoLoadWorkflowJobs',
@@ -15,7 +15,7 @@ export type ConfigItems = {
   [ConfigKey.AutoLoadWorkflowJobs]: boolean;
   [ConfigKey.PipelineReloadInterval]: number;
   [ConfigKey.WorkflowReloadInterval]: number;
-  [ConfigKey.VCSProvider]: 'github' | 'bitbucket';
+  [ConfigKey.VcsProvider]: 'github' | 'bitbucket';
 };
 
 export type GitSet = {

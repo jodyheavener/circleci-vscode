@@ -250,12 +250,12 @@
       "type": "object",
       "title": "CircleCI",
       "properties": {
-        "circleci.apiToken": {
+        "circleci-vscode.apiToken": {
           "type": "string",
           "default": null,
           "markdownDescription": "A CircleCI API Token. This can be generated on your [Personal API Tokens](https://app.circleci.com/settings/user/tokens) page."
         },
-        "circleci.VCSProvider": {
+        "circleci-vscode.VcsProvider": {
           "type": "string",
           "default": "github",
           "enum": [
@@ -268,7 +268,7 @@
           ],
           "description": "Your VCS Provider."
         },
-        "circleci.customBranches": {
+        "circleci-vscode.customBranches": {
           "type": "array",
           "items": {
             "type": "string"
@@ -278,23 +278,23 @@
           ],
           "description": "Add any custom branches you'd like to list Pipelines for. These will be displayed in addition to the currently checked-out branch."
         },
-        "circleci.autoLoadWorkflows": {
+        "circleci-vscode.autoLoadWorkflows": {
           "type": "boolean",
           "default": true,
-          "markdownDescription": "Automatically load Pipeline Workflows."
+          "description": "Automatically load Pipeline Workflows."
         },
-        "circleci.autoLoadWorkflowJobs": {
+        "circleci-vscode.autoLoadWorkflowJobs": {
           "type": "boolean",
           "default": true,
-          "markdownDescription": "Automatically load Workflow Jobs."
+          "description": "Automatically load Workflow Jobs."
         },
-        "circleci.pipelineReloadInterval": {
+        "circleci-vscode.pipelineReloadInterval": {
           "type": "number",
           "default": 120,
           "minimum": 0,
           "markdownDescription": "Seconds to wait before reloading all Pipelines. This will load in any new Workflows. Set to `0` to disable."
         },
-        "circleci.workflowReloadInterval": {
+        "circleci-vscode.workflowReloadInterval": {
           "type": "number",
           "default": 10,
           "minimum": 0,

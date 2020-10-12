@@ -14,7 +14,7 @@ export class GitService {
 
   private changeCallback?: () => void;
 
-  constructor(public vcs: ConfigItems['VCSProvider']) {
+  constructor(public vcs: ConfigItems['VcsProvider']) {
     this.rootPath = workspace.workspaceFolders![0].uri.fsPath;
   }
 
@@ -108,7 +108,7 @@ export class GitService {
 export default async function gitService(): Promise<GitService> {
   if (!exportedService) {
     exportedService = new GitService(
-      config().get(ConfigKey.VCSProvider) as ConfigItems['VCSProvider']
+      config().get(ConfigKey.VcsProvider) as ConfigItems['VcsProvider']
     );
     await exportedService.setup();
   }

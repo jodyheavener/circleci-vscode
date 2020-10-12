@@ -139,6 +139,6 @@ export function interpolate(
   }, value);
 }
 
-export function splitVersion(version: string) {
-  return version.split('.').map(v => parseInt(v, 10));
+export function splitVersion(version: string): number[] {
+  return version.split('.').map((v) => parseInt(v, 10));
 }

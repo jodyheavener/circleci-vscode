@@ -20,6 +20,8 @@
     "jsx": "react"
   },
   "include": [
+    "./src/**/*.ts",
+    "./src/**/*.tsx",
     "./src/webviews/types.d.ts"
   ],
   "exclude": [

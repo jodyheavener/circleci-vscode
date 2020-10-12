@@ -13,7 +13,7 @@ export class Config {
   }
 
   get(key: keyof ConfigItems): ConfigItems[typeof key] {
-    const config = workspace.getConfiguration('circleci');
+    const config = workspace.getConfiguration('circleci-vscode');
     return config[key] as ConfigItems[typeof key];
   }
 
