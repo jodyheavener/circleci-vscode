@@ -7,7 +7,7 @@ import TestResults from '../TestResults';
 import Loading from '../Loading';
 import './index.scss';
 
-const JobTests = ({ vscode, rootPath }: { vscode: any; rootPath: string }): JSX.Element => {
+const JobTests = ({ vscode }: { vscode: any }): JSX.Element => {
   const [jobDetails, setJobDetails] = useState<JobTestDetails | null>(null);
   const [initLoaded, setInitLoaded] = useState<boolean>(false);
   const [initHasTests, setInitHasTests] = useState<boolean>(false);

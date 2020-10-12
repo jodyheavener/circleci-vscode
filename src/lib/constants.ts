@@ -1,4 +1,7 @@
 export default {
+  EXTENSION_ID: 'jodyh.circleci-vscode',
+  EXTENSION_VERSION: 'circleciExtensionVersion',
+
   LOCALIZATION_PREFIX: 'circleciExtension',
 
   PROJECT_URL: 'https://app.circleci.com/pipelines/{vcs}/{user}/{repo}',
@@ -40,9 +43,12 @@ export default {
   OPEN_JOB_TESTS_COMMAND: 'circleci.openJobTests',
 
   JOB_TESTS_WEBVIEW_ID: 'circleci.jobTestsWebView',
+  WELCOME_WEBVIEW_ID: 'circleci.welcomeWebView',
+  UPGRADE_WEBVIEW_ID: 'circleci.upgradeWebView',
 
   JOB_DATA_WEBVIEW_EVENT: 'circleci.jobDataWebview',
   TEST_DATA_WEBVIEW_EVENT: 'circleci.testDataWebview',
+  CHANGELOG_CONTENT_WEBVIEW_EVENT: 'circleci.changelogContentWebview',
   REQUEST_TESTS_WEBVIEW_EVENT: 'circleci.requestTestsWebview',
   REQUEST_JOB_WEBVIEW_EVENT: 'circleci.requestJobWebview',
 };

@@ -49,6 +49,8 @@ const webviewConfig = {
   target: 'web',
   entry: {
     'job-tests': './src/webviews/assets/job-tests.tsx',
+    'welcome': './src/webviews/assets/welcome.tsx',
+    'upgrade': './src/webviews/assets/upgrade.tsx',
   },
   output: {
     path: resolve(__dirname, 'dist/webviews/assets'),

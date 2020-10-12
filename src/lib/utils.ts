@@ -138,3 +138,7 @@ export function interpolate(
     return p.split('{' + c + '}').join(String(replacements[c]));
   }, value);
 }
+
+export function splitVersion(version: string) {
+  return version.split('.').map(v => parseInt(v, 10));
+}

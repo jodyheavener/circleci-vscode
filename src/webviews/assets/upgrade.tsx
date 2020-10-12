@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import JobTests from './components/JobTests';
+import Upgrade from './components/Upgrade';
 
 // @ts-ignore
 const vscode = acquireVsCodeApi() as any;
@@ -8,7 +8,7 @@ const rootElement = document.getElementById('root')!;
 
 render(
   <React.StrictMode>
-    <JobTests {...{ vscode }} />
+    <Upgrade {...{ vscode }} />
   </React.StrictMode>,
   rootElement
 );
