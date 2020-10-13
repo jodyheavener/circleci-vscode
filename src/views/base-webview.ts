@@ -37,7 +37,7 @@ export default abstract class BaseWebView implements Disposable {
   }
 
   onDidShow(): void {}
-  onMessage(message: PostMessagePayload): void {
+  async onMessage(message: PostMessagePayload): Promise<void> {
     message;
   }
 
@@ -62,7 +62,9 @@ export default abstract class BaseWebView implements Disposable {
       );
 
       this.panel.onDidDispose(this.dispose.bind(this), this);
-      this.panel.webview.onDidReceiveMessage(this.onMessage.bind(this), this);
+      this.panel.webview.onDidReceiveMessage(async (event) => {
+        await this.onMessage(event);
+      }, this);
       this.panel.webview.html = html;
       this.panel.iconPath = getAsset('circleci-logo');
     }

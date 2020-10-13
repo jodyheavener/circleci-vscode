@@ -1,4 +1,6 @@
 import { JobTest as JobTestData } from 'circle-client';
+import { resolve } from 'path';
+import { workspace, window, Selection, Position, Range, Uri } from 'vscode';
 import circleClient from '../lib/circle-client';
 import constants from '../lib/constants';
 import { PostMessagePayload } from '../lib/types';
@@ -61,7 +63,25 @@ export default class JobTestsWebView extends BaseWebView {
     });
   }
 
-  onMessage(message: PostMessagePayload): void {
+  async openFile(path: string, line: number, character: number): Promise<void> {
+    const fullPath = resolve(workspace.workspaceFolders![0].uri.fsPath, path);
+    const openPath = Uri.file(fullPath);
+    const filePosition = new Position(line, character);
+
+    try {
+      const document = await workspace.openTextDocument(openPath);
+      const editor = await window.showTextDocument(document);
+      editor.selections = [new Selection(filePosition, filePosition)];
+      editor.revealRange(new Range(filePosition, filePosition));
+    } catch (error) {
+      window.showErrorMessage(
+        l('openFileFail', `Couldn't open file {0}`, path)
+      );
+      console.error(error);
+    }
+  }
+
+  async onMessage(message: PostMessagePayload): Promise<void> {
     switch (message.event) {
       case constants.REQUEST_JOB_WEBVIEW_EVENT:
         this.postMessage({
@@ -79,6 +99,13 @@ export default class JobTestsWebView extends BaseWebView {
         break;
       case constants.REQUEST_TESTS_WEBVIEW_EVENT:
         this.getMoreTests();
+        break;
+      case constants.OPEN_FILE_WEBVIEW_EVENT:
+        await this.openFile(
+          message.data.path,
+          message.data.line || 0,
+          message.data.character || 0
+        );
         break;
     }
   }

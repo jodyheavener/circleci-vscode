@@ -51,4 +51,5 @@ export default {
   CHANGELOG_CONTENT_WEBVIEW_EVENT: 'circleci.changelogContentWebview',
   REQUEST_TESTS_WEBVIEW_EVENT: 'circleci.requestTestsWebview',
   REQUEST_JOB_WEBVIEW_EVENT: 'circleci.requestJobWebview',
+  OPEN_FILE_WEBVIEW_EVENT: 'circleci.openFileWebview',
 };

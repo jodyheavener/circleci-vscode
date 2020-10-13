@@ -57,7 +57,7 @@ const TestResults = ({
       <div>
         {tests.length ? (
           tests.map((test: JobTest, index: number) => (
-            <TestResult key={index} {...{ test }} />
+            <TestResult key={index} {...{ test, vscode }} />
           ))
         ) : (
           <p className="no-results">
