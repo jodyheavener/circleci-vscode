@@ -5,7 +5,11 @@ import gitService from './git-service';
 import { ConfigKey } from './types';
 import { l } from './utils';
 
-let exportedClient: CircleCI;
+let exportedClient: CircleCI | null = null;
+
+export function reset(): void {
+  exportedClient = null;
+}
 
 export default async function circleClient(): Promise<CircleCI> {
   const apiToken = config().get(ConfigKey.APIToken) as string;

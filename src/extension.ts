@@ -6,8 +6,9 @@ import {
   extensions,
 } from 'vscode';
 import constants from './lib/constants';
-import config from './lib/config';
-import gitService from './lib/git-service';
+import config, { reset as resetConfig } from './lib/config';
+import gitService, { reset as resetService } from './lib/git-service';
+import { reset as resetClient } from './lib/circle-client';
 import ArtifactContentProvider from './lib/artifact-content-provider';
 import PipelinesTree from './lib/pipelines-tree';
 import registerGlobalCommands from './lib/global-commands';
@@ -20,13 +21,13 @@ let exportedContext: ExtensionContext;
 let globalCommands: Disposable[];
 
 export async function activate(context: ExtensionContext): Promise<void> {
-  // context.globalState.update(constants.EXTENSION_VERSION, '0.1.0'); // REMOVE
-
-  const extension = extensions.getExtension(constants.EXTENSION_ID)!;
+  const extension = extensions.getExtension(constants.QUALIFIED_EXTENSION_ID)!;
   const currentVersion = extension.packageJSON.version;
   const previousVersion = context.globalState.get<string>(
     constants.EXTENSION_VERSION
   );
+
+  migrateConfig(currentVersion, previousVersion);
 
   if (!workspace.workspaceFolders || !workspace.workspaceFolders.length) {
     // NOTE: This was getting annoying. Maybe we can
@@ -45,6 +46,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
   exportedContext = context;
 
   function refresh(): void {
+    resetConfig();
+    resetService();
+    resetClient();
     pipelinesTree.refresh();
   }
 
@@ -72,6 +76,32 @@ export async function activate(context: ExtensionContext): Promise<void> {
 export function deactivate(): void {
   pipelinesTree && pipelinesTree.dispose();
   globalCommands.forEach((command) => command.dispose());
+}
+
+function migrateConfig(
+  currentVersion: string,
+  previousVersion: string | undefined
+): void {
+  if (!previousVersion || currentVersion === previousVersion) {
+    return;
+  }
+
+  const [currentMajor, currentMinor] = splitVersion(currentVersion);
+
+  if (currentMajor >= 0) {
+    // 0.2.0 moved to circleci-vscode namespace
+    if (currentMinor >= 2) {
+      config().migrate(
+        {
+          apiToken: 'apiToken',
+          customBranches: 'customBranches',
+          pipelineRefreshInterval: 'pipelineReloadInterval',
+          buildRefreshInterval: 'workflowReloadInterval',
+        },
+        'circleci'
+      );
+    }
+  }
 }
 
 async function showStartupView(

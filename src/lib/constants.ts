@@ -1,5 +1,6 @@
 export default {
-  EXTENSION_ID: 'jodyh.circleci-vscode',
+  EXTENSION_ID: 'circleci-vscode',
+  QUALIFIED_EXTENSION_ID: 'jodyh.circleci-vscode',
   EXTENSION_VERSION: 'circleciExtensionVersion',
 
   LOCALIZATION_PREFIX: 'circleciExtension',

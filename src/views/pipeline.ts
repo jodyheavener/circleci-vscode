@@ -1,5 +1,8 @@
-import { TreeItemCollapsibleState } from 'vscode';
-import { Workflow as WorkflowData } from 'circle-client';
+import { TreeItemCollapsibleState, window } from 'vscode';
+import {
+  Workflow as WorkflowData,
+  Pipeline as PipelineData,
+} from 'circle-client';
 import constants from '../lib/constants';
 import PipelinesTree from '../lib/pipelines-tree';
 import { ActivatableGitSet, ConfigKey } from '../lib/types';
@@ -36,11 +39,23 @@ export default class Pipeline extends ResourcesItem {
 
   updateResources(): void {
     this.loadResources<WorkflowData>(async () => {
-      const { items: pipelines } = await (
-        await circleClient()
-      ).listProjectPipelines({
-        branch: this.gitSet.branch,
-      });
+      let pipelines: PipelineData[] = [];
+      try {
+        const { items } = await (await circleClient()).listProjectPipelines({
+          branch: this.gitSet.branch,
+        });
+
+        pipelines.push(...items);
+      } catch (error) {
+        console.log(error);
+        window.showErrorMessage(
+          l(
+            'pipelineLoadError',
+            `There was a problem load Pipelines for {0}. Is your API token correct?`,
+            this.gitSet.branch
+          )
+        );
+      }
 
       const workflows = (
         await Promise.all(

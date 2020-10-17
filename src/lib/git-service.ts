@@ -6,7 +6,7 @@ import { ConfigItems, ConfigKey, GitSet } from './types';
 import { execCommand, stripNewline, l } from './utils';
 
 const REPO_MATCHER = /(?:git@.*\..*:|https?:\/\/.*\..*\/)(.*)\/(.*).git/g;
-let exportedService: GitService;
+let exportedService: GitService | null = null;
 
 export class GitService {
   gitData?: GitSet;
@@ -103,6 +103,10 @@ export class GitService {
       throw l('badGitBranch', 'Could not retrieve Git branch.');
     }
   }
+}
+
+export function reset(): void {
+  exportedService = null;
 }
 
 export default async function gitService(): Promise<GitService> {

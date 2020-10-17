@@ -4,7 +4,7 @@ A simple extension for VS Code to allow you to monitor, manage, and inspect your
 
 ![Preview image](./preview.png)
 
-⚠️ This project is still in beta. It uses CircleCI's [V2 API](https://circleci.com/docs/api/v2/), which includes endpoints that are still evolving, and as such may result in this extention breaking. I'll do my best to keep it updated, but it will remain in beta until those endpoints are finalized. You can [report issues here](https://github.com/jodyheavener/circleci-vscode/issues).
+⚠️ This project is still in beta. It uses CircleCI's [V2 API](https://circleci.com/docs/api/v2/), which includes endpoints that are still evolving, and as such may result in this extension breaking. I'll do my best to keep it updated, but it will remain in beta until those endpoints are finalized. You can [report issues here](https://github.com/jodyheavener/circleci-vscode/issues).
 
 ## How to Use
 
@@ -83,7 +83,7 @@ Within a Job you can:
 
 If your Job is configured to [collect Test metadata](https://circleci.com/docs/2.0/collect-test-data/) you can open them right in VS Code. From within a Job tree item click "**View Tests**" and they'll open inside a webview. From this webview you can:
 
-- View each Test, including its programmatic location, name, and failure information.
+- View each Test, including its programmatic location, name, and failure details. Where possible, paths within the failure details output will link back to source files.
 - Sort them by status (success, failed), alphabetically, or the length of time each one took.
 - Search through all Tests by name, description, or status.
 - Open the Job in your browser.
@@ -105,7 +105,7 @@ Q: I see the error: "Could not retrieve Git branch."
 A: Check to ensure you're on a fully qualified branch, and not a rebase commit, detached HEAD, or other funky Git state. The extension check for the non-ambiguous name of the ref.
 
 Q: I see the error message: "There was an issue loading Pipeline/Workflow/Job/etc..."
-A: An error occured during an API request. These are a little hard to debug, but you should ensure that your API token is valid.
+A: An error occurred during an API request. These are a little hard to debug, but you should ensure that your API token is valid.
 
 ## Development
 
@@ -124,5 +124,5 @@ When you're ready to package for distribution run `vsce package`. Don't forget t
 
 - This extension is provided under the [MIT](./LICENSE) License
 - While I certainly hope they like it, **this extension is not built or endorsed by CircleCI.**
-- By using this extension you agree not to come after me if something goes wrong and it accidently burns through all your CircleCI credits.
+- By using this extension you agree not to come after me if something goes wrong and it accidentally burns through all your CircleCI credits.
 - Shout out to Eric Amodio (whose [GitLens](https://github.com/eamodio/vscode-gitlens) extension provided great reference), Paul Johnston, and others in the [VS Code Dev Slack](https://aka.ms/vscode-dev-community).
