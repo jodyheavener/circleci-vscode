@@ -1,7 +1,7 @@
 {
   "name": "circleci-vscode",
   "displayName": "CircleCI",
-  "description": "Monitor, inspect, run, and cancel Pipeline Builds on CircleCI",
+  "description": "Monitor, manage, and inspect your Pipelines on CircleCI",
   "version": "0.2.0",
   "license": "MIT",
   "publisher": "jodyh",
