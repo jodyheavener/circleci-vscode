@@ -14,7 +14,7 @@ export default class JobTests extends TreeItem implements Disposable {
   private testsCommand: string;
   private testsWebView: JobTestsWebView;
   private disposed = false;
-  private registeredCommand: Disposable;
+  private registeredCommand?: Disposable;
 
   constructor(readonly job: Job) {
     super(l('viewTests', 'View Tests →'), TreeItemCollapsibleState.None);
@@ -28,10 +28,14 @@ export default class JobTests extends TreeItem implements Disposable {
     `.replace(/(\r|\s)/gm, '');
     this.testsWebView = new JobTestsWebView(job);
 
-    this.registeredCommand = commands.registerCommand(
-      this.testsCommand,
-      async () => await this.testsWebView.show()
-    );
+    try {
+      this.registeredCommand = commands.registerCommand(
+        this.testsCommand,
+        async () => await this.testsWebView.show()
+      );
+    } catch (error) {
+      // FIXME: Config changes result in double command registrations.
+    }
 
     this.command = {
       command: this.testsCommand,
@@ -41,7 +45,7 @@ export default class JobTests extends TreeItem implements Disposable {
   }
 
   dispose(): void {
-    this.registeredCommand.dispose();
+    this.registeredCommand?.dispose();
     this.disposed = true;
   }
 }

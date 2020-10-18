@@ -53,4 +53,6 @@ export default {
   REQUEST_TESTS_WEBVIEW_EVENT: 'circleci.requestTestsWebview',
   REQUEST_JOB_WEBVIEW_EVENT: 'circleci.requestJobWebview',
   OPEN_FILE_WEBVIEW_EVENT: 'circleci.openFileWebview',
+  WELCOME_SETUP_WEBVIEW_EVENT: 'circleci.welcomeSetupWebview',
+  UPDATE_TOKEN_WEBVIEW_EVENT: 'circleci.updateTokenWebview',
 };

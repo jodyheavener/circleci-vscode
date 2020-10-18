@@ -3,10 +3,10 @@ import ReactMarkdown from 'react-markdown';
 import constants from '../../../../lib/constants';
 import { PostMessagePayload } from '../../../../lib/types';
 import Loading from '../Loading';
+import CircleLogo from './circleci.svg';
 import './index.scss';
 
 const Upgrade = ({}: { vscode: any }): JSX.Element => {
-  const [initLoaded, setInitLoaded] = useState<boolean>(false);
   const [changelog, setChangelog] = useState<{
     content: string;
     version: string;
@@ -23,7 +23,6 @@ const Upgrade = ({}: { vscode: any }): JSX.Element => {
                 content: data.data.content,
                 version: data.data.version,
               });
-              setInitLoaded(true);
               break;
           }
         }
@@ -31,14 +30,26 @@ const Upgrade = ({}: { vscode: any }): JSX.Element => {
     }
   }, [changelog]);
 
-  if (!initLoaded) {
+  if (!changelog) {
     return <Loading />;
   }
 
   return (
     <div>
-      <h1>New in CircleCI for VS Code v{changelog!.version}</h1>
-      <div>{<ReactMarkdown source={changelog!.content} />}</div>
+      <header className="upgrade-header">
+        <CircleLogo />
+        <div>
+          <h1>CircleCI for VS Code updated!</h1>
+          <p className="version">You’re now on v{changelog.version}</p>
+        </div>
+      </header>
+
+      <div>
+        <h2>Here's what's new in this version:</h2>
+        <div className="upgrade-changelog">
+          {<ReactMarkdown source={changelog.content} />}
+        </div>
+      </div>
     </div>
   );
 };

@@ -21,6 +21,8 @@ let exportedContext: ExtensionContext;
 let globalCommands: Disposable[];
 
 export async function activate(context: ExtensionContext): Promise<void> {
+  // context.globalState.update(constants.EXTENSION_VERSION, undefined); // REMOVE ME
+
   const extension = extensions.getExtension(constants.QUALIFIED_EXTENSION_ID)!;
   const currentVersion = extension.packageJSON.version;
   const previousVersion = context.globalState.get<string>(
@@ -30,7 +32,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   migrateConfig(currentVersion, previousVersion);
 
   if (!workspace.workspaceFolders || !workspace.workspaceFolders.length) {
-    // NOTE: This was getting annoying. Maybe we can
+    // FIXME: This was getting annoying. Maybe we can
     // re-enable with a different approach later.
     //
     // return void window.showInformationMessage(
@@ -82,7 +84,10 @@ function migrateConfig(
   currentVersion: string,
   previousVersion: string | undefined
 ): void {
-  if (!previousVersion || currentVersion === previousVersion) {
+  // FIXME: This needs some fine tuning
+  return;
+
+  if (currentVersion === previousVersion) {
     return;
   }
 

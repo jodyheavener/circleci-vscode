@@ -1,3 +1,6 @@
+import { resolve } from 'path';
+import { Uri, workspace } from 'vscode';
+import { getContext } from '../extension';
 import constants from '../lib/constants';
 import { l } from '../lib/utils';
 import BaseWebView from './base-webview';
@@ -24,8 +27,13 @@ export default class UpgradeWebView extends BaseWebView {
   }
 
   async getContent(): Promise<void> {
-    // TODO: get changelog data for version
-    const changelog = '# Changelog';
+    const document = await workspace.openTextDocument(
+      Uri.file(
+        resolve(getContext().extensionPath, 'CHANGELOG.md')
+      )
+    );
+
+    const changelog = document.getText();
 
     this.postMessage({
       event: constants.CHANGELOG_CONTENT_WEBVIEW_EVENT,
