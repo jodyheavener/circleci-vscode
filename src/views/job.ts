@@ -87,11 +87,25 @@ export default class Job extends TreeItem implements Disposable {
           this.iconPath = getAsset(this.statusIcon(details.status));
 
           if (details.duration) {
-            this.rows.push(new JobDuration(details.duration));
+            try {
+              this.rows.push(new JobDuration(details.duration));
+            } catch (error) {
+              console.error('Error loading JobDuration row', error);
+            }
           }
 
-          this.rows.push(new JobArtifacts(this));
-          this.rows.push(new JobTests(this));
+          try {
+            this.rows.push(new JobArtifacts(this));
+          } catch (error) {
+            console.error('Error loading JobArtifacts row', error);
+          }
+
+          try {
+            this.rows.push(new JobTests(this));
+          } catch (error) {
+            console.error('Error loading JobTests row', error);
+          }
+
           this.setContextValue();
 
           this.reloading = false;
