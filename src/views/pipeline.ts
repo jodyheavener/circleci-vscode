@@ -51,7 +51,7 @@ export default class Pipeline extends ResourcesItem {
         window.showErrorMessage(
           l(
             'pipelineLoadError',
-            `There was a problem load Pipelines for {0}. Is your API token correct?`,
+            `There was a problem loading Pipelines for {0}. Is your API token correct?`,
             this.gitSet.branch
           )
         );

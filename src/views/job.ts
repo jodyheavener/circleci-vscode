@@ -113,13 +113,13 @@ export default class Job extends TreeItem implements Disposable {
           this.collapsibleState = TreeItemCollapsibleState.Collapsed;
         })
         .catch((error) => {
-          window.showErrorMessage(
-            l(
-              'loadJobDetailsFail',
-              `Couldn't load details for Job {0}`,
-              this.job.id
-            )
-          );
+          // window.showErrorMessage(
+          //   l(
+          //     'loadJobDetailsFail',
+          //     `Couldn't load details for Job {0}`,
+          //     this.job.id
+          //   )
+          // );
           console.error(error);
         });
     });
