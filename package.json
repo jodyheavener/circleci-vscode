@@ -2,7 +2,7 @@
   "name": "circleci-vscode",
   "displayName": "CircleCI",
   "description": "Monitor, manage, and inspect your Pipelines on CircleCI",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "license": "MIT",
   "publisher": "jodyh",
   "keywords": [
