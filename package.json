@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "circle-client": "^0.1.7",
-    "follow-redirects": "^1.13.0",
+    "follow-redirects": "^1.14.7",
     "open": "^7.2.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
