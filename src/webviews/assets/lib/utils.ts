@@ -1,21 +1,13 @@
-import * as nls from 'vscode-nls';
 import constants from '../../../lib/constants';
 import { JobTestDetails } from '../../../lib/types';
 
+// TOOO Add localization later
 export function l(
-  key: string | nls.LocalizeInfo,
+  key: string,
   message: string,
   ...args: (string | number | boolean | undefined | null)[]
 ): string {
-  if (typeof key === 'string') {
-    return nls.config()()(
-      `${constants.LOCALIZATION_PREFIX}.${key}`,
-      message,
-      ...args
-    );
-  } else {
-    return nls.config()()(key, message, ...args);
-  }
+  return message;
 }
 
 export function interpolate(

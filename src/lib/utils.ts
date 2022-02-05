@@ -3,25 +3,16 @@ import { https } from 'follow-redirects';
 import { resolve } from 'path';
 import { exec } from 'child_process';
 import open from 'open';
-import * as nls from 'vscode-nls';
 import { getContext } from '../extension';
 import constants from './constants';
 import { createWriteStream } from 'fs';
 
 export function l(
-  key: string | nls.LocalizeInfo,
+  key: string,
   message: string,
   ...args: (string | number | boolean | undefined | null)[]
 ): string {
-  if (typeof key === 'string') {
-    return nls.config()()(
-      `${constants.LOCALIZATION_PREFIX}.${key}`,
-      message,
-      ...args
-    );
-  } else {
-    return nls.config()()(key, message, ...args);
-  }
+  return message;
 }
 
 export const statusDescriptions: {
