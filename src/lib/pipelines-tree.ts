@@ -10,7 +10,7 @@ import config from './config';
 import { GitService } from './git-service';
 import { ActivatableGitSet, ConfigKey } from './types';
 import { interpolate, openInBrowser } from './utils';
-import Pipeline from '../views/Pipeline';
+import Pipeline from '../views/pipeline';
 import constants from './constants';
 
 export default class PipelinesTree

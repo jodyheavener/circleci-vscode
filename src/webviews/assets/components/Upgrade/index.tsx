@@ -47,7 +47,7 @@ const Upgrade = ({}: { vscode: any }): JSX.Element => {
       <div>
         <h2>Here's what's new in this version:</h2>
         <div className="upgrade-changelog">
-          {<ReactMarkdown source={changelog.content} />}
+          {<ReactMarkdown>{changelog.content}</ReactMarkdown>}
         </div>
       </div>
     </div>

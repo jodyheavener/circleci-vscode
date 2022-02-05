@@ -16,11 +16,12 @@
     "vscode": "^1.49.2"
   },
   "scripts": {
-    "compile": "webpack --mode development",
+    "compile": "node -r esbuild-register compile.ts",
     "lint": "eslint",
     "format": "prettier **/*.ts -c .prettierrc",
-    "vscode:prepublish": "webpack --mode production",
-    "watch": "webpack --mode development --watch"
+    "vscode:prepublish": "yarn compile",
+    "watch": "NODE_ENV=development yarn compile",
+    "build": "yarn compile"
   },
   "icon": "dist/assets/logo.png",
   "keywords": [
@@ -274,12 +275,11 @@
     "open": "^7.2.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-markdown": "^4.3.1",
-    "react-string-replace": "^0.4.4",
-    "vscode-nls": "^5.0.0"
+    "react-markdown": "^8.0.0",
+    "react-string-replace": "^0.4.4"
   },
   "devDependencies": {
-    "@svgr/webpack": "^5.4.0",
+    "@types/copy": "^0.3.2",
     "@types/follow-redirects": "^1.13.0",
     "@types/node": "^14.11.2",
     "@types/react": "^16.9.50",
@@ -287,20 +287,13 @@
     "@types/vscode": "^1.49.0",
     "@typescript-eslint/eslint-plugin": "^4.2.0",
     "@typescript-eslint/parser": "^4.2.0",
-    "clean-webpack-plugin": "^3.0.0",
-    "copy-webpack-plugin": "^6.1.1",
-    "css-loader": "^4.3.0",
-    "del": "^6.0.0",
+    "copy": "^0.3.2",
+    "esbuild": "^0.14.18",
+    "esbuild-plugin-svg": "^0.1.0",
+    "esbuild-register": "^3.3.2",
+    "esbuild-sass-plugin": "^2.2.2",
     "eslint": "^7.10.0",
     "eslint-config-prettier": "^6.12.0",
-    "sass": "^1.26.11",
-    "sass-loader": "^10.0.2",
-    "style-loader": "^1.3.0",
-    "ts-loader": "^8.0.4",
-    "ts-node": "^9.0.0",
-    "typescript": "^4.0.3",
-    "vscode-nls-dev": "^3.3.2",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12"
+    "typescript": "^4.0.3"
   }
 }
