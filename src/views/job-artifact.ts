@@ -1,9 +1,9 @@
-import { TreeItem, TreeItemCollapsibleState, window, workspace } from 'vscode';
 import { JobArtifact as JobArtifactData } from 'circle-client';
-import { downloadFile, getAsset, l, openInOS } from '../lib/utils';
-import constants from '../lib/constants';
-import Job from './job';
 import { basename, resolve } from 'path';
+import { TreeItem, TreeItemCollapsibleState, window, workspace } from 'vscode';
+import constants from '../lib/constants';
+import { downloadFile, getAsset, l, openInOS } from '../lib/utils';
+import Job from './job';
 
 const extensionIcons: { [icon: string]: string[] } = {
   'file-image': ['jpg', 'jpeg', 'png', 'gif', 'webp'],

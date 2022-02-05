@@ -1,6 +1,6 @@
 import { JobTest as JobTestData } from 'circle-client';
 import { resolve } from 'path';
-import { workspace, window, Selection, Position, Range, Uri } from 'vscode';
+import { Position, Range, Selection, Uri, window, workspace } from 'vscode';
 import circleClient from '../lib/circle-client';
 import constants from '../lib/constants';
 import { PostMessagePayload } from '../lib/types';
@@ -28,7 +28,7 @@ export default class JobTestsWebView extends BaseWebView {
   get title(): string {
     return l(
       'jobTestsTitle',
-      `{0} Tests - {1}`,
+      '{0} Tests - {1}',
       this.job.job.job_number,
       this.job.job.name
     );
@@ -45,10 +45,11 @@ export default class JobTestsWebView extends BaseWebView {
 
     this.loading = true;
 
-    const results = await (await circleClient()).listJobTests(
-      this.job.job.job_number!,
-      { pageToken: this.nextPageToken || undefined }
-    );
+    const results = await (
+      await circleClient()
+    ).listJobTests(this.job.job.job_number!, {
+      pageToken: this.nextPageToken || undefined,
+    });
 
     this.nextPageToken = results.next_page_token;
     this.tests.push(...results.items);
@@ -75,7 +76,7 @@ export default class JobTestsWebView extends BaseWebView {
       editor.revealRange(new Range(filePosition, filePosition));
     } catch (error) {
       window.showErrorMessage(
-        l('openFileFail', `Couldn't open file {0}`, path)
+        l('openFileFail', "Couldn't open file {0}", path)
       );
       console.error(error);
     }

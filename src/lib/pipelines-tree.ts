@@ -6,28 +6,28 @@ import {
   TreeDataProvider,
   TreeItem,
 } from 'vscode';
+import Pipeline from '../views/pipeline';
 import config from './config';
+import constants from './constants';
 import { GitService } from './git-service';
 import { ActivatableGitSet, ConfigKey } from './types';
 import { interpolate, openInBrowser } from './utils';
-import Pipeline from '../views/pipeline';
-import constants from './constants';
 
 export default class PipelinesTree
-  implements TreeDataProvider<TreeItem>, Disposable {
+  implements TreeDataProvider<TreeItem>, Disposable
+{
   private disposed = false;
   private refreshing = true;
   private pipelines: Pipeline[] = [];
-  private _onDidChangeTreeData: EventEmitter<
-    Pipeline | undefined
-  > = new EventEmitter<Pipeline | undefined>();
-  readonly onDidChangeTreeData: Event<Pipeline | undefined> = this
-    ._onDidChangeTreeData.event;
+  private _onDidChangeTreeData: EventEmitter<Pipeline | undefined> =
+    new EventEmitter<Pipeline | undefined>();
+  readonly onDidChangeTreeData: Event<Pipeline | undefined> =
+    this._onDidChangeTreeData.event;
 
   constructor(private git: GitService) {}
 
   disposePipelines(): void {
-    this.pipelines.forEach(pipeline => {
+    this.pipelines.forEach((pipeline) => {
       pipeline.dispose();
     });
   }

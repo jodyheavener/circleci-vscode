@@ -1,23 +1,23 @@
-import { env, TreeItemCollapsibleState, window } from 'vscode';
 import {
-  Workflow as WorkflowData,
   Job as JobData,
+  Workflow as WorkflowData,
   WorkflowStatus,
 } from 'circle-client';
+import { env, TreeItemCollapsibleState, window } from 'vscode';
+import circleClient from '../lib/circle-client';
+import config from '../lib/config';
+import constants from '../lib/constants';
+import { ConfigKey } from '../lib/types';
 import {
   getAsset,
   interpolate,
+  l,
   openInBrowser,
   statusDescriptions,
-  l,
 } from '../lib/utils';
-import config from '../lib/config';
-import circleClient from '../lib/circle-client';
-import constants from '../lib/constants';
-import { ConfigKey } from '../lib/types';
-import ResourcesItem from './resources-item';
-import Pipeline from './pipeline';
 import Job from './job';
+import Pipeline from './pipeline';
+import ResourcesItem from './resources-item';
 
 export default class Workflow extends ResourcesItem {
   constructor(public workflow: WorkflowData, readonly pipeline: Pipeline) {
@@ -40,9 +40,9 @@ export default class Workflow extends ResourcesItem {
         pageToken: this.pageToken!,
       });
     }).then(async (newJobs) => {
-      this.workflow = await (await circleClient()).getWorkflow(
-        this.workflow.id
-      );
+      this.workflow = await (
+        await circleClient()
+      ).getWorkflow(this.workflow.id);
       this.mainRows.push(...newJobs.map((job) => new Job(job, this)));
       this.description =
         statusDescriptions[

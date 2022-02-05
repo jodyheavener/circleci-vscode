@@ -28,9 +28,7 @@ export default class UpgradeWebView extends BaseWebView {
 
   async getContent(): Promise<void> {
     const document = await workspace.openTextDocument(
-      Uri.file(
-        resolve(getContext().extensionPath, 'CHANGELOG.md')
-      )
+      Uri.file(resolve(getContext().extensionPath, 'CHANGELOG.md'))
     );
 
     const changelog = document.getText();

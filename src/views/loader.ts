@@ -6,15 +6,15 @@ export default class Loader extends TreeItem {
   readonly contextValue = constants.LOADER_CONTEXT_BASE;
   private storedCommand: Command;
 
-  constructor(readonly itemName: string, readonly loadItems: Function) {
+  constructor(readonly itemName: string, readonly loadItems: () => void) {
     super(
-      l('clickToLoadItem', `Click to load {0}`, itemName),
+      l('clickToLoadItem', 'Click to load {0}', itemName),
       TreeItemCollapsibleState.None
     );
 
     this.storedCommand = {
       command: constants.LOAD_ITEMS_COMMAND,
-      title: l('loadItem', `Load {0}`, itemName),
+      title: l('loadItem', 'Load {0}', itemName),
       arguments: [this],
     };
     this.command = this.storedCommand;
@@ -26,6 +26,6 @@ export default class Loader extends TreeItem {
 
     this.label = isLoading
       ? l('loadingLabel', 'Loading...')
-      : l('loadMoreItems', `Load more {0}`, this.itemName);
+      : l('loadMoreItems', 'Load more {0}', this.itemName);
   }
 }

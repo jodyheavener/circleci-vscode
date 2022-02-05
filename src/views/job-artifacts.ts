@@ -1,7 +1,7 @@
-import { TreeItemCollapsibleState } from 'vscode';
 import { JobArtifact as JobArtifactData } from 'circle-client';
-import constants from '../lib/constants';
+import { TreeItemCollapsibleState } from 'vscode';
 import circleClient from '../lib/circle-client';
+import constants from '../lib/constants';
 import { getAsset, l } from '../lib/utils';
 import Job from './job';
 import JobArtifact from './job-artifact';

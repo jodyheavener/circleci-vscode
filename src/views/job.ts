@@ -1,3 +1,4 @@
+import { Job as JobData } from 'circle-client';
 import {
   Disposable,
   env,
@@ -5,20 +6,19 @@ import {
   TreeItemCollapsibleState,
   window,
 } from 'vscode';
-import { Job as JobData } from 'circle-client';
+import circleClient from '../lib/circle-client';
 import constants from '../lib/constants';
 import {
   getAsset,
   interpolate,
+  l,
   openInBrowser,
   statusDescriptions,
-  l,
 } from '../lib/utils';
-import circleClient from '../lib/circle-client';
-import Workflow from './workflow';
-import JobDuration from './job-duration';
 import JobArtifacts from './job-artifacts';
+import JobDuration from './job-duration';
 import JobTests from './job-tests';
+import Workflow from './workflow';
 
 const statusIcons: {
   [status: string]: string;
@@ -128,7 +128,7 @@ export default class Job extends TreeItem implements Disposable {
   disposeRows(): void {
     this.rows.forEach((row) => {
       if ('dispose' in row) {
-        // @ts-ignore
+        // @ts-expect-error TODO
         row.dispose();
       }
     });
@@ -187,7 +187,7 @@ export default class Job extends TreeItem implements Disposable {
       return void window.showErrorMessage(
         l(
           'noApprovalRequest',
-          `Couldn't find Approval Request ID for Job {0}`,
+          "Couldn't find Approval Request ID for Job {0}",
           this.job.id
         )
       );

@@ -1,5 +1,5 @@
-import { resolve } from 'path';
 import { existsSync } from 'fs';
+import { resolve } from 'path';
 import { workspace } from 'vscode';
 import config from '../lib/config';
 import constants from '../lib/constants';

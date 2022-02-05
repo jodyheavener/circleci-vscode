@@ -1,15 +1,15 @@
-import { Uri, window } from 'vscode';
-import { https } from 'follow-redirects';
-import { resolve } from 'path';
 import { exec } from 'child_process';
-import open from 'open';
-import { getContext } from '../extension';
-import constants from './constants';
+import { https } from 'follow-redirects';
 import { createWriteStream } from 'fs';
+import open from 'open';
+import { resolve } from 'path';
+import { Uri, window } from 'vscode';
+import { getContext } from '../extension';
 
 export function l(
   key: string,
   message: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ...args: (string | number | boolean | undefined | null)[]
 ): string {
   return message;
@@ -65,7 +65,7 @@ export function openInBrowser(url: string): void {
   try {
     open(url);
   } catch (error) {
-    window.showErrorMessage(l('couldntOpenUrl', `Couldn't open URL: {0}`, url));
+    window.showErrorMessage(l('couldntOpenUrl', "Couldn't open URL: {0}", url));
     console.error(error);
   }
 }
@@ -75,7 +75,7 @@ export async function openInOS(location: string): Promise<void> {
     await open(location, { wait: true });
   } catch (error) {
     window.showErrorMessage(
-      l('couldntOpenPath', `Couldn't open file path: {0}`, location)
+      l('couldntOpenPath', "Couldn't open file path: {0}", location)
     );
     console.error(error);
   }

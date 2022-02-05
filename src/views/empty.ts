@@ -7,7 +7,7 @@ export default class Empty extends TreeItem {
 
   constructor(readonly item: string) {
     super(
-      l('noItemsFound', `No {0} found`, item),
+      l('noItemsFound', 'No {0} found', item),
       TreeItemCollapsibleState.None
     );
 

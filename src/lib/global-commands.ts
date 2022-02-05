@@ -1,12 +1,12 @@
 import { commands, Disposable } from 'vscode';
+import Job from '../views/job';
+import JobArtifact from '../views/job-artifact';
+import JobArtifacts from '../views/job-artifacts';
+import Loader from '../views/loader';
 import Pipeline from '../views/pipeline';
 import Workflow from '../views/workflow';
-import Job from '../views/job';
-import JobArtifacts from '../views/job-artifacts';
-import JobArtifact from '../views/job-artifact';
-import Loader from '../views/loader';
-import PipelinesTree from './pipelines-tree';
 import constants from './constants';
+import PipelinesTree from './pipelines-tree';
 
 const registerCommands = (pipelineTree: PipelinesTree): Disposable[] => {
   return [

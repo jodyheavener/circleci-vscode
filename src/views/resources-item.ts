@@ -1,12 +1,13 @@
-import { Disposable, TreeItem, TreeItemCollapsibleState, window } from 'vscode';
 import { Paged } from 'circle-client';
-import Loader from './loader';
-import Empty from './empty';
+import { Disposable, TreeItem, TreeItemCollapsibleState, window } from 'vscode';
 import { l } from '../lib/utils';
+import Empty from './empty';
+import Loader from './loader';
 
 export default abstract class ResourcesItem
   extends TreeItem
-  implements Disposable {
+  implements Disposable
+{
   protected prefixRows: TreeItem[] = [];
   protected mainRows: TreeItem[] = [];
   private allRows: TreeItem[] = [];
@@ -27,7 +28,7 @@ export default abstract class ResourcesItem
   dispose(): void {
     this.allRows.forEach((row) => {
       if ('dispose' in row) {
-        // @ts-ignore
+        // @ts-expect-error TODO
         row.dispose();
       }
     });
@@ -52,7 +53,6 @@ export default abstract class ResourcesItem
   timedReload(): void {
     clearTimeout(this.reloadTimer!);
     if (this.reloadRate > 0 && this.shouldReload) {
-      // @ts-ignore
       this.reloadTimer = setTimeout(
         this.reload.bind(this),
         this.reloadRate * 1000
@@ -98,7 +98,7 @@ export default abstract class ResourcesItem
       return Promise.resolve(items);
     } catch (error) {
       window.showErrorMessage(
-        l('loadItemsFail', `There was an issue loading`, this.resourceName)
+        l('loadItemsFail', 'There was an issue loading', this.resourceName)
       );
       console.error(error);
       return Promise.resolve([]);
@@ -108,7 +108,7 @@ export default abstract class ResourcesItem
   disposeRows(): void {
     this.allRows.forEach((row) => {
       if ('dispose' in row) {
-        // @ts-ignore
+        // @ts-expect-error TODO
         row.dispose();
       }
     });

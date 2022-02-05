@@ -1,3 +1,4 @@
+import { join, resolve } from 'path';
 import {
   Disposable,
   Uri,
@@ -6,10 +7,9 @@ import {
   window,
   workspace,
 } from 'vscode';
-import { join, resolve } from 'path';
 import { getContext } from '../extension';
-import { getAsset } from '../lib/utils';
 import { PostMessagePayload } from '../lib/types';
+import { getAsset } from '../lib/utils';
 
 export default abstract class BaseWebView implements Disposable {
   panel?: WebviewPanel;
@@ -36,7 +36,6 @@ export default abstract class BaseWebView implements Disposable {
     this.panel.title = title;
   }
 
-  onDidShow(): void {}
   async onMessage(message: PostMessagePayload): Promise<void> {
     message;
   }
@@ -68,12 +67,9 @@ export default abstract class BaseWebView implements Disposable {
       this.panel.webview.html = html;
       this.panel.iconPath = getAsset('circleci-logo');
     }
-
-    this.onDidShow();
   }
 
   private async webviewHTML(): Promise<string> {
-    let content;
     const context = getContext();
     const staticPath = resolve(context.extensionPath, 'dist');
     const filePath = join(staticPath, 'webviews', this.filename);
@@ -83,9 +79,9 @@ export default abstract class BaseWebView implements Disposable {
     }
 
     const doc = await workspace.openTextDocument(filePath);
-    content = doc.getText();
+    const content = doc.getText();
 
-    let html = content.replace(
+    const html = content.replace(
       /#{root}/g,
       Uri.file(staticPath).with({ scheme: 'vscode-resource' }).toString()
     );

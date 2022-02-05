@@ -1,20 +1,20 @@
-import { TreeItemCollapsibleState, window } from 'vscode';
 import {
-  Workflow as WorkflowData,
   Pipeline as PipelineData,
+  Workflow as WorkflowData,
 } from 'circle-client';
+import { TreeItemCollapsibleState, window } from 'vscode';
+import circleClient from '../lib/circle-client';
+import config from '../lib/config';
 import constants from '../lib/constants';
 import PipelinesTree from '../lib/pipelines-tree';
 import { ActivatableGitSet, ConfigKey } from '../lib/types';
 import {
   getAsset,
   interpolate,
+  l,
   openInBrowser,
   pluralize,
-  l,
 } from '../lib/utils';
-import config from '../lib/config';
-import circleClient from '../lib/circle-client';
 import ResourcesItem from './resources-item';
 import Workflow from './workflow';
 
@@ -39,9 +39,11 @@ export default class Pipeline extends ResourcesItem {
 
   updateResources(): void {
     this.loadResources<WorkflowData>(async () => {
-      let pipelines: PipelineData[] = [];
+      const pipelines: PipelineData[] = [];
       try {
-        const { items } = await (await circleClient()).listProjectPipelines({
+        const { items } = await (
+          await circleClient()
+        ).listProjectPipelines({
           branch: this.gitSet.branch,
         });
 
@@ -51,7 +53,7 @@ export default class Pipeline extends ResourcesItem {
         window.showErrorMessage(
           l(
             'pipelineLoadError',
-            `There was a problem loading Pipelines for {0}. Is your API token correct?`,
+            'There was a problem loading Pipelines for {0}. Is your API token correct?',
             this.gitSet.branch
           )
         );
@@ -60,9 +62,9 @@ export default class Pipeline extends ResourcesItem {
       const workflows = (
         await Promise.all(
           pipelines.map(async (pipeline) => {
-            const result = await (await circleClient()).listPipelineWorkflows(
-              pipeline.id
-            );
+            const result = await (
+              await circleClient()
+            ).listPipelineWorkflows(pipeline.id);
             return result.items;
           })
         )
