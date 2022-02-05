@@ -30,8 +30,7 @@
     "lint": "eslint",
     "format": "prettier **/*.ts -c .prettierrc",
     "vscode:prepublish": "webpack --mode production",
-    "watch": "webpack --mode development --watch",
-    "localize": "node --require ts-node/register scripts/localize.ts"
+    "watch": "webpack --mode development --watch"
   },
   "dependencies": {
     "circle-client": "^0.1.7",
