@@ -17,12 +17,12 @@
     "node": "^16.12.0"
   },
   "scripts": {
-    "build": "yarn compile",
+    "build": "NODE_ENV=production yarn compile",
     "compile": "node -r esbuild-register compile.ts",
     "format": "eslint src/**/*.ts --fix && prettier --write src/**/*.ts",
     "lint": "eslint src/**/*.ts && prettier --check src/**/*.ts",
     "test": "jest",
-    "vscode:prepublish": "yarn compile",
+    "vscode:prepublish": "yarn build",
     "watch": "NODE_ENV=development yarn compile"
   },
   "icon": "dist/assets/logo.png",
