@@ -7,5 +7,8 @@ module.exports = {
     '^.+\\.ts$': 'ts-jest',
   },
   verbose: true,
-  setupFiles: ['./src/setupTests.ts'],
+  setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
+  moduleNameMapper: {
+    vscode: '<rootDir>/src/test/vscode-mock.ts',
+  },
 };
