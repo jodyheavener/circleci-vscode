@@ -1,3 +1,4 @@
+import { COMMANDS, CONTEXTS } from '../lib/constants';
 import { Base } from './base';
 
 const extensionIcons: { [icon: string]: string[] } = {
@@ -17,6 +18,12 @@ const getfileTypeIcon = (path: string): string => {
 
 export class Artifact extends Base {
   constructor(filename: string) {
-    super({ label: filename, iconName: getfileTypeIcon(filename) });
+    super({
+      label: filename,
+      contextValue: CONTEXTS.ARTIFACT_BASE,
+      iconName: getfileTypeIcon(filename),
+    });
+
+    this.setCommand(COMMANDS.OPEN_JOB_ARTIFACT, 'Open Artifact');
   }
 }

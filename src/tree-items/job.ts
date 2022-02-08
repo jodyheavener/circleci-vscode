@@ -1,3 +1,4 @@
+import { CONTEXTS } from '../lib/constants';
 import { ActivityStatus } from '../lib/types';
 import { Base } from './base';
 
@@ -22,7 +23,7 @@ export class Job extends Base {
   status: ActivityStatus;
 
   constructor(label: string) {
-    super({ label, loadable: true });
+    super({ label, contextValue: CONTEXTS.JOB_BASE, loadable: true });
 
     this.setStatus(ActivityStatus.NotRun);
   }
@@ -39,5 +40,28 @@ export class Job extends Base {
     this.status = status;
     this.setDescription(status);
     this.setIconName(statusIcons[status] ?? statusIcons.unknown);
+    this.setContextValue(status);
+  }
+
+  setContextValue(status: ActivityStatus): void {
+    let contextValue = CONTEXTS.JOB_BASE;
+
+    // TODO: add job types
+    // switch (this.jobType) {
+    //   case JobType.Approval:
+    //     contextValue += ':approval';
+    //     break;
+    //   case JobType.Build:
+    //     contextValue += ':build';
+    //     break;
+    //   default:
+    //     break;
+    // }
+
+    if (status === ActivityStatus.Running) {
+      contextValue += ':running';
+    }
+
+    this.contextValue = contextValue;
   }
 }

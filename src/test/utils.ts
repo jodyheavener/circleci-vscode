@@ -4,6 +4,8 @@ export const assertTreeItem = (
   item: Base,
   fields: Partial<{
     label: string;
+    tooltip: string;
+    contextValue: string;
     description: string;
     icon: string;
     loading: boolean;

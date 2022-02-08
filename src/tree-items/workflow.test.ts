@@ -1,3 +1,4 @@
+import { CONTEXTS } from '../lib/constants';
 import { ActivityStatus } from '../lib/types';
 import { assertTreeItem, assertTreeItemLoad } from '../test/utils';
 import { Workflow } from './workflow';
@@ -13,6 +14,7 @@ describe('Workflow', () => {
     assertTreeItem(item, {
       label: 'foo',
       description: ActivityStatus.NotRun,
+      contextValue: CONTEXTS.WORKFLOW_BASE,
       icon: 'workflow',
       loading: false,
     });

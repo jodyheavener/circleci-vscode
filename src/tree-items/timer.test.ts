@@ -1,3 +1,4 @@
+import { CONTEXTS } from '../lib/constants';
 import { assertBadTreeItemLoad, assertTreeItem } from '../test/utils';
 import { Timer } from './timer';
 
@@ -12,6 +13,7 @@ describe('Timer', () => {
     assertTreeItem(item, {
       label: '2m',
       icon: 'stopwatch',
+      contextValue: CONTEXTS.TIMER_BASE,
     });
   });
 

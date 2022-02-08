@@ -32,7 +32,7 @@ export default class PipelineTreeDataProvider
   getChildren(element?: Pipeline): ProviderResult<TreeItem[]> {
     if (!element) {
       return [
-        new Pipeline('main'),
+        new Pipeline('main', 'repo/branch'),
         new Workflow('test'),
         new Job('deploy-packages'),
         new Timer(20000),

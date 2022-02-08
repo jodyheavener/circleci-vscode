@@ -1,3 +1,4 @@
+import { CONTEXTS } from '../lib/constants';
 import { assertBadTreeItemLoad, assertTreeItem } from '../test/utils';
 import { Artifact } from './artifact';
 
@@ -6,6 +7,7 @@ describe('Artifact', () => {
     assertTreeItem(new Artifact('foo'), {
       label: 'foo',
       icon: 'file-generic',
+      contextValue: CONTEXTS.ARTIFACT_BASE,
     });
   });
 

@@ -1,3 +1,4 @@
+import { CONTEXTS } from '../lib/constants';
 import { ActivityStatus } from '../lib/types';
 import { assertTreeItem, assertTreeItemLoad } from '../test/utils';
 import { Job, statusIcons } from './job';
@@ -13,6 +14,7 @@ describe('Job', () => {
     assertTreeItem(item, {
       label: 'foo',
       icon: statusIcons[ActivityStatus.NotRun],
+      contextValue: CONTEXTS.JOB_BASE,
       loading: false,
     });
   });

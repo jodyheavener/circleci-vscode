@@ -6,25 +6,33 @@ export abstract class Base extends TreeItem implements Disposable {
   loading: boolean;
   activeLabel: string;
   activeDescription?: string;
+  activeTooltip?: string;
   iconName?: string;
 
   static invalidLoad = "Can't set loading on a non-loadable tree item";
 
   constructor({
     label,
-    loadable = false,
+    contextValue,
     iconName,
+    tooltip,
+    loadable = false,
     collapsibleState = TreeItemCollapsibleState.None,
   }: {
     label: string;
+    contextValue?: string;
     iconName?: string;
+    tooltip?: string;
     loadable?: boolean;
     collapsibleState?: TreeItemCollapsibleState;
   }) {
     super(label, collapsibleState);
 
+    this.contextValue = contextValue;
+
     this.render(() => {
       this.activeLabel = label;
+      this.activeTooltip = tooltip || label;
       this.iconName = iconName;
       this.loadable = loadable;
       this.loading = false;
@@ -48,6 +56,12 @@ export abstract class Base extends TreeItem implements Disposable {
         : this.activeDescription
       : this.activeDescription;
 
+    this.tooltip = this.loadable
+      ? this.loading
+        ? 'Loading...'
+        : this.activeTooltip
+      : this.activeTooltip;
+
     if (this.iconName) {
       this.iconPath = getAsset(this.iconName);
     }
@@ -61,6 +75,19 @@ export abstract class Base extends TreeItem implements Disposable {
     this.render(() => (this.loading = loading));
   }
 
+  setCommand(command?: string, title?: string): void {
+    if (!command) {
+      this.command = undefined;
+      return;
+    }
+
+    this.command = {
+      command,
+      title,
+      arguments: [this],
+    };
+  }
+
   setIconName(iconName: string): void {
     this.render(() => (this.iconName = iconName));
   }
@@ -71,6 +98,10 @@ export abstract class Base extends TreeItem implements Disposable {
 
   setDescription(description?: string): void {
     this.render(() => (this.activeDescription = description));
+  }
+
+  setTooltip(tooltip: string): void {
+    this.render(() => (this.activeTooltip = tooltip));
   }
 
   dispose(): void {

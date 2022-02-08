@@ -1,3 +1,4 @@
+import { CONTEXTS } from '../lib/constants';
 import { pluralize } from '../lib/utils';
 import { Base } from './base';
 
@@ -6,8 +7,14 @@ export class Pipeline extends Base {
 
   static activePrefix = '⭐️ ';
 
-  constructor(label: string) {
-    super({ label, iconName: 'pipeline', loadable: true });
+  constructor(label: string, tooltip: string) {
+    super({
+      label,
+      tooltip,
+      contextValue: CONTEXTS.PIPELINE_BASE,
+      iconName: 'pipeline',
+      loadable: true,
+    });
 
     this.storedLabel = label;
 
