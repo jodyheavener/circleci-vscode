@@ -1,13 +1,14 @@
-import { Disposable, TreeItem, TreeItemCollapsibleState } from 'vscode';
+import { TreeItem, TreeItemCollapsibleState } from 'vscode';
 import { getAsset } from '../lib/utils';
 
-export abstract class Base extends TreeItem implements Disposable {
+export abstract class Base extends TreeItem {
   loadable: boolean;
   loading: boolean;
   activeLabel: string;
   activeDescription?: string;
   activeTooltip?: string;
   iconName?: string;
+  children: TreeItem[] = [];
 
   static invalidLoad = "Can't set loading on a non-loadable tree item";
 
@@ -65,6 +66,11 @@ export abstract class Base extends TreeItem implements Disposable {
     if (this.iconName) {
       this.iconPath = getAsset(this.iconName);
     }
+
+    this.collapsibleState =
+      this.children.length > 0
+        ? TreeItemCollapsibleState.Expanded
+        : TreeItemCollapsibleState.None;
   }
 
   setLoading(loading: boolean): void {
@@ -102,13 +108,5 @@ export abstract class Base extends TreeItem implements Disposable {
 
   setTooltip(tooltip: string): void {
     this.render(() => (this.activeTooltip = tooltip));
-  }
-
-  dispose(): void {
-    // Nothing to do here
-  }
-
-  get children(): TreeItem[] {
-    return [];
   }
 }

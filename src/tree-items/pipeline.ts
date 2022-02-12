@@ -1,13 +1,20 @@
+import { PipelineController } from '../controllers/pipeline';
 import { CONTEXTS } from '../lib/constants';
 import { pluralize } from '../lib/utils';
 import { Base } from './base';
 
 export class Pipeline extends Base {
   storedLabel: string;
+  storedTooltip: string;
 
   static activePrefix = '⭐️ ';
+  static activeLabel = '(Active branch) ';
 
-  constructor(label: string, tooltip: string) {
+  constructor(
+    public controller: PipelineController,
+    label: string,
+    tooltip: string
+  ) {
     super({
       label,
       tooltip,
@@ -17,12 +24,17 @@ export class Pipeline extends Base {
     });
 
     this.storedLabel = label;
-
-    // TODO: move this to when children are updated
-    this.setDescription(pluralize('Workflow', this.children.length));
+    this.storedTooltip = tooltip;
   }
 
   setActive(active: boolean): void {
     this.setLabel(`${active ? Pipeline.activePrefix : ''}${this.storedLabel}`);
+    this.setTooltip(
+      `${active ? Pipeline.activeLabel : ''}${this.storedTooltip}`
+    );
+  }
+
+  updateWorkflowCount(): void {
+    super.setDescription(pluralize('Workflow', this.children.length));
   }
 }

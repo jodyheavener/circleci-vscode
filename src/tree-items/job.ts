@@ -1,3 +1,4 @@
+import { JobController } from '../controllers/job';
 import { CONTEXTS } from '../lib/constants';
 import { ActivityStatus } from '../lib/types';
 import { Base } from './base';
@@ -22,7 +23,7 @@ export const statusIcons: {
 export class Job extends Base {
   status: ActivityStatus;
 
-  constructor(label: string) {
+  constructor(public controller: JobController, label: string) {
     super({ label, contextValue: CONTEXTS.JOB_BASE, loadable: true });
 
     this.setStatus(ActivityStatus.NotRun);

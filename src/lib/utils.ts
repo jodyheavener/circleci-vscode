@@ -1,6 +1,8 @@
+import { execSync } from 'child_process';
+import open from 'open';
 import { resolve } from 'path';
 import { Uri } from 'vscode';
-import extension from './extension';
+import { extension } from './extension';
 
 export const getAsset = (name: string): { light: Uri; dark: Uri } => ({
   light: Uri.file(
@@ -41,4 +43,34 @@ export const msToTime = (milliseconds: number): string => {
   }
 
   return output;
+};
+
+export const execCommand = (cmd: string, cwd: string): string => {
+  try {
+    return execSync(cmd, { cwd, encoding: 'utf8' });
+  } catch (error) {
+    console.error(error);
+    throw new Error('Error executing command.');
+  }
+};
+
+export const stripNewline = (value: string): string =>
+  value.replace(/\n|\r/g, '');
+
+export const interpolate = (
+  value: string,
+  replacements: { [key: string]: string | number }
+): string =>
+  Object.keys(replacements).reduce(
+    (p, c) => p.split('{' + c + '}').join(String(replacements[c])),
+    value
+  );
+
+export const openInBrowser = (url: string): void => {
+  try {
+    open(url);
+  } catch (error) {
+    console.error(error);
+    throw new Error("Couldn't open URL.");
+  }
 };

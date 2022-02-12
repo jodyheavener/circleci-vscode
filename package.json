@@ -72,14 +72,14 @@
         },
         {
           "when": "view == circleciPipelinesTree",
-          "command": "circleci.reload",
+          "command": "circleci.refetch",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
           "when": "viewItem =~ /circleciPipeline/ || viewItem =~ /circleciWorkflow/ || viewItem =~ /circleciJob/",
-          "command": "circleci.reload",
+          "command": "circleci.refetch",
           "group": "inline"
         },
         {
@@ -131,8 +131,8 @@
     },
     "commands": [
       {
-        "command": "circleci.reload",
-        "title": "Reload details",
+        "command": "circleci.refetch",
+        "title": "Refetch details",
         "category": "CircleCI",
         "icon": {
           "dark": "./dist/assets/dark/rotate.svg",
@@ -236,7 +236,7 @@
           ],
           "description": "Your VCS Provider."
         },
-        "circleci-vscode.customBranches": {
+        "circleci-vscode.watchedBranches": {
           "type": "array",
           "items": {
             "type": "string"

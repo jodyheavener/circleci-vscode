@@ -1,9 +1,10 @@
+import { WorkflowController } from '../controllers/workflow';
 import { CONTEXTS } from '../lib/constants';
 import { ActivityStatus } from '../lib/types';
 import { Base } from './base';
 
 export class Workflow extends Base {
-  constructor(label: string) {
+  constructor(public controller: WorkflowController, label: string) {
     super({
       label,
       contextValue: CONTEXTS.WORKFLOW_BASE,

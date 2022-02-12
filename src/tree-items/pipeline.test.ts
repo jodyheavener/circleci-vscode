@@ -16,13 +16,19 @@ describe('Pipeline', () => {
       contextValue: CONTEXTS.PIPELINE_BASE,
       icon: 'pipeline',
       loading: false,
-      // TODO: test this when children are updated
-      // description: 'TODO',
+      description: undefined,
     });
   });
 
   it('can be set to loading', () => {
     assertTreeItemLoad(item);
+  });
+
+  it('can set the description to the number of workflows', () => {
+    item.updateWorkflowCount();
+    assertTreeItem(item, {
+      description: '0 Workflows',
+    });
   });
 
   it('can set label based on active status', () => {
