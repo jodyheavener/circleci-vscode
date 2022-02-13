@@ -7,7 +7,7 @@ export class Pipeline extends Base {
   storedLabel: string;
   storedTooltip: string;
 
-  static activePrefix = '⭐️ ';
+  static activePrefix = '★ ';
   static activeLabel = '(Active branch) ';
 
   constructor(

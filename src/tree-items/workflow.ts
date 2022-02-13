@@ -4,7 +4,11 @@ import { ActivityStatus } from '../lib/types';
 import { Base } from './base';
 
 export class Workflow extends Base {
-  constructor(public controller: WorkflowController, label: string) {
+  constructor(
+    public controller: WorkflowController,
+    label: string,
+    status: ActivityStatus
+  ) {
     super({
       label,
       contextValue: CONTEXTS.WORKFLOW_BASE,
@@ -12,7 +16,7 @@ export class Workflow extends Base {
       loadable: true,
     });
 
-    this.setDescription(ActivityStatus.NotRun);
+    this.setStatus(status);
   }
 
   setStatus(status: ActivityStatus): void {

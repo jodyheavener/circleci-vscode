@@ -31,40 +31,40 @@ const registerCommands = (
       }
     ),
 
-    // commands.registerCommand(COMMANDS.CANCEL_WORKFLOW, (item: Workflow) => {
-    //   item.cancel();
-    // }),
+    commands.registerCommand(COMMANDS.CANCEL_WORKFLOW, (item: Workflow) => {
+      item.controller.cancel();
+    }),
 
-    // commands.registerCommand(COMMANDS.RETRY_ALL_WORKFLOWS, (item: Workflow) => {
-    //   item.retryJobs();
-    // }),
+    commands.registerCommand(COMMANDS.RETRY_ALL_WORKFLOWS, (item: Workflow) => {
+      item.controller.retryJobs();
+    }),
 
-    // commands.registerCommand(
-    //   COMMANDS.RETRY_FAILED_WORKFLOWS,
-    //   (item: Workflow) => {
-    //     item.retryJobs(true);
-    //   }
-    // ),
+    commands.registerCommand(
+      COMMANDS.RETRY_FAILED_WORKFLOWS,
+      (item: Workflow) => {
+        item.controller.retryJobs(true);
+      }
+    ),
 
-    // commands.registerCommand(COMMANDS.COPY_WORKFLOW_ID, (item: Workflow) => {
-    //   item.copyId();
-    // }),
+    commands.registerCommand(COMMANDS.COPY_WORKFLOW_ID, (item: Workflow) => {
+      item.controller.copyId();
+    }),
 
-    // commands.registerCommand(COMMANDS.CANCEL_JOB, (item: Job) => {
-    //   item.cancel();
-    // }),
+    commands.registerCommand(COMMANDS.CANCEL_JOB, (item: Job) => {
+      item.controller.cancel();
+    }),
 
-    // commands.registerCommand(COMMANDS.APPROVE_JOB, (item: Job) => {
-    //   item.approve();
-    // }),
+    commands.registerCommand(COMMANDS.APPROVE_JOB, (item: Job) => {
+      item.controller.approve();
+    }),
 
-    // commands.registerCommand(COMMANDS.COPY_JOB_ID, (item: Job) => {
-    //   item.copyId();
-    // }),
+    commands.registerCommand(COMMANDS.COPY_JOB_ID, (item: Job) => {
+      item.controller.copyId();
+    }),
 
-    // commands.registerCommand(COMMANDS.COPY_JOB_NUMBER, (item: Job) => {
-    //   item.copyNumber();
-    // }),
+    commands.registerCommand(COMMANDS.COPY_JOB_NUMBER, (item: Job) => {
+      item.controller.copyNumber();
+    }),
 
     // commands.registerCommand(constants.LOAD_ITEMS_COMMAND, (item: Loader) => {
     //   item.loadItems();

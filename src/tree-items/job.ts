@@ -1,3 +1,4 @@
+import { JobType } from 'circle-client';
 import { JobController } from '../controllers/job';
 import { CONTEXTS } from '../lib/constants';
 import { ActivityStatus } from '../lib/types';
@@ -16,6 +17,7 @@ export const statusIcons: {
   [ActivityStatus.Canceled]: 'status-line',
   [ActivityStatus.Unauthorized]: 'status-line',
   [ActivityStatus.OnHold]: 'status-pause',
+  [ActivityStatus.Queued]: 'status-dots-grey',
   unknown: 'status-unknown',
   loading: 'status-dots-grey',
 };
@@ -23,18 +25,15 @@ export const statusIcons: {
 export class Job extends Base {
   status: ActivityStatus;
 
-  constructor(public controller: JobController, label: string) {
+  constructor(
+    public controller: JobController,
+    label: string,
+    status: ActivityStatus,
+    private jobType: JobType
+  ) {
     super({ label, contextValue: CONTEXTS.JOB_BASE, loadable: true });
 
-    this.setStatus(ActivityStatus.NotRun);
-  }
-
-  setLoading(loading: boolean): void {
-    super.render(() => {
-      this.loading = loading;
-      this.iconPath =
-        statusIcons[loading ? 'loading' : this.status ?? 'unknown'];
-    });
+    this.setStatus(status);
   }
 
   setStatus(status: ActivityStatus): void {
@@ -47,17 +46,16 @@ export class Job extends Base {
   setContextValue(status: ActivityStatus): void {
     let contextValue = CONTEXTS.JOB_BASE;
 
-    // TODO: add job types
-    // switch (this.jobType) {
-    //   case JobType.Approval:
-    //     contextValue += ':approval';
-    //     break;
-    //   case JobType.Build:
-    //     contextValue += ':build';
-    //     break;
-    //   default:
-    //     break;
-    // }
+    switch (this.jobType) {
+      case JobType.Approval:
+        contextValue += ':approval';
+        break;
+      case JobType.Build:
+        contextValue += ':build';
+        break;
+      default:
+        break;
+    }
 
     if (status === ActivityStatus.Running) {
       contextValue += ':running';

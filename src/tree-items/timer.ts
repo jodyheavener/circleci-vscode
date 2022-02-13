@@ -8,6 +8,7 @@ export class Timer extends Base {
       label: msToTime(duration),
       contextValue: CONTEXTS.TIMER_BASE,
       iconName: 'stopwatch',
+      tooltip: `${duration}ms`,
     });
   }
 }

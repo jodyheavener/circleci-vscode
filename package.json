@@ -214,62 +214,90 @@
         "category": "CircleCI"
       }
     ],
-    "configuration": {
-      "type": "object",
-      "title": "CircleCI",
-      "properties": {
-        "circleci-vscode.apiToken": {
-          "type": "string",
-          "default": null,
-          "markdownDescription": "A CircleCI API Token. This can be generated on your [Personal API Tokens](https://app.circleci.com/settings/user/tokens) page."
-        },
-        "circleci-vscode.VcsProvider": {
-          "type": "string",
-          "default": "github",
-          "enum": [
-            "github",
-            "bitbucket"
-          ],
-          "enumDescriptions": [
-            "GitHub",
-            "Bitbucket"
-          ],
-          "description": "Your VCS Provider."
-        },
-        "circleci-vscode.watchedBranches": {
-          "type": "array",
-          "items": {
-            "type": "string"
+    "configuration": [
+      {
+        "type": "object",
+        "title": "General",
+        "id": "general",
+        "order": 0,
+        "properties": {
+          "circleci-vscode.apiToken": {
+            "type": "string",
+            "default": null,
+            "markdownDescription": "A CircleCI API Token. This can be generated on your [Personal API Tokens](https://app.circleci.com/settings/user/tokens) page."
           },
-          "default": [
-            "main"
-          ],
-          "description": "Add any custom branches you'd like to list Pipelines for. These will be displayed in addition to the currently checked-out branch."
-        },
-        "circleci-vscode.autoLoadWorkflows": {
-          "type": "boolean",
-          "default": true,
-          "description": "Automatically load Pipeline Workflows."
-        },
-        "circleci-vscode.autoLoadWorkflowJobs": {
-          "type": "boolean",
-          "default": true,
-          "description": "Automatically load Workflow Jobs."
-        },
-        "circleci-vscode.pipelineReloadInterval": {
-          "type": "number",
-          "default": 120,
-          "minimum": 0,
-          "markdownDescription": "Seconds to wait before reloading all Pipelines. This will load in any new Workflows. Set to `0` to disable."
-        },
-        "circleci-vscode.workflowReloadInterval": {
-          "type": "number",
-          "default": 10,
-          "minimum": 0,
-          "markdownDescription": "Seconds to wait before reloading an active Workflow's status. Set to `0` to disable."
+          "circleci-vscode.VcsProvider": {
+            "type": "string",
+            "default": "github",
+            "enum": [
+              "github",
+              "bitbucket"
+            ],
+            "enumDescriptions": [
+              "GitHub",
+              "Bitbucket"
+            ],
+            "description": "Your version control system provider."
+          },
+          "circleci-vscode.watchedBranches": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [
+              "main"
+            ],
+            "description": "You'll always see the pipelines for the currently checked-out branch (★), but you can watch any additional branches by adding them here."
+          }
+        }
+      },
+      {
+        "type": "object",
+        "title": "Pipelines",
+        "id": "pipelines",
+        "order": 1,
+        "properties": {
+          "circleci-vscode.pipelineReloadInterval": {
+            "type": "number",
+            "default": 120,
+            "minimum": 0,
+            "markdownDescription": "Number of seconds to wait before refetching details for all pipelines. This will load in any new workflows.\n\rSet to `0` to disable."
+          }
+        }
+      },
+      {
+        "type": "object",
+        "title": "Workflows",
+        "id": "workflows",
+        "order": 2,
+        "properties": {
+          "circleci-vscode.autoLoadWorkflows": {
+            "type": "boolean",
+            "default": true,
+            "description": "Automatically load workflows."
+          },
+          "circleci-vscode.workflowReloadInterval": {
+            "type": "number",
+            "default": 10,
+            "minimum": 0,
+            "markdownDescription": "Number of seconds to wait before refetching an active workflow's status.\n\rSet to `0` to disable."
+          }
+        }
+      },
+      {
+        "type": "object",
+        "title": "Jobs",
+        "id": "jobs",
+        "order": 3,
+        "properties": {
+          "circleci-vscode.autoLoadWorkflowJobs": {
+            "type": "boolean",
+            "default": true,
+            "description": "Automatically load jobs."
+          }
         }
       }
-    }
+    ]
   },
   "dependencies": {
     "circle-client": "^0.2.0",

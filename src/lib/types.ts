@@ -28,6 +28,7 @@ export enum ActivityStatus {
   OnHold = 'On Hold',
   Canceled = 'Canceled',
   Unauthorized = 'Unauthorized',
+  Queued = 'Queued',
 }
 
 export enum Events {

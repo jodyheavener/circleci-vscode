@@ -1,3 +1,5 @@
+import { ActivityStatus } from './types';
+
 export const EXTENSION_ID = 'circleci-vscode';
 
 export const PIPELINES_TREE_ID = 'circleciPipelinesTree';
@@ -27,6 +29,7 @@ export const CONTEXTS = {
   TIMER_BASE: 'circleciTimer',
   ARTIFACTS_BASE: 'circleciArtifacts',
   ARTIFACT_BASE: 'circleciArtifact',
+  TESTS_BASE: 'circleciTests',
 };
 
 export const URLS = {
@@ -37,4 +40,17 @@ export const URLS = {
     'https://app.circleci.com/pipelines/{vcs}/{user}/{repo}/{pipeline_number}/workflows/{workflow_id}',
   JOB_URL:
     'https://app.circleci.com/pipelines/{vcs}/{user}/{repo}/{pipeline_number}/workflows/{workflow_id}/jobs/{job_number}',
+};
+
+export const ActivityStatusMap = {
+  success: ActivityStatus.Success,
+  running: ActivityStatus.Running,
+  not_run: ActivityStatus.NotRun,
+  failed: ActivityStatus.Failed,
+  error: ActivityStatus.Error,
+  failing: ActivityStatus.Failing,
+  on_hold: ActivityStatus.OnHold,
+  canceled: ActivityStatus.Canceled,
+  unauthorized: ActivityStatus.Unauthorized,
+  queued: ActivityStatus.Queued,
 };
