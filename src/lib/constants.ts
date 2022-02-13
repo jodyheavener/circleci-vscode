@@ -7,7 +7,6 @@ export const PIPELINES_TREE_ID = 'circleciPipelinesTree';
 export const COMMANDS = {
   OPEN_JOB_ARTIFACT: 'circleci.openJobArtifact',
   FETCH_JOB_ARTIFACTS: 'circleci.fetchJobArtifacts',
-  LOAD_ITEMS: 'circleci.loadItems',
   REFETCH: 'circleci.refetch',
   OPEN_PAGE: 'circleci.openPage',
   CANCEL_WORKFLOW: 'circleci.cancelWorkflow',

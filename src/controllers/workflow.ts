@@ -1,9 +1,10 @@
-import { Workflow as WorkflowData } from 'circle-client';
+import { Workflow as WorkflowData, WorkflowStatus } from 'circle-client';
 import { env } from 'vscode';
 import { client } from '../lib/circleci';
-import { ActivityStatusMap, URLS } from '../lib/constants';
+import { configuration } from '../lib/config';
+import { ActivityStatusMap, COMMANDS, URLS } from '../lib/constants';
 import { events } from '../lib/events';
-import { ActivatableGitData, Events } from '../lib/types';
+import { ActivatableGitData, ConfigKey, Events } from '../lib/types';
 import { interpolate, openInBrowser } from '../lib/utils';
 import { Workflow } from '../tree-items/workflow';
 import { JobController } from './job';
@@ -14,6 +15,7 @@ export class WorkflowController {
   jobs: JobController[];
   refetchInterval: NodeJS.Timer;
   refetchWorkflowData = false;
+  initialLoad: boolean;
 
   constructor(
     private gitSet: ActivatableGitData,
@@ -22,20 +24,30 @@ export class WorkflowController {
   ) {
     this.view = new Workflow(this, data.name, ActivityStatusMap[data.status]);
 
-    this.fetch();
+    if (configuration.get(ConfigKey.AutoLoadWorkflowJobs)) {
+      this.fetch();
+    } else {
+      this.refetchWorkflowData = true;
+      this.view.setDescription('Click to load Jobs');
+      this.view.setCommand(COMMANDS.REFETCH, 'Load Jobs');
+    }
 
     events.on(Events.ConfigChange, this.autoRefetch.bind(this));
   }
 
   private autoRefetch(): void {
-    // clearInterval(this.refetchInterval);
-    // const interval = configuration.get<number>(
-    //   ConfigKey.WorkflowReloadInterval
-    // );
-    // if (interval === 0 || this.data.status !== WorkflowStatus.Running) {
-    //   return;
-    // }
-    // this.refetchInterval = setInterval(this.fetch.bind(this), interval * 1000);
+    clearInterval(this.refetchInterval);
+    const interval = configuration.get<number>(
+      ConfigKey.WorkflowReloadInterval
+    );
+    if (
+      interval === 0 ||
+      !this.initialLoad ||
+      this.data.status !== WorkflowStatus.Running
+    ) {
+      return;
+    }
+    this.refetchInterval = setInterval(this.fetch.bind(this), interval * 1000);
   }
 
   async fetch(): Promise<void> {
@@ -48,18 +60,16 @@ export class WorkflowController {
     }
 
     const { items } = await client.listWorkflowJobs(this.data.id);
-
     this.jobs = items.map((job) => new JobController(this.gitSet, this, job));
-
     this.view.children = this.jobs.map((job) => job.view);
+    this.view.setCommand();
     this.view.setLoading(false);
+    this.initialLoad = true;
+    this.refetchWorkflowData = true;
 
     events.fire(Events.ReloadTree, this.view);
 
-    // We're provided with initial workflow data from the pipeline
-    // API call, so only refetch the workflow data *after* the first
-    // load to save on API calls
-    this.refetchWorkflowData = true;
+    this.autoRefetch();
   }
 
   openPage(): void {

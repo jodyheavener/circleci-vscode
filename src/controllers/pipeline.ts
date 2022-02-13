@@ -1,7 +1,7 @@
 import { Pipeline as PipelineData } from 'circle-client';
 import { client } from '../lib/circleci';
 import { configuration } from '../lib/config';
-import { URLS } from '../lib/constants';
+import { COMMANDS, URLS } from '../lib/constants';
 import { events } from '../lib/events';
 import { ActivatableGitData, ConfigKey, Events } from '../lib/types';
 import { interpolate, openInBrowser } from '../lib/utils';
@@ -12,6 +12,7 @@ export class PipelineController {
   view: Pipeline;
   workflows: WorkflowController[];
   refetchInterval: NodeJS.Timer;
+  initialLoad: boolean;
 
   constructor(private gitSet: ActivatableGitData) {
     this.view = new Pipeline(
@@ -24,7 +25,12 @@ export class PipelineController {
       this.view.setActive(true);
     }
 
-    this.fetch();
+    if (configuration.get(ConfigKey.AutoLoadWorkflows)) {
+      this.fetch();
+    } else {
+      this.view.setDescription('Click to load Workflows');
+      this.view.setCommand(COMMANDS.REFETCH, 'Load Workflows');
+    }
 
     events.on(Events.ConfigChange, this.autoRefetch.bind(this));
   }
@@ -36,7 +42,7 @@ export class PipelineController {
       ConfigKey.PipelineReloadInterval
     );
 
-    if (interval === 0) {
+    if (interval === 0 || !this.initialLoad) {
       return;
     }
 
@@ -75,10 +81,12 @@ export class PipelineController {
     this.workflows = workflows.map(
       (workflow) => new WorkflowController(this.gitSet, this, workflow)
     );
-
     this.view.children = this.workflows.map((workflow) => workflow.view);
     this.view.updateWorkflowCount();
+    this.view.setCommand();
     this.view.setLoading(false);
+    this.initialLoad = true;
+
     events.fire(Events.ReloadTree, this.view);
 
     this.autoRefetch();
