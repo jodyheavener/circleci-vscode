@@ -22,6 +22,7 @@ export const COMMANDS = {
 };
 
 export const CONTEXTS = {
+  BRANCH_BASE: 'circleciBranch',
   PIPELINE_BASE: 'circleciPipeline',
   WORKFLOW_BASE: 'circleciWorkflow',
   JOB_BASE: 'circleciJob',
@@ -33,8 +34,10 @@ export const CONTEXTS = {
 
 export const URLS = {
   PROJECT_URL: 'https://app.circleci.com/pipelines/{vcs}/{user}/{repo}',
-  PIPELINE_URL:
+  BRANCH_URL:
     'https://app.circleci.com/pipelines/{vcs}/{user}/{repo}?branch={branch}',
+  PIPELINE_URL:
+    'https://app.circleci.com/pipelines/{vcs}/{user}/{repo}/{pipeline_number}',
   WORKFLOW_URL:
     'https://app.circleci.com/pipelines/{vcs}/{user}/{repo}/{pipeline_number}/workflows/{workflow_id}',
   JOB_URL:
