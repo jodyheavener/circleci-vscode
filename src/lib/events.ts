@@ -11,12 +11,6 @@ class Events {
     this.events[event].push(callback);
   }
 
-  off(event: EventTypes): void {
-    if (this.events[event]) {
-      this.events[event] = [];
-    }
-  }
-
   fire<TData>(event: EventTypes, data?: TData): void {
     if (this.events[event]) {
       this.events[event].forEach((callback) => callback(data));

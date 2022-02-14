@@ -1,21 +1,23 @@
 export enum ConfigKey {
   APIToken = 'apiToken',
-  VcsProvider = 'VcsProvider',
-  WatchedBranches = 'watchedBranches',
-  AutoLoadWorkflows = 'autoLoadWorkflows',
-  AutoLoadWorkflowJobs = 'autoLoadWorkflowJobs',
-  PipelineReloadInterval = 'pipelineReloadInterval',
-  WorkflowReloadInterval = 'workflowReloadInterval',
+  GitRemote = 'project.gitRemote',
+  UseGitBranches = 'project.useGitBranches',
+  BranchesToWatch = 'project.branchesToWatch',
+  PipelinesReloadInterval = 'pipelines.reloadInterval',
+  WorkflowsAutoLoad = 'workflows.autoLoad',
+  WorkflowsReloadInterval = 'workflows.reloadInterval',
+  JobsAutoLoad = 'jobs.autoLoad',
 }
 
 export type ConfigItems = {
   [ConfigKey.APIToken]: string;
-  [ConfigKey.WatchedBranches]: string[];
-  [ConfigKey.AutoLoadWorkflows]: boolean;
-  [ConfigKey.AutoLoadWorkflowJobs]: boolean;
-  [ConfigKey.PipelineReloadInterval]: number;
-  [ConfigKey.WorkflowReloadInterval]: number;
-  [ConfigKey.VcsProvider]: 'github' | 'bitbucket';
+  [ConfigKey.GitRemote]: string;
+  [ConfigKey.UseGitBranches]: boolean;
+  [ConfigKey.BranchesToWatch]: string[];
+  [ConfigKey.PipelinesReloadInterval]: number;
+  [ConfigKey.WorkflowsAutoLoad]: boolean;
+  [ConfigKey.WorkflowsReloadInterval]: number;
+  [ConfigKey.JobsAutoLoad]: boolean;
 };
 
 export enum ActivityStatus {
@@ -38,10 +40,18 @@ export enum Events {
   ReloadTree,
 }
 
-export type GitData = {
-  vcs: 'github' | 'bitbucket';
+export enum VcsProvider {
+  GitHub = 'github',
+  BitBucket = 'bitbucket',
+}
+
+export type ProjectData = {
+  vcs: VcsProvider;
   user: string;
   repo: string;
+};
+
+export type GitData = ProjectData & {
   branch: string;
 };
 

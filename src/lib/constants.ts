@@ -1,6 +1,6 @@
 import { ActivityStatus } from './types';
 
-export const EXTENSION_ID = 'circleci-vscode';
+export const EXTENSION_ID = 'circleci';
 
 export const PIPELINES_TREE_ID = 'circleciPipelinesTree';
 

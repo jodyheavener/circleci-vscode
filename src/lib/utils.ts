@@ -3,6 +3,7 @@ import open from 'open';
 import { resolve } from 'path';
 import { Uri } from 'vscode';
 import { extension } from './extension';
+import { ConfigItems, ConfigKey } from './types';
 
 export const getAsset = (name: string): { light: Uri; dark: Uri } => ({
   light: Uri.file(
@@ -73,4 +74,15 @@ export const openInBrowser = (url: string): void => {
     console.error(error);
     throw new Error("Couldn't open URL.");
   }
+};
+
+export const forConfig = (
+  key: ConfigKey,
+  cb: (value: ConfigItems[ConfigKey]) => void
+) => {
+  return (data: { key: ConfigKey; value: ConfigItems[ConfigKey] }): void => {
+    if (data.key === key) {
+      cb(data.value);
+    }
+  };
 };

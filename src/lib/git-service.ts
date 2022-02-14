@@ -1,92 +1,49 @@
-import { StatWatcher, watchFile } from 'fs';
+import { watchFile } from 'fs';
 import { join } from 'path';
-import { workspace } from 'vscode';
 import { client } from './circleci';
 import { configuration } from './config';
 import { events } from './events';
+import { extension } from './extension';
 import {
   ActivatableGitData,
-  ConfigItems,
   ConfigKey,
   Events,
   GitData,
+  ProjectData,
+  VcsProvider,
 } from './types';
-import { execCommand, stripNewline } from './utils';
+import { execCommand, forConfig, stripNewline } from './utils';
 
-const REPO_MATCHER = /(?:git@.*\..*:|https?:\/\/.*\..*\/)(.*)\/(.*).git/g;
+const REPO_MATCHER = /(?:git@(.*)\..*:|https?:\/\/(.*)\..*\/)(.*)\/(.*).git/g;
 
 class GitService {
-  private gitWatcher?: StatWatcher;
-  private rootPath?: string;
   private watchedBranches: string[] = [];
   data?: GitData;
 
-  constructor() {
-    this.setup();
-    events.on(Events.ConfigChange, this.configChange.bind(this));
-  }
-
-  async setup(): Promise<void> {
-    if (this.gitWatcher) {
-      this.gitWatcher.removeAllListeners();
-    }
-
-    this.rootPath = workspace.workspaceFolders![0].uri.fsPath;
+  async configure(): Promise<void> {
     this.watchedBranches = configuration.get<string[]>(
-      ConfigKey.WatchedBranches
-    );
-    const vcs = configuration.get<ConfigItems[ConfigKey.VcsProvider]>(
-      ConfigKey.VcsProvider
+      ConfigKey.BranchesToWatch
     );
 
-    try {
-      const { user, repo } = await this.getRepoInfo();
-      this.data = {
-        user,
-        repo,
-        branch: await this.getBranch(),
-        vcs,
-      };
+    await this.setGitData();
 
-      client.projectSlug = this.circleSlug;
+    events.on(
+      Events.ConfigChange,
+      forConfig(
+        ConfigKey.BranchesToWatch,
+        this.watchedBranchesChange.bind(this)
+      )
+    );
 
-      this.gitWatcher = watchFile(
-        join(this.rootPath, '.git/HEAD'),
-        this.branchChange.bind(this)
-      );
-    } catch (error: any) {
-      console.error(error);
-      throw new Error('Error setting up Git watcher.');
-    }
+    watchFile(
+      join(extension.workspacePath, '.git/HEAD'),
+      this.branchChange.bind(this)
+    );
   }
 
-  private configChange(): void {
-    const vcs = configuration.get<ConfigItems[ConfigKey.VcsProvider]>(
-      ConfigKey.VcsProvider
-    );
-    const watchedBranches = configuration.get<string[]>(
-      ConfigKey.WatchedBranches
-    );
-
-    let fireUpdate = false;
-
-    if (this.data.vcs != vcs) {
-      this.data.vcs = vcs;
-      client.projectSlug = this.circleSlug;
-      fireUpdate = true;
-    }
-
-    if (
-      watchedBranches.length !== this.watchedBranches.length ||
-      watchedBranches.some((branch) => !this.watchedBranches.includes(branch))
-    ) {
-      this.watchedBranches = watchedBranches;
-      fireUpdate = true;
-    }
-
-    if (fireUpdate) {
-      events.fire(Events.GitDataUpdate);
-    }
+  private watchedBranchesChange(branches: string[]): void {
+    this.watchedBranches = branches;
+    events.fire(Events.GitDataUpdate);
   }
 
   private async branchChange(): Promise<void> {
@@ -103,27 +60,47 @@ class GitService {
     }
   }
 
-  private async getRepoInfo(): Promise<{ user: string; repo: string }> {
-    try {
-      const cmdOutput = stripNewline(
-        execCommand('git config --get remote.origin.url', this.rootPath)
-      );
-      const matches = [...cmdOutput.matchAll(REPO_MATCHER)];
-      return { user: matches[0][1], repo: matches[0][2] };
-    } catch (error) {
-      console.error(error);
-      throw new Error('Could not retrieve Git info.');
-    }
-  }
-
   private async getBranch(): Promise<string> {
     try {
       return stripNewline(
-        execCommand('git rev-parse --abbrev-ref HEAD', this.rootPath)
+        execCommand('git rev-parse --abbrev-ref HEAD', extension.workspacePath)
       );
     } catch (error) {
       console.error(error);
       throw new Error('Could not retrieve Git branch.');
+    }
+  }
+
+  private async setGitData(): Promise<void> {
+    const gitRemote = configuration.get<string>(ConfigKey.GitRemote);
+
+    try {
+      const cmdOutput = stripNewline(
+        execCommand(
+          `git config --get remote.${gitRemote}.url`,
+          extension.workspacePath
+        )
+      );
+      const [_, vcsSSH, vcsHTTPS, user, repo] = [
+        ...cmdOutput.matchAll(REPO_MATCHER),
+      ][0];
+      const vcs = vcsSSH ?? vcsHTTPS;
+
+      // @ts-expect-error - value of vcs may not be a
+      // VcsProvider, that's why we're checking
+      if (!Object.values(VcsProvider).includes(vcs)) {
+        throw new Error(`Unknown VCS provider: ${vcs}`);
+      }
+
+      this.data = {
+        ...({ vcs, user, repo } as ProjectData),
+        branch: await this.getBranch(),
+      };
+
+      client.projectSlug = this.circleSlug;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Could not retrieve Git info.');
     }
   }
 

@@ -5,7 +5,7 @@ import { extension } from './lib/extension';
 import ProjectTreeDataProvider from './lib/project-tree-data-provider';
 
 export const activate = async (context: ExtensionContext): Promise<void> => {
-  extension.configure(context);
+  await extension.configure(context);
 
   const pipelinesTree = new ProjectTreeDataProvider();
   window.registerTreeDataProvider(PIPELINES_TREE_ID, pipelinesTree);

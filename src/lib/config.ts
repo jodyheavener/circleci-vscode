@@ -19,9 +19,11 @@ export class Configuration {
   }
 
   private onConfigurationChanged(event: ConfigurationChangeEvent): void {
-    if (event.affectsConfiguration(EXTENSION_ID)) {
-      events.fire(Events.ConfigChange);
-    }
+    Object.values(ConfigKey).forEach((key) => {
+      if (event.affectsConfiguration(`${EXTENSION_ID}.${key}`)) {
+        events.fire(Events.ConfigChange, { key, value: this.get(key) });
+      }
+    });
   }
 
   get<T extends ConfigItems[keyof ConfigItems]>(

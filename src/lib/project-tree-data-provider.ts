@@ -6,12 +6,15 @@ import {
   TreeItem,
 } from 'vscode';
 import { BranchController } from '../controllers/branch';
+import { PipelineController } from '../controllers/pipeline';
 import { Branch } from '../tree-items/branch';
-// import { URLS } from './constants';
-// import { events } from './events';
-// import { gitService } from './git-service';
-// import { Events } from './types';
-// import { interpolate, openInBrowser } from './utils';
+import { Pipeline } from '../tree-items/pipeline';
+import { configuration } from './config';
+import { URLS } from './constants';
+import { events } from './events';
+import { gitService } from './git-service';
+import { ConfigKey, Events } from './types';
+import { forConfig, interpolate, openInBrowser } from './utils';
 
 export default class ProjectTreeDataProvider
   implements TreeDataProvider<TreeItem>
@@ -20,48 +23,66 @@ export default class ProjectTreeDataProvider
     new EventEmitter<TreeItem | undefined>();
   readonly onDidChangeTreeData: Event<TreeItem | undefined> =
     this._onDidChangeTreeData.event;
-  branches: BranchController[] = [];
+  treeItems: (BranchController | PipelineController)[] = [];
 
   constructor() {
-    // events.on(Events.GitDataUpdate, this.setupBranches.bind(this));
-    // events.on(Events.ReloadTree, this.reload.bind(this));
-    // this.setupBranches();
+    events.on(Events.GitDataUpdate, this.setupTree.bind(this));
+    events.on(
+      Events.ConfigChange,
+      forConfig(ConfigKey.UseGitBranches, this.setupTree.bind(this))
+    );
+    events.on(Events.ReloadTree, this.reload.bind(this));
+
+    this.setupTree();
   }
 
-  // reload(item?: TreeItem): void {
-  //   this._onDidChangeTreeData.fire(item);
-  // }
+  async setupTree(): Promise<void> {
+    const useBranches = configuration.get<boolean>(ConfigKey.UseGitBranches);
 
-  // fetch(): void {
-  //   this.branches = [];
-  //   this.setupBranches();
-  // }
+    // THIS IS WHERE YOU LEFT OFF
 
-  // setupBranches(): void {
-  //   this.branches = gitService.sets.map(
-  //     (gitSet) => new BranchController(gitSet)
-  //   );
-  //   this.reload();
-  // }
+    // if (useBranches) {
+    //   this.treeItems = gitService.sets.map(
+    //     (gitSet) => new BranchController(gitSet)
+    //   );
+    // } else {
+    //   this.treeItems = (await client.listProjectPipelines()).items.map(
+    //     (data) => new PipelineController()
+    //   );
+    // }
 
-  // openPage(): void {
-  //   const { vcs, user, repo } = gitService.data;
-  //   openInBrowser(
-  //     interpolate(URLS.PROJECT_URL, {
-  //       vcs,
-  //       user,
-  //       repo,
-  //     })
-  //   );
-  // }
+    this.reload();
+  }
 
-  getTreeItem(element: Branch): Branch | Thenable<Branch> {
+  reload(item?: TreeItem): void {
+    this._onDidChangeTreeData.fire(item);
+  }
+
+  fetch(): void {
+    this.treeItems = [];
+    this.setupTree();
+  }
+
+  openPage(): void {
+    const { vcs, user, repo } = gitService.data;
+    openInBrowser(
+      interpolate(URLS.PROJECT_URL, {
+        vcs,
+        user,
+        repo,
+      })
+    );
+  }
+
+  getTreeItem(
+    element: Branch | Pipeline
+  ): Branch | Pipeline | Thenable<Branch | Pipeline> {
     return element;
   }
 
-  getChildren(element?: Branch): ProviderResult<TreeItem[]> {
+  getChildren(element?: Branch | Pipeline): ProviderResult<TreeItem[]> {
     if (!element) {
-      return this.branches.map((branch) => branch.view);
+      return this.treeItems.map((item) => item.view);
     }
 
     return element.children;
