@@ -3,22 +3,21 @@ import { env, TreeItem } from 'vscode';
 import { client } from '../lib/circleci';
 import { ActivityStatusMap, URLS } from '../lib/constants';
 import { events } from '../lib/events';
-import { ActivatableGitData, Events } from '../lib/types';
+import { gitService } from '../lib/git-service';
+import { Events } from '../lib/types';
 import { interpolate, openInBrowser } from '../lib/utils';
-import { Artifacts } from '../tree-items/artifacts';
 import { Job } from '../tree-items/job';
-import { Tests } from '../tree-items/tests';
 import { Timer } from '../tree-items/timer';
+import { ArtifactsController } from './artifacts';
+import { TestsController } from './tests';
 import { WorkflowController } from './workflow';
 
 export class JobController {
   view: Job;
+  tests: TestsController;
+  artifacts: ArtifactsController;
 
-  constructor(
-    private gitSet: ActivatableGitData,
-    private workflow: WorkflowController,
-    public data: JobData
-  ) {
+  constructor(private workflow: WorkflowController, public data: JobData) {
     this.view = new Job(
       this,
       data.name,
@@ -40,7 +39,10 @@ export class JobController {
       views.push(new Timer(job.duration));
     }
 
-    views = views.concat(new Artifacts(), new Tests());
+    this.tests = new TestsController(this.data.job_number);
+    this.artifacts = new ArtifactsController(this.data.job_number);
+
+    views = views.concat(this.artifacts.view, this.tests.view);
     this.view.children = views;
     this.view.setLoading(false);
 
@@ -48,7 +50,7 @@ export class JobController {
   }
 
   openPage(): void {
-    const { vcs, user, repo } = this.gitSet;
+    const { vcs, user, repo } = gitService.data;
     openInBrowser(
       interpolate(URLS.JOB_URL, {
         vcs,
@@ -66,7 +68,7 @@ export class JobController {
   }
 
   copyNumber(): void {
-    env.clipboard.writeText(String(this.data.job_number));
+    env.clipboard.writeText(this.data.job_number.toString());
   }
 
   async cancel(): Promise<void> {

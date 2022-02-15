@@ -9,6 +9,7 @@ import { BranchController } from '../controllers/branch';
 import { PipelineController } from '../controllers/pipeline';
 import { Branch } from '../tree-items/branch';
 import { Pipeline } from '../tree-items/pipeline';
+import { client } from './circleci';
 import { configuration } from './config';
 import { URLS } from './constants';
 import { events } from './events';
@@ -39,17 +40,15 @@ export default class ProjectTreeDataProvider
   async setupTree(): Promise<void> {
     const useBranches = configuration.get<boolean>(ConfigKey.UseGitBranches);
 
-    // THIS IS WHERE YOU LEFT OFF
-
-    // if (useBranches) {
-    //   this.treeItems = gitService.sets.map(
-    //     (gitSet) => new BranchController(gitSet)
-    //   );
-    // } else {
-    //   this.treeItems = (await client.listProjectPipelines()).items.map(
-    //     (data) => new PipelineController()
-    //   );
-    // }
+    if (useBranches) {
+      this.treeItems = gitService.branches.map(
+        (branch) => new BranchController(branch)
+      );
+    } else {
+      this.treeItems = (await client.listProjectPipelines()).items.map(
+        (pipeline) => new PipelineController(pipeline)
+      );
+    }
 
     this.reload();
   }

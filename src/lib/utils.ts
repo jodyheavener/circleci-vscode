@@ -46,6 +46,23 @@ export const msToTime = (milliseconds: number): string => {
   return output;
 };
 
+export const timeSince = (date: Date): string => {
+  const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (seconds < 60) {
+    return `${seconds} seconds`;
+  } else if (minutes < 60) {
+    return `${minutes} minutes`;
+  } else if (hours < 24) {
+    return `${hours} hours`;
+  } else {
+    return `${days} days`;
+  }
+};
+
 export const execCommand = (cmd: string, cwd: string): string => {
   try {
     return execSync(cmd, { cwd, encoding: 'utf8' });

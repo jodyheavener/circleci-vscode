@@ -24,6 +24,6 @@ export class Artifact extends Base {
       iconName: getfileTypeIcon(filename),
     });
 
-    this.setCommand(COMMANDS.OPEN_JOB_ARTIFACT, 'Open Artifact');
+    this.setCommand(COMMANDS.OPEN_JOB_ARTIFACT, 'Open artifact');
   }
 }

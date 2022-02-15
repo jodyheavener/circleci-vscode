@@ -5,19 +5,16 @@ export const EXTENSION_ID = 'circleci';
 export const PIPELINES_TREE_ID = 'circleciPipelinesTree';
 
 export const COMMANDS = {
-  OPEN_JOB_ARTIFACT: 'circleci.openJobArtifact',
-  FETCH_JOB_ARTIFACTS: 'circleci.fetchJobArtifacts',
   REFETCH: 'circleci.refetch',
   OPEN_PAGE: 'circleci.openPage',
   CANCEL_WORKFLOW: 'circleci.cancelWorkflow',
   RETRY_ALL_WORKFLOWS: 'circleci.retryWorkflowAll',
   RETRY_FAILED_WORKFLOWS: 'circleci.retryWorkflowFailed',
-  COPY_WORKFLOW_ID: 'circleci.copyWorkflowId',
   CANCEL_JOB: 'circleci.cancelJob',
   APPROVE_JOB: 'circleci.approveJob',
-  COPY_JOB_ID: 'circleci.copyJobId',
-  COPY_JOB_NUMBER: 'circleci.copyJobNumber',
-  LOAD_JOB_TESTS: 'circleci.loadJobTests',
+  COPY_ID: 'circleci.copyId',
+  COPY_NUMBER: 'circleci.copyNumber',
+  OPEN_JOB_ARTIFACT: 'circleci.openJobArtifact',
   OPEN_JOB_TESTS: 'circleci.openJobTests',
 };
 

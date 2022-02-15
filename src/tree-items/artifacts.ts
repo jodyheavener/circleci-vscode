@@ -1,20 +1,22 @@
+import { ArtifactsController } from '../controllers/artifacts';
 import { COMMANDS, CONTEXTS } from '../lib/constants';
 import { pluralize } from '../lib/utils';
 import { Base } from './base';
 
 export class Artifacts extends Base {
-  constructor() {
+  constructor(public controller: ArtifactsController) {
     super({
-      label: 'Look up Artifacts →',
+      label: 'Fetch artifacts →',
       contextValue: CONTEXTS.ARTIFACTS_BASE,
       iconName: 'box',
+      loadable: true,
     });
 
-    // TODO: reset once artifacts are fetched
-    this.setCommand(COMMANDS.FETCH_JOB_ARTIFACTS, 'Fetch Artifacts');
+    this.setCommand(COMMANDS.REFETCH, 'Fetch artifacts');
   }
 
   setFetched(count: number): void {
-    this.setLabel(pluralize('Artifact', count));
+    this.setLabel(pluralize('artifact', count));
+    this.setCommand();
   }
 }

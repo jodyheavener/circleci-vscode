@@ -14,6 +14,7 @@ export abstract class Base extends TreeItem {
 
   constructor({
     label,
+    description,
     contextValue,
     iconName,
     tooltip,
@@ -21,6 +22,7 @@ export abstract class Base extends TreeItem {
     collapsibleState = TreeItemCollapsibleState.None,
   }: {
     label: string;
+    description?: string;
     contextValue?: string;
     iconName?: string;
     tooltip?: string;
@@ -33,6 +35,7 @@ export abstract class Base extends TreeItem {
 
     this.render(() => {
       this.activeLabel = label;
+      this.activeDescription = description;
       this.activeTooltip = tooltip || label;
       this.iconName = iconName;
       this.loadable = loadable;

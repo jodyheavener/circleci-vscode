@@ -1,14 +1,22 @@
+import { TestsController } from '../controllers/tests';
 import { COMMANDS, CONTEXTS } from '../lib/constants';
+import { pluralize } from '../lib/utils';
 import { Base } from './base';
 
 export class Tests extends Base {
-  constructor() {
+  constructor(public controller: TestsController) {
     super({
-      label: 'Look up Tests →',
+      label: 'Fetch tests →',
       contextValue: CONTEXTS.TESTS_BASE,
       iconName: 'clipboard',
+      loadable: true,
     });
 
-    this.setCommand(COMMANDS.LOAD_JOB_TESTS, 'Fetch Tests');
+    this.setCommand(COMMANDS.REFETCH, 'Fetch tests');
+  }
+
+  setFetched(count: number): void {
+    this.setLabel(`${pluralize('test', count)} →`);
+    this.setCommand();
   }
 }

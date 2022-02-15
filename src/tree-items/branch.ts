@@ -25,4 +25,9 @@ export class Branch extends Base {
     this.storedLabel = label;
     this.storedTooltip = tooltip;
   }
+
+  setActive(active: boolean): void {
+    this.setLabel(`${active ? Branch.activePrefix : ''}${this.storedLabel}`);
+    this.setTooltip(`${active ? Branch.activeLabel : ''}${this.storedTooltip}`);
+  }
 }

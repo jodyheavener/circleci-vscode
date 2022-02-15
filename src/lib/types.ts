@@ -51,10 +51,7 @@ export type ProjectData = {
   repo: string;
 };
 
-export type GitData = ProjectData & {
-  branch: string;
-};
-
-export type ActivatableGitData = GitData & {
+export type GitBranch = {
+  name: string;
   active: boolean;
 };

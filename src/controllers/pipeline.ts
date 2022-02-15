@@ -1,106 +1,72 @@
 import { Pipeline as PipelineData } from 'circle-client';
+import { env } from 'vscode';
 import { client } from '../lib/circleci';
 import { configuration } from '../lib/config';
 import { COMMANDS, URLS } from '../lib/constants';
 import { events } from '../lib/events';
-import { ActivatableGitData, ConfigKey, Events } from '../lib/types';
-import { interpolate, openInBrowser } from '../lib/utils';
+import { gitService } from '../lib/git-service';
+import { ConfigKey, Events } from '../lib/types';
+import { interpolate, openInBrowser, timeSince } from '../lib/utils';
 import { Pipeline } from '../tree-items/pipeline';
 import { WorkflowController } from './workflow';
 
 export class PipelineController {
   view: Pipeline;
   workflows: WorkflowController[];
-  refetchInterval: NodeJS.Timer;
-  initialLoad: boolean;
 
-  constructor(private gitSet: ActivatableGitData) {
+  constructor(private data: PipelineData) {
     this.view = new Pipeline(
       this,
-      gitSet.branch,
-      `${gitSet.repo}/${gitSet.branch}`
+      `#${data.number}`,
+      `${timeSince(new Date(data.created_at))} ago`,
+      `Triggered by ${data.trigger.actor.login} via ${data.trigger.type}`
     );
 
-    if (gitSet.active) {
-      this.view.setActive(true);
-    }
-
-    if (configuration.get(ConfigKey.AutoLoadWorkflows)) {
+    if (configuration.get(ConfigKey.WorkflowsAutoLoad)) {
       this.fetch();
     } else {
-      this.view.setDescription('Click to load Workflows');
-      this.view.setCommand(COMMANDS.REFETCH, 'Load Workflows');
+      this.view.setDescription('Load workflows →');
+      this.view.setCommand(COMMANDS.REFETCH, 'Load workflows');
     }
-
-    events.on(Events.ConfigChange, this.autoRefetch.bind(this));
-  }
-
-  private autoRefetch(): void {
-    clearInterval(this.refetchInterval);
-
-    const interval = configuration.get<number>(
-      ConfigKey.PipelineReloadInterval
-    );
-
-    if (interval === 0 || !this.initialLoad) {
-      return;
-    }
-
-    this.refetchInterval = setInterval(this.fetch.bind(this), interval * 1000);
   }
 
   async fetch(): Promise<void> {
     this.view.setLoading(true);
     events.fire(Events.ReloadTree, this.view);
 
-    const pipelines: PipelineData[] = [];
-    try {
-      const { items } = await client.listProjectPipelines({
-        branch: this.gitSet.branch,
-      });
-
-      pipelines.push(...items);
-    } catch (error) {
-      console.log(error);
-      throw new Error(
-        `There was a problem loading Pipelines for ${this.gitSet.branch}.`
-      );
-    }
-
-    const workflows = (
-      await Promise.all(
-        pipelines.map(
-          async (pipeline) =>
-            (
-              await client.listPipelineWorkflows(pipeline.id)
-            ).items
-        )
-      )
-    ).flat();
+    const workflows = (await client.listPipelineWorkflows(this.data.id)).items;
 
     this.workflows = workflows.map(
-      (workflow) => new WorkflowController(this.gitSet, this, workflow)
+      (workflow) => new WorkflowController(this, workflow)
     );
+
     this.view.children = this.workflows.map((workflow) => workflow.view);
-    this.view.updateWorkflowCount();
-    this.view.setCommand();
+    this.view.setDescription(
+      `${timeSince(new Date(this.data.created_at))} ago`
+    );
     this.view.setLoading(false);
-    this.initialLoad = true;
+    this.view.setCommand();
 
     events.fire(Events.ReloadTree, this.view);
-
-    this.autoRefetch();
   }
 
   openPage(): void {
-    const { vcs, user, repo, branch } = this.gitSet;
+    const { vcs, user, repo } = gitService.data;
     openInBrowser(
       interpolate(URLS.PIPELINE_URL, {
         vcs,
         user,
         repo,
-        branch,
+        pipeline_number: this.data.number,
       })
     );
+  }
+
+  copyId(): void {
+    env.clipboard.writeText(this.data.id);
+  }
+
+  copyNumber(): void {
+    env.clipboard.writeText(this.data.number.toString());
   }
 }

@@ -78,12 +78,12 @@
       ],
       "view/item/context": [
         {
-          "when": "viewItem =~ /circleciPipeline/ || viewItem =~ /circleciWorkflow/ || viewItem =~ /circleciJob/",
+          "when": "viewItem =~ /circleciBranch/ || viewItem =~ /circleciPipeline/ || viewItem =~ /circleciWorkflow/ || viewItem =~ /circleciJob/",
           "command": "circleci.refetch",
           "group": "inline"
         },
         {
-          "when": "viewItem =~ /circleciPipeline/ || viewItem =~ /circleciWorkflow/ || viewItem =~ /circleciJob(?::?\\w*)(?::build)/",
+          "when": "viewItem =~ /circleciBranch/ || viewItem =~ /circleciPipeline/ || viewItem =~ /circleciWorkflow/ || viewItem =~ /circleciJob(?::?\\w*)(?::build)/",
           "command": "circleci.openPage",
           "group": "inline"
         },
@@ -113,18 +113,13 @@
           "group": "inline"
         },
         {
-          "when": "viewItem =~ /circleciWorkflow/",
-          "command": "circleci.copyWorkflowId",
+          "when": "viewItem =~ /circleciPipeline/ || viewItem =~ /circleciWorkflow/ || viewItem =~ /circleciJob/",
+          "command": "circleci.copyId",
           "group": "circleci"
         },
         {
-          "when": "viewItem =~ /circleciJob/",
-          "command": "circleci.copyJobId",
-          "group": "circleci"
-        },
-        {
-          "when": "viewItem =~ /circleciJob(?::?\\w*)(?::build)/",
-          "command": "circleci.copyJobNumber",
+          "when": "viewItem =~ /circleciPipeline/ || viewItem =~ /circleciJob(?::?\\w*)(?::build)/",
+          "command": "circleci.copyNumber",
           "group": "circleci"
         }
       ]
@@ -150,7 +145,7 @@
       },
       {
         "command": "circleci.cancelWorkflow",
-        "title": "Cancel Workflow",
+        "title": "Cancel workflow",
         "category": "CircleCI",
         "icon": {
           "dark": "./dist/assets/dark/ex.svg",
@@ -159,7 +154,7 @@
       },
       {
         "command": "circleci.cancelJob",
-        "title": "Cancel Job",
+        "title": "Cancel job",
         "category": "CircleCI",
         "icon": {
           "dark": "./dist/assets/dark/ex.svg",
@@ -168,7 +163,7 @@
       },
       {
         "command": "circleci.approveJob",
-        "title": "Approve Job",
+        "title": "Approve job",
         "category": "CircleCI",
         "icon": {
           "dark": "./dist/assets/dark/play.svg",
@@ -177,7 +172,7 @@
       },
       {
         "command": "circleci.retryWorkflowAll",
-        "title": "Retry all Jobs",
+        "title": "Retry all jobs",
         "category": "CircleCI",
         "icon": {
           "dark": "./dist/assets/dark/retry-all.svg",
@@ -186,7 +181,7 @@
       },
       {
         "command": "circleci.retryWorkflowFailed",
-        "title": "Retry failed Jobs",
+        "title": "Retry failed jobs",
         "category": "CircleCI",
         "icon": {
           "dark": "./dist/assets/dark/retry-failed.svg",
@@ -194,23 +189,18 @@
         }
       },
       {
-        "command": "circleci.copyWorkflowId",
-        "title": "Copy Workflow ID",
+        "command": "circleci.copyId",
+        "title": "Copy ID",
         "category": "CircleCI"
       },
       {
-        "command": "circleci.copyJobId",
-        "title": "Copy Job ID",
-        "category": "CircleCI"
-      },
-      {
-        "command": "circleci.copyJobNumber",
-        "title": "Copy Job number",
+        "command": "circleci.copyNumber",
+        "title": "Copy number",
         "category": "CircleCI"
       },
       {
         "command": "circleci.viewJobTests",
-        "title": "View Job Tests",
+        "title": "View job tests",
         "category": "CircleCI"
       }
     ],
@@ -238,7 +228,7 @@
             "order": 2,
             "type": "boolean",
             "default": true,
-            "description": "Automatically load workflows."
+            "description": "Automatically load workflows. Disabling this can help with API rate limiting."
           },
           "circleci.workflows.reloadInterval": {
             "order": 3,
@@ -251,7 +241,7 @@
             "order": 4,
             "type": "boolean",
             "default": true,
-            "description": "Automatically load jobs."
+            "description": "Automatically load jobs. Disabling this can help with API rate limiting."
           }
         }
       },

@@ -5,10 +5,9 @@ import { configuration } from './config';
 import { events } from './events';
 import { extension } from './extension';
 import {
-  ActivatableGitData,
   ConfigKey,
   Events,
-  GitData,
+  GitBranch,
   ProjectData,
   VcsProvider,
 } from './types';
@@ -18,7 +17,8 @@ const REPO_MATCHER = /(?:git@(.*)\..*:|https?:\/\/(.*)\..*\/)(.*)\/(.*).git/g;
 
 class GitService {
   private watchedBranches: string[] = [];
-  data?: GitData;
+  currentBranch: string;
+  data: ProjectData;
 
   async configure(): Promise<void> {
     this.watchedBranches = configuration.get<string[]>(
@@ -50,8 +50,8 @@ class GitService {
     try {
       const newBranch = await this.getBranch();
 
-      if (this.data.branch != newBranch) {
-        this.data.branch = newBranch;
+      if (this.currentBranch != newBranch) {
+        this.currentBranch = newBranch;
         events.fire(Events.GitDataUpdate);
       }
     } catch (error) {
@@ -92,10 +92,8 @@ class GitService {
         throw new Error(`Unknown VCS provider: ${vcs}`);
       }
 
-      this.data = {
-        ...({ vcs, user, repo } as ProjectData),
-        branch: await this.getBranch(),
-      };
+      this.data = { vcs, user, repo } as ProjectData;
+      this.currentBranch = await this.getBranch();
 
       client.projectSlug = this.circleSlug;
     } catch (error) {
@@ -104,14 +102,11 @@ class GitService {
     }
   }
 
-  get sets(): ActivatableGitData[] {
-    return [...new Set([this.data.branch, ...this.watchedBranches])].map(
-      (branch) => ({
-        branch,
-        user: this.data.user,
-        repo: this.data.repo,
-        vcs: this.data.vcs,
-        active: branch === this.data.branch,
+  get branches(): GitBranch[] {
+    return [...new Set([this.currentBranch, ...this.watchedBranches])].map(
+      (name) => ({
+        name,
+        active: name === this.currentBranch,
       })
     );
   }

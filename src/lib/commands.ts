@@ -1,19 +1,22 @@
 import { commands, Disposable } from 'vscode';
+import { Artifacts } from '../tree-items/artifacts';
+import { Branch } from '../tree-items/branch';
 import { Job } from '../tree-items/job';
 import { Pipeline } from '../tree-items/pipeline';
+import { Tests } from '../tree-items/tests';
 import { Workflow } from '../tree-items/workflow';
 import { COMMANDS } from './constants';
-import PipelineTreeDataProvider from './pipeline-tree-data-provider';
+import ProjectTreeDataProvider from './project-tree-data-provider';
 
 const registerCommands = (
-  pipelineTree: PipelineTreeDataProvider
+  projectTree: ProjectTreeDataProvider
 ): Disposable[] => {
   return [
     commands.registerCommand(
       COMMANDS.REFETCH,
-      (item?: Pipeline | Workflow | Job) => {
+      (item?: Branch | Pipeline | Workflow | Job | Artifacts | Tests) => {
         if (!item) {
-          pipelineTree.fetch();
+          projectTree.fetch();
         } else {
           item.controller.fetch();
         }
@@ -22,9 +25,9 @@ const registerCommands = (
 
     commands.registerCommand(
       COMMANDS.OPEN_PAGE,
-      (item?: Pipeline | Workflow | Job) => {
+      (item?: Branch | Pipeline | Workflow | Job) => {
         if (!item) {
-          pipelineTree.openPage();
+          projectTree.openPage();
         } else {
           item.controller.openPage();
         }
@@ -46,10 +49,6 @@ const registerCommands = (
       }
     ),
 
-    commands.registerCommand(COMMANDS.COPY_WORKFLOW_ID, (item: Workflow) => {
-      item.controller.copyId();
-    }),
-
     commands.registerCommand(COMMANDS.CANCEL_JOB, (item: Job) => {
       item.controller.cancel();
     }),
@@ -58,24 +57,16 @@ const registerCommands = (
       item.controller.approve();
     }),
 
-    commands.registerCommand(COMMANDS.COPY_JOB_ID, (item: Job) => {
-      item.controller.copyId();
-    }),
+    commands.registerCommand(
+      COMMANDS.COPY_ID,
+      (item: Job | Workflow | Pipeline) => {
+        item.controller.copyId();
+      }
+    ),
 
-    commands.registerCommand(COMMANDS.COPY_JOB_NUMBER, (item: Job) => {
+    commands.registerCommand(COMMANDS.COPY_NUMBER, (item: Job | Pipeline) => {
       item.controller.copyNumber();
     }),
-
-    // commands.registerCommand(constants.LOAD_ITEMS_COMMAND, (item: Loader) => {
-    //   item.loadItems();
-    // }),
-
-    // commands.registerCommand(
-    //   constants.FETCH_JOB_ARTIFACTS_COMMAND,
-    //   (item: JobArtifacts) => {
-    //     item.updateResources();
-    //   }
-    // ),
 
     // commands.registerCommand(
     //   constants.OPEN_JOB_ARTIFACT_COMMAND,
