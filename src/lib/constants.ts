@@ -16,6 +16,7 @@ export const COMMANDS = {
   COPY_NUMBER: 'circleci.copyNumber',
   OPEN_JOB_ARTIFACT: 'circleci.openJobArtifact',
   OPEN_JOB_TESTS: 'circleci.openJobTests',
+  LOAD_TREE: 'circleci.loadTree',
 };
 
 export const CONTEXTS = {

@@ -217,28 +217,34 @@
             "default": null,
             "markdownDescription": "A CircleCI API Token. This can be generated on your [Personal API Tokens](https://app.circleci.com/settings/user/tokens) page."
           },
-          "circleci.pipelines.reloadInterval": {
+          "circleci.use1Password": {
             "order": 1,
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "**Experimental** - Use 1Password to retrieve your API token. Requires the [1Password v2 CLI](https://developer.1password.com/docs/cli)."
+          },
+          "circleci.pipelines.reloadInterval": {
+            "order": 2,
             "type": "number",
             "default": 120,
             "minimum": 0,
             "markdownDescription": "Number of seconds to wait before refetching details for all pipelines. This will load in any new workflows.\n\rSet to `0` to disable."
           },
           "circleci.workflows.autoLoad": {
-            "order": 2,
+            "order": 3,
             "type": "boolean",
             "default": true,
             "description": "Automatically load workflows. Disabling this can help with API rate limiting."
           },
           "circleci.workflows.reloadInterval": {
-            "order": 3,
+            "order": 4,
             "type": "number",
             "default": 10,
             "minimum": 0,
             "markdownDescription": "Number of seconds to wait before refetching an active workflow's status.\n\rSet to `0` to disable."
           },
           "circleci.jobs.autoLoad": {
-            "order": 4,
+            "order": 5,
             "type": "boolean",
             "default": true,
             "description": "Automatically load jobs. Disabling this can help with API rate limiting."

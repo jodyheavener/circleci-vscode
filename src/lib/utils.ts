@@ -1,4 +1,4 @@
-import { execSync } from 'child_process';
+import { execSync, spawnSync } from 'child_process';
 import open from 'open';
 import { resolve } from 'path';
 import { Uri } from 'vscode';
@@ -102,4 +102,24 @@ export const forConfig = (
       cb(data.value);
     }
   };
+};
+
+export const execute = (command: string[]): string | null => {
+  const [base, ...args] = command;
+  const result = spawnSync(base, args, {
+    cwd: extension.workspacePath,
+    shell: true,
+    stdio: ['inherit', 'pipe', 'pipe'],
+  });
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+
+  const stderr = result.stderr.toString();
+  if (stderr.length > 0) {
+    throw new Error(stderr);
+  }
+
+  return result.stdout.toString().trim();
 };

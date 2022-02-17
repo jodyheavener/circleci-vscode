@@ -6,8 +6,10 @@ import {
   TreeItem,
 } from 'vscode';
 import { BranchController } from '../controllers/branch';
+import { LoadTreeController } from '../controllers/load-tree';
 import { PipelineController } from '../controllers/pipeline';
 import { Branch } from '../tree-items/branch';
+import { LoadTree } from '../tree-items/load-tree';
 import { Pipeline } from '../tree-items/pipeline';
 import { client } from './circleci';
 import { configuration } from './config';
@@ -24,13 +26,19 @@ export default class ProjectTreeDataProvider
     new EventEmitter<TreeItem | undefined>();
   readonly onDidChangeTreeData: Event<TreeItem | undefined> =
     this._onDidChangeTreeData.event;
-  treeItems: (BranchController | PipelineController)[] = [];
+  treeItems: (BranchController | PipelineController | LoadTreeController)[] =
+    [];
+  treeLoaded = false;
 
   constructor() {
     events.on(Events.GitDataUpdate, this.setupTree.bind(this));
     events.on(
       Events.ConfigChange,
       forConfig(ConfigKey.UseGitBranches, this.setupTree.bind(this))
+    );
+    events.on(
+      Events.ConfigChange,
+      forConfig(ConfigKey.Use1Password, this.setupTree.bind(this))
     );
     events.on(Events.ReloadTree, this.reload.bind(this));
 
@@ -39,8 +47,11 @@ export default class ProjectTreeDataProvider
 
   async setupTree(): Promise<void> {
     const useBranches = configuration.get<boolean>(ConfigKey.UseGitBranches);
+    const use1Password = configuration.get<boolean>(ConfigKey.Use1Password);
 
-    if (useBranches) {
+    if (use1Password && !this.treeLoaded) {
+      this.treeItems = [new LoadTreeController(this)];
+    } else if (useBranches) {
       this.treeItems = gitService.branches.map(
         (branch) => new BranchController(branch)
       );
@@ -79,7 +90,9 @@ export default class ProjectTreeDataProvider
     return element;
   }
 
-  getChildren(element?: Branch | Pipeline): ProviderResult<TreeItem[]> {
+  getChildren(
+    element?: Branch | Pipeline | LoadTree
+  ): ProviderResult<TreeItem[]> {
     if (!element) {
       return this.treeItems.map((item) => item.view);
     }

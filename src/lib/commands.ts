@@ -2,6 +2,7 @@ import { commands, Disposable } from 'vscode';
 import { Artifacts } from '../tree-items/artifacts';
 import { Branch } from '../tree-items/branch';
 import { Job } from '../tree-items/job';
+import { LoadTree } from '../tree-items/load-tree';
 import { Pipeline } from '../tree-items/pipeline';
 import { Tests } from '../tree-items/tests';
 import { Workflow } from '../tree-items/workflow';
@@ -66,6 +67,10 @@ const registerCommands = (
 
     commands.registerCommand(COMMANDS.COPY_NUMBER, (item: Job | Pipeline) => {
       item.controller.copyNumber();
+    }),
+
+    commands.registerCommand(COMMANDS.LOAD_TREE, async (item: LoadTree) => {
+      await item.controller.loadTree();
     }),
 
     // commands.registerCommand(

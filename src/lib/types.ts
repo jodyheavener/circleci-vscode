@@ -1,5 +1,6 @@
 export enum ConfigKey {
   APIToken = 'apiToken',
+  Use1Password = 'use1Password',
   GitRemote = 'project.gitRemote',
   UseGitBranches = 'project.useGitBranches',
   BranchesToWatch = 'project.branchesToWatch',
@@ -11,6 +12,7 @@ export enum ConfigKey {
 
 export type ConfigItems = {
   [ConfigKey.APIToken]: string;
+  [ConfigKey.Use1Password]: boolean;
   [ConfigKey.GitRemote]: string;
   [ConfigKey.UseGitBranches]: boolean;
   [ConfigKey.BranchesToWatch]: string[];
@@ -38,6 +40,7 @@ export enum Events {
   ClientUpdate,
   GitDataUpdate,
   ReloadTree,
+  OPFailure,
 }
 
 export enum VcsProvider {
