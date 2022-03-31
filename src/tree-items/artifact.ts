@@ -19,7 +19,7 @@ const getfileTypeIcon = (path: string): string => {
 export class Artifact extends Base {
   constructor(filename: string) {
     super({
-      label: filename,
+      label: filename.split('/').pop(),
       contextValue: CONTEXTS.ARTIFACT_BASE,
       iconName: getfileTypeIcon(filename),
     });
