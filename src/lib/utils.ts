@@ -1,4 +1,6 @@
 import { execSync } from 'child_process';
+import { https } from 'follow-redirects';
+import { createWriteStream } from 'fs';
 import open from 'open';
 import { resolve } from 'path';
 import { Uri } from 'vscode';
@@ -102,4 +104,25 @@ export const forConfig = (
       cb(data.value);
     }
   };
+};
+
+export const downloadFile = (url: string, location: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    https
+      .get(url, (response) => {
+        const file = createWriteStream(location);
+
+        response
+          .on('end', () => {
+            resolve();
+          })
+          .on('finish', () => {
+            resolve();
+          })
+          .pipe(file);
+      })
+      .on('error', (error) => {
+        reject(error);
+      });
+  });
 };

@@ -1,3 +1,4 @@
+import { ArtifactController } from '../controllers/artifact';
 import { COMMANDS, CONTEXTS } from '../lib/constants';
 import { Base } from './base';
 
@@ -17,7 +18,7 @@ const getfileTypeIcon = (path: string): string => {
 };
 
 export class Artifact extends Base {
-  constructor(filename: string) {
+  constructor(public controller: ArtifactController, filename: string) {
     super({
       label: filename.split('/').pop(),
       contextValue: CONTEXTS.ARTIFACT_BASE,

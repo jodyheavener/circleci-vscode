@@ -16,7 +16,13 @@ export class Tests extends Base {
   }
 
   setFetched(count: number): void {
-    this.setLabel(`${pluralize('test', count)} →`);
-    this.setCommand();
+    if (count > 0) {
+      this.setLabel(`${pluralize('test', count)} →`);
+      this.setCommand(COMMANDS.OPEN_JOB_TESTS, 'Open tests');
+      this.controller.open();
+    } else {
+      this.setLabel('No tests');
+      this.setCommand();
+    }
   }
 }

@@ -1,4 +1,5 @@
 import { commands, Disposable } from 'vscode';
+import { Artifact } from '../tree-items/artifact';
 import { Artifacts } from '../tree-items/artifacts';
 import { Branch } from '../tree-items/branch';
 import { Job } from '../tree-items/job';
@@ -68,12 +69,13 @@ const registerCommands = (
       item.controller.copyNumber();
     }),
 
-    // commands.registerCommand(
-    //   constants.OPEN_JOB_ARTIFACT_COMMAND,
-    //   (item: JobArtifact) => {
-    //     item.openJobArtifact();
-    //   }
-    // ),
+    commands.registerCommand(COMMANDS.OPEN_JOB_ARTIFACT, (item: Artifact) => {
+      item.controller.open();
+    }),
+
+    commands.registerCommand(COMMANDS.OPEN_JOB_TESTS, (item: Tests) => {
+      item.controller.open();
+    }),
   ];
 };
 
