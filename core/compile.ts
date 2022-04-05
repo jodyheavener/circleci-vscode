@@ -6,7 +6,7 @@ import { existsSync, rmSync } from 'fs';
 import watchGlob from 'watch-glob';
 
 const srcPath = 'src';
-const distPath = 'dist';
+const distPath = '../dist';
 
 const args = process.argv.slice(2);
 const isProd = process.env.NODE_ENV === 'production';
