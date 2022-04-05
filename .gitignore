@@ -4,3 +4,11 @@ coverage/
 webview/build/
 *.vsix
 *.zip
+
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

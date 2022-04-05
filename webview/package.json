@@ -3,7 +3,7 @@
   "version": "0.3.0",
   "scripts": {
     "build": "rescripts build",
-    "dev": "BROWSER=none rescripts start",
+    "dev": "BROWSER=none FORCE_COLOR=true rescripts start | cat",
     "test": "rescripts test"
   },
   "eslintConfig": {

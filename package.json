@@ -12,15 +12,19 @@
     "type": "git",
     "url": "https://github.com/jodyheavener/circleci-vscode.git"
   },
+  "packageManager": "yarn@3.2.0",
   "workspaces": [
     "core",
     "webview"
   ],
+  "engines": {
+    "vscode": "^1.66.0"
+  },
   "homepage": "https://github.com/jodyheavener/circleci-vscode",
   "scripts": {
-    "build": "yarn workspaces run build",
-    "dev": "yarn workspaces run dev",
-    "test": "yarn workspaces run test",
+    "build": "yarn workspaces foreach run build",
+    "dev": "yarn workspaces foreach -pi run dev",
+    "test": "yarn workspaces foreach run test",
     "vscode:prepublish": "yarn build"
   },
   "icon": "dist/assets/logo.png",
