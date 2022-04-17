@@ -7,12 +7,12 @@ import { Uri } from 'vscode';
 import { extension } from './extension';
 import { ConfigItems, ConfigKey } from './types';
 
-export const getAsset = (name: string): { light: Uri; dark: Uri } => ({
+export const getImage = (name: string): { light: Uri; dark: Uri } => ({
   light: Uri.file(
     resolve(
       extension.context.extensionPath,
       'dist',
-      'assets',
+      'images',
       'light',
       `${name}.svg`
     )
@@ -21,7 +21,7 @@ export const getAsset = (name: string): { light: Uri; dark: Uri } => ({
     resolve(
       extension.context.extensionPath,
       'dist',
-      'assets',
+      'images',
       'dark',
       `${name}.svg`
     )

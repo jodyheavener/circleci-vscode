@@ -1,5 +1,5 @@
 import { TreeItem, TreeItemCollapsibleState } from 'vscode';
-import { getAsset } from '../lib/utils';
+import { getImage } from '../lib/utils';
 
 export abstract class Base extends TreeItem {
   loadable: boolean;
@@ -67,7 +67,7 @@ export abstract class Base extends TreeItem {
       : this.activeTooltip;
 
     if (this.iconName) {
-      this.iconPath = getAsset(this.iconName);
+      this.iconPath = getImage(this.iconName);
     }
 
     this.collapsibleState =

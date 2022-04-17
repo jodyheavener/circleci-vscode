@@ -2,7 +2,7 @@
   "name": "webview",
   "version": "0.3.0",
   "scripts": {
-    "build": "rescripts build",
+    "build": "rescripts build && cd build/static && copy {js,css}/*.{css,js} ../../../dist",
     "dev": "BROWSER=none FORCE_COLOR=true rescripts start | cat",
     "test": "rescripts test"
   },
@@ -38,6 +38,7 @@
     "@types/jest": "^27.4.1",
     "@types/node": "^16.11.26",
     "@types/react": "^17.0.43",
-    "@types/react-dom": "^17.0.14"
+    "@types/react-dom": "^17.0.14",
+    "copy": "^0.3.2"
   }
 }

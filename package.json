@@ -2,7 +2,7 @@
   "name": "circleci",
   "displayName": "CircleCI",
   "description": "Monitor, manage, and inspect your Pipelines on CircleCI",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "license": "MIT",
   "publisher": "jodyh",
   "preview": true,
@@ -22,12 +22,12 @@
   },
   "homepage": "https://github.com/jodyheavener/circleci-vscode",
   "scripts": {
-    "build": "yarn workspaces foreach run build",
+    "build": "rm -rf dist && yarn workspaces foreach run build",
     "dev": "yarn workspaces foreach -pi run dev",
     "test": "yarn workspaces foreach run test",
     "vscode:prepublish": "yarn build"
   },
-  "icon": "dist/assets/logo.png",
+  "icon": "dist/images/logo.png",
   "keywords": [
     "continuous integration",
     "circle ci",
@@ -53,7 +53,7 @@
         {
           "id": "circleciContainer",
           "title": "CircleCI",
-          "icon": "./dist/assets/dark/circleci-logo.svg"
+          "icon": "./dist/images/dark/circleci-logo.svg"
         }
       ]
     },
@@ -132,8 +132,8 @@
         "title": "Refetch details",
         "category": "CircleCI",
         "icon": {
-          "dark": "./dist/assets/dark/rotate.svg",
-          "light": "./dist/assets/light/rotate.svg"
+          "dark": "./dist/images/dark/rotate.svg",
+          "light": "./dist/images/light/rotate.svg"
         }
       },
       {
@@ -141,8 +141,8 @@
         "title": "Open in browser",
         "category": "CircleCI",
         "icon": {
-          "dark": "./dist/assets/dark/open.svg",
-          "light": "./dist/assets/light/open.svg"
+          "dark": "./dist/images/dark/open.svg",
+          "light": "./dist/images/light/open.svg"
         }
       },
       {
@@ -150,8 +150,8 @@
         "title": "Cancel workflow",
         "category": "CircleCI",
         "icon": {
-          "dark": "./dist/assets/dark/ex.svg",
-          "light": "./dist/assets/light/ex.svg"
+          "dark": "./dist/images/dark/ex.svg",
+          "light": "./dist/images/light/ex.svg"
         }
       },
       {
@@ -159,8 +159,8 @@
         "title": "Cancel job",
         "category": "CircleCI",
         "icon": {
-          "dark": "./dist/assets/dark/ex.svg",
-          "light": "./dist/assets/light/ex.svg"
+          "dark": "./dist/images/dark/ex.svg",
+          "light": "./dist/images/light/ex.svg"
         }
       },
       {
@@ -168,8 +168,8 @@
         "title": "Approve job",
         "category": "CircleCI",
         "icon": {
-          "dark": "./dist/assets/dark/play.svg",
-          "light": "./dist/assets/light/play.svg"
+          "dark": "./dist/images/dark/play.svg",
+          "light": "./dist/images/light/play.svg"
         }
       },
       {
@@ -177,8 +177,8 @@
         "title": "Retry all jobs",
         "category": "CircleCI",
         "icon": {
-          "dark": "./dist/assets/dark/retry-all.svg",
-          "light": "./dist/assets/light/retry-all.svg"
+          "dark": "./dist/images/dark/retry-all.svg",
+          "light": "./dist/images/light/retry-all.svg"
         }
       },
       {
@@ -186,8 +186,8 @@
         "title": "Retry failed jobs",
         "category": "CircleCI",
         "icon": {
-          "dark": "./dist/assets/dark/retry-failed.svg",
-          "light": "./dist/assets/light/retry-failed.svg"
+          "dark": "./dist/images/dark/retry-failed.svg",
+          "light": "./dist/images/light/retry-failed.svg"
         }
       },
       {

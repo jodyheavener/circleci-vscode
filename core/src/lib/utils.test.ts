@@ -1,13 +1,13 @@
 import { extensionPath } from '../test/setup';
-import { getAsset, msToTime, pluralize } from './utils';
+import { getImage, msToTime, pluralize } from './utils';
 
-describe('getAsset', () => {
-  it('returns the correct light and dark asset paths', () => {
-    const assetBase = `${extensionPath}/dist/assets`;
+describe('getImage', () => {
+  it('returns the correct light and dark image paths', () => {
+    const imageBase = `${extensionPath}/dist/images`;
     const fileBase = 'bird';
-    expect(getAsset(fileBase)).toEqual({
-      light: expect.stringContaining(`${assetBase}/light/${fileBase}.svg`),
-      dark: expect.stringContaining(`${assetBase}/dark/${fileBase}.svg`),
+    expect(getImage(fileBase)).toEqual({
+      light: expect.stringContaining(`${imageBase}/light/${fileBase}.svg`),
+      dark: expect.stringContaining(`${imageBase}/dark/${fileBase}.svg`),
     });
   });
 });

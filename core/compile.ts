@@ -1,5 +1,3 @@
-// import { sassPlugin } from 'esbuild-sass-plugin';
-// import svgPlugin from 'esbuild-plugin-svg';
 import copy from 'copy';
 import { build, BuildOptions } from 'esbuild';
 import { existsSync, rmSync } from 'fs';
@@ -55,24 +53,4 @@ build({
   watch: createWatcher('extension'),
 }).catch(() => process.exit(1));
 
-// build({
-//   entryPoints: [
-//     'src/webviews/assets/job-tests.tsx',
-//     'src/webviews/assets/welcome.tsx',
-//     'src/webviews/assets/upgrade.tsx',
-//   ],
-//   bundle: true,
-//   platform: 'browser',
-//   outdir: 'dist/webviews/assets',
-//   plugins: [sassPlugin(), svgPlugin()],
-//   minify: isProd,
-//   watch,
-// }).catch(() => process.exit(1));
-
-createCopier('extension', `${srcPath}/assets/**/*`, `${distPath}/assets`);
-
-// copy('src/webviews/*.html', 'dist/webviews', (err) => {
-//   if (err) {
-//     console.log('Could not copy webview assets', err);
-//   }
-// });
+createCopier('extension', `${srcPath}/images/**/*`, `${distPath}/images`);
