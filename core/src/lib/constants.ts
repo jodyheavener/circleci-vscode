@@ -53,3 +53,8 @@ export const ActivityStatusMap = {
   unauthorized: ActivityStatus.Unauthorized,
   queued: ActivityStatus.Queued,
 };
+
+export const WEBVIEW_EVENTS = {
+  WEBVIEW_READY: 'circleci.webview.ready',
+  JOB_DATA: 'circleci.webview.jobData',
+};

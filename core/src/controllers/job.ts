@@ -39,7 +39,12 @@ export class JobController {
       views.push(new Timer(job.duration));
     }
 
-    this.tests = new TestsController(this.data.job_number);
+    this.tests = new TestsController(
+      this.data.job_number,
+      this.data.name,
+      this.workflow.data.pipeline_number,
+      this.workflow.data.id
+    );
     this.artifacts = new ArtifactsController(this.data.job_number);
 
     views = views.concat(this.artifacts.view, this.tests.view);

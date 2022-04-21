@@ -2,14 +2,25 @@
   "name": "webview",
   "version": "0.3.0",
   "scripts": {
-    "build": "rescripts build && cd build/static && copy {js,css}/*.{css,js} ../../../dist",
-    "dev": "BROWSER=none FORCE_COLOR=true rescripts start | cat",
-    "test": "rescripts test"
+    "build": "craco build && cd build/static && copy {js,css}/*.{css,js} ../../../dist",
+    "dev": "BROWSER=none FORCE_COLOR=true craco start | cat",
+    "storybook": "start-storybook -p 6006 -s public",
+    "test": "craco test"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
     ]
   },
   "browserslist": {
@@ -25,13 +36,26 @@
     ]
   },
   "dependencies": {
+    "clsx": "^1.1.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-scripts": "5.0.0",
     "typescript": "^4.6.3"
   },
   "devDependencies": {
-    "@rescripts/cli": "^0.0.16",
+    "@craco/craco": "^6.4.3",
+    "@mdx-js/react": "^1.6.22",
+    "@storybook/addon-actions": "^6.4.22",
+    "@storybook/addon-docs": "^6.4.22",
+    "@storybook/addon-essentials": "^6.4.22",
+    "@storybook/addon-interactions": "^6.4.22",
+    "@storybook/addon-links": "^6.4.22",
+    "@storybook/builder-webpack5": "^6.4.22",
+    "@storybook/manager-webpack5": "^6.4.22",
+    "@storybook/node-logger": "^6.4.22",
+    "@storybook/preset-create-react-app": "^4.1.0",
+    "@storybook/react": "^6.4.22",
+    "@storybook/testing-library": "^0.0.9",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
@@ -39,6 +63,8 @@
     "@types/node": "^16.11.26",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",
-    "copy": "^0.3.2"
+    "copy": "^0.3.2",
+    "mini-css-extract-plugin": "^2.6.0",
+    "webpack": "^5.72.0"
   }
 }

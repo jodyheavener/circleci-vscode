@@ -1,0 +1,19 @@
+.button {
+  background-color: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+  border: none;
+  padding: 6px 15px;
+  outline: none;
+  display: inline-block;
+  text-decoration: none;
+  line-height: 1.3rem;
+  font-size: var(--vscode-font-size);
+  cursor: pointer;
+}
+
+.button:hover,
+.button:focus {
+  background-color: var(--vscode-button-hoverBackground);
+  color: var(--vscode-button-foreground);
+  outline-color: var(--vscode-button-hoverBackground);
+}

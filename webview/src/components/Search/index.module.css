@@ -1,0 +1,48 @@
+form {
+  position: relative;
+}
+
+.form {
+  flex: 1 0 0;
+  max-width: 370px;
+}
+
+.field {
+  background-color: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border: none;
+  padding: 7px 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.field:focus {
+  outline-color: var(--vscode-focusBorder);
+}
+
+.hasQuery {
+  padding-right: 30px;
+}
+
+.clear {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transform: translateY(-50%);
+  padding: 3px;
+  display: flex;
+  border-radius: 3px;
+}
+
+.clear svg {
+  fill: var(--vscode-icon-foreground);
+}
+
+.clear:hover,
+.clear:focus {
+  outline: none;
+  background-color: var(--vscode-inputOption-hoverBackground);
+}

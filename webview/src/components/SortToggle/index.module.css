@@ -1,0 +1,25 @@
+.toggle {
+  background: var(--vscode-button-secondaryBackground);
+  color: var(--vscode-button-secondaryForeground);
+  border: none;
+  padding: 7px 10px;
+  margin-left: 0.3rem;
+  cursor: pointer;
+  outline: none;
+  display: inline-block;
+}
+
+.toggle:hover,
+.toggle:focus {
+  background-color: var(--vscode-button-secondaryHoverBackground);
+}
+
+.active {
+  background-color: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+}
+
+.active:hover,
+.active:focus {
+  background-color: var(--vscode-button-hoverBackground);
+}

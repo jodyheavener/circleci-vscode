@@ -1,11 +1,18 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import App from "./components/App";
 import "./index.css";
+import { FiltersContextProvider } from "./lib/filters";
+import { JobDataContextProvider } from "./lib/job-data";
 
-ReactDOM.render(
+const container = document.getElementById("app");
+const root = createRoot(container!);
+root.render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById("root")
+    <JobDataContextProvider>
+      <FiltersContextProvider>
+        <App />
+      </FiltersContextProvider>
+    </JobDataContextProvider>
+  </React.StrictMode>
 );

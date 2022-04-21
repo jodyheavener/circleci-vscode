@@ -1,0 +1,58 @@
+.container {
+  margin: 5px 0;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.darkBg {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+}
+
+.name {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.3rem;
+}
+
+.name svg {
+  margin-right: 10px;
+  width: 14px;
+}
+
+.timer {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+  color: var(--vscode-icon-foreground);
+}
+
+.timer svg {
+  fill: currentColor;
+  margin-left: 5px;
+}
+
+.errorContainer {
+  border-top: 1px solid var(--vscode-editor-background);
+}
+
+.errorSummary {
+  font-weight: 600;
+  cursor: pointer;
+  padding: 10px 12px;
+}
+
+.errorContent {
+  padding: 0 12px 10px;
+  display: block;
+  line-height: 1.05rem;
+}
