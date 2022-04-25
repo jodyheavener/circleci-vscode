@@ -45,7 +45,7 @@ export class TestsController {
 
     this.panel = window.createWebviewPanel(
       webviewId,
-      `Job #${this.jobNumber} - ${this.jobName}`,
+      `#${this.jobNumber} (${this.jobName}) - CircleCI`,
       ViewColumn.Active,
       {
         enableScripts: true,

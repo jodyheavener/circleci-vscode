@@ -1,5 +1,6 @@
 export enum ConfigKey {
   APIToken = 'apiToken',
+  BaseUrl = 'baseUrl',
   GitRemote = 'project.gitRemote',
   UseGitBranches = 'project.useGitBranches',
   BranchesToWatch = 'project.branchesToWatch',
@@ -11,6 +12,7 @@ export enum ConfigKey {
 
 export type ConfigItems = {
   [ConfigKey.APIToken]: string;
+  [ConfigKey.BaseUrl]: string;
   [ConfigKey.GitRemote]: string;
   [ConfigKey.UseGitBranches]: boolean;
   [ConfigKey.BranchesToWatch]: string[];

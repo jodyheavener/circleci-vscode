@@ -7305,12 +7305,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"circle-client@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "circle-client@npm:0.2.0"
+"circle-client@npm:^0.2.4":
+  version: 0.2.4
+  resolution: "circle-client@npm:0.2.4"
   dependencies:
+    follow-redirects: ^1.14.9
     isomorphic-fetch: ^3.0.0
-  checksum: 98878fb61438b7f76d0ba1ec61ca7a46799395bffff49d9cfa05a0be8aa2b500619eb24e1332be58f51d8daff3099f46f2530d63629bd36ac3f3da67d0fecc6f
+  checksum: 653dad8548188aa4ac04982d5711bdeb3e304921d8e30a7c86f7a7246a8d1a2ae349edfad609fb6e827d0bf158374b0c7927fc46e5dab77c52cf9fdd8561a33b
   languageName: node
   linkType: hard
 
@@ -7856,7 +7857,7 @@ __metadata:
     "@types/vscode": ^1.66.0
     "@typescript-eslint/eslint-plugin": ^5.17.0
     "@typescript-eslint/parser": ^5.17.0
-    circle-client: ^0.2.0
+    circle-client: ^0.2.4
     copy: ^0.3.2
     csp-dev: ^1.0.2
     esbuild: ^0.14.29
@@ -7864,7 +7865,6 @@ __metadata:
     eslint: ^8.12.0
     eslint-config-prettier: ^8.5.0
     eslint-plugin-prettier: ^4.0.0
-    follow-redirects: ^1.14.9
     jest: ^27.5.1
     open: ^8.4.0
     prettier: ^2.6.1

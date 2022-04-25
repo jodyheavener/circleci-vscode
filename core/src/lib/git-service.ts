@@ -95,7 +95,7 @@ class GitService {
       this.data = { vcs, user, repo } as ProjectData;
       this.currentBranch = await this.getBranch();
 
-      client.projectSlug = this.circleSlug;
+      client.slug = this.circleSlug;
     } catch (error) {
       console.error(error);
       throw new Error('Could not retrieve Git info.');

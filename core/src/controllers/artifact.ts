@@ -3,8 +3,8 @@ import { existsSync } from 'fs';
 import open from 'open';
 import { basename, resolve } from 'path';
 import { window, workspace } from 'vscode';
+import { client } from '../lib/circleci';
 import { extension } from '../lib/extension';
-import { downloadFile } from '../lib/utils';
 import { Artifact } from '../tree-items/artifact';
 
 export class ArtifactController {
@@ -28,7 +28,7 @@ export class ArtifactController {
 
     if (!this.downloadPath || !existsSync(this.downloadPath)) {
       this.downloading = true;
-      await downloadFile(this.data.url, downloadPath);
+      await client.downloadArtifact(this.data.url, downloadPath);
       this.downloadPath = downloadPath;
       this.downloading = false;
     }
