@@ -1,7 +1,7 @@
 import { commands, Disposable } from 'vscode';
-import Pipeline from '../views/Pipeline';
-import Workflow from '../views/Workflow';
-import Job from '../views/Job';
+import Pipeline from '../views/pipeline';
+import Workflow from '../views/workflow';
+import Job from '../views/job';
 import JobArtifacts from '../views/job-artifacts';
 import JobArtifact from '../views/job-artifact';
 import Loader from '../views/loader';
