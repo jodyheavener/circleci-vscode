@@ -5,7 +5,7 @@ import config from './config';
 import { ConfigItems, ConfigKey, GitSet } from './types';
 import { execCommand, stripNewline, l } from './utils';
 
-const REPO_MATCHER = /(?:git@.*\..*:|https?:\/\/.*\..*\/)(.*)\/(.*).git/g;
+const REPO_MATCHER = /(?:git@.*\..*:|https?:\/\/.*\..*\/)(.*)\/(.*)/g;
 let exportedService: GitService | null = null;
 
 export class GitService {
