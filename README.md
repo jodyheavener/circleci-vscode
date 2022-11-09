@@ -1,4 +1,6 @@
-# CircleCI for VS Code
+# Jody's Extension for CircleCI
+
+**November 9 2022 - This extension is now deprecated. Please consider using [CircleCI's official VS Code extension](https://marketplace.visualstudio.com/items?itemName=circleci.circleci). Thank you for trying it out. I have renamed this extension to "Jody's Extension for CircleCI" and updated the branding at their request to make clear that it isn't offered or endorsed by CircleCI.**
 
 A simple extension for VS Code to allow you to monitor, manage, and inspect your Pipelines on [CircleCI](https://circleci.com).
 

@@ -1,8 +1,8 @@
 {
   "name": "circleci-vscode",
-  "displayName": "CircleCI",
+  "displayName": "Jody's Extension for CircleCI",
   "description": "Monitor, manage, and inspect your Pipelines on CircleCI",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "license": "MIT",
   "publisher": "jodyh",
   "keywords": [
